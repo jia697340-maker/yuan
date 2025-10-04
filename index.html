@@ -124,9 +124,7 @@
             align-items: center;
             font-size: 18px;
             font-weight: 600;
-            gap: 15px; /* 【核心新增】在头部项目之间增加间距 */
         }
-
         
         
         #status-bar { 
@@ -1976,35 +1974,20 @@
             opacity: 0.9 !important;
         }
         
-        /* ▼▼▼ 【V2.0 | 已修复世界书重叠BUG】头部标题居中与自适应样式 ▼▼▼ */
+        /* ▼▼▼ 这是新增的样式，用于修正所有头部标题的居中问题 ▼▼▼ */
         .header > span:nth-child(2),
-        #chat-header-title-wrapper { /* 同时应用于聊天页面的标题容器 */
+        #chat-header-title {
             position: absolute;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(calc(-50% - 2px)); /* 在-50%的基础上，再向左推2像素 */
             
-            /* 【核心修复】将固定的max-width改为更灵活的左右边距 */
-            /* 这将强制标题与左右两侧的按钮保持至少65px的距离 */
-            left: 65px;
-            right: 65px;
-            width: auto; /* 宽度由左右边距决定 */
-            transform: none; /* 移除旧的 transform 居中方式 */
-            
-            /* 保持文本居中和省略号效果 */
-            text-align: center;
+            /* (可选但推荐) 防止长标题与两边按钮重叠 */
+            max-width: 60%;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-
-        /* 单独为聊天标题内的文字设置样式，避免影响状态栏 */
-        #chat-header-title {
-            position: static;
-            transform: none;
-            max-width: 100%;
-        }
-        /* ▲▲▲ 修复结束 ▲▲▲ */
-
+        /* ▲▲▲ 粘贴结束 ▲▲▲ */
         
         /* ▼▼▼ 【全新】可视化消息编辑器样式 ▼▼▼ */
         #message-editor-container {
@@ -10270,6 +10253,36 @@
     border: none;
 }
 /* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【世界书头部重叠BUG终极修复】 ▼▼▼ */
+
+/* 1. 强制世界书的头部使用更智能的布局 */
+#world-book-screen .header {
+    display: flex;
+    justify-content: space-between; /* 让三大块“返回-标题-按钮组”两端对齐 */
+    align-items: center;
+}
+
+/* 2. 【核心修复】为中间的标题文本创建一个外层容器 */
+#world-book-screen .header > span:nth-of-type(2) {
+    /* 让标题容器自己占据所有剩余的、可用的空间 */
+    flex-grow: 1;
+    /* 确保文字在自己的容器内是左对齐的 */
+    text-align: left;
+    /* 增加左边距，把它和返回箭头推开，保持视觉平衡 */
+    margin-left: 20px; 
+    
+    /* 防止长标题溢出（可选但推荐） */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 3. 确保右侧的按钮组不会被压缩 */
+#world-book-screen .header .header-actions {
+    flex-shrink: 0;
+}
+
+/* ▲▲▲ 修复结束 ▲▲▲ */
 
 
     </style>
