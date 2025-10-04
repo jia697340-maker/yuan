@@ -124,7 +124,9 @@
             align-items: center;
             font-size: 18px;
             font-weight: 600;
+            gap: 15px; /* 【核心新增】在头部项目之间增加间距 */
         }
+
         
         
         #status-bar { 
@@ -1974,20 +1976,35 @@
             opacity: 0.9 !important;
         }
         
-        /* ▼▼▼ 这是新增的样式，用于修正所有头部标题的居中问题 ▼▼▼ */
+        /* ▼▼▼ 【V2.0 | 已修复世界书重叠BUG】头部标题居中与自适应样式 ▼▼▼ */
         .header > span:nth-child(2),
-        #chat-header-title {
+        #chat-header-title-wrapper { /* 同时应用于聊天页面的标题容器 */
             position: absolute;
             left: 50%;
-            transform: translateX(calc(-50% - 2px)); /* 在-50%的基础上，再向左推2像素 */
+            transform: translateX(-50%);
             
-            /* (可选但推荐) 防止长标题与两边按钮重叠 */
-            max-width: 60%;
+            /* 【核心修复】将固定的max-width改为更灵活的左右边距 */
+            /* 这将强制标题与左右两侧的按钮保持至少65px的距离 */
+            left: 65px;
+            right: 65px;
+            width: auto; /* 宽度由左右边距决定 */
+            transform: none; /* 移除旧的 transform 居中方式 */
+            
+            /* 保持文本居中和省略号效果 */
+            text-align: center;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        /* ▲▲▲ 粘贴结束 ▲▲▲ */
+
+        /* 单独为聊天标题内的文字设置样式，避免影响状态栏 */
+        #chat-header-title {
+            position: static;
+            transform: none;
+            max-width: 100%;
+        }
+        /* ▲▲▲ 修复结束 ▲▲▲ */
+
         
         /* ▼▼▼ 【全新】可视化消息编辑器样式 ▼▼▼ */
         #message-editor-container {
@@ -10253,38 +10270,6 @@
     border: none;
 }
 /* ▲▲▲ 新增CSS结束 ▲▲▲ */
-/* ▼▼▼ 【【【移动端标题重叠BUG终极修复】】】 ▼▼▼ */
-
-/* 1. 让标题容器自身不被压缩，也不主动扩张 */
-.header > span:nth-of-type(2) {
-    flex-shrink: 0;
-    flex-grow: 0;
-}
-
-/* 2. 让返回按钮容器也保持固定宽度，不参与弹性分配 */
-.header > .back-btn {
-    flex: 0 0 30px; /* 不扩张，不收缩，基础宽度为30px */
-    justify-content: flex-start; /* 确保返回箭头靠左 */
-}
-
-/* 3. 【核心】让右侧的按钮容器占据所有剩余空间，并将其内容推向右侧 */
-.header .header-actions {
-    flex-grow: 1; /* 占据所有可用的剩余空间 */
-    justify-content: flex-end; /* 将内部的所有按钮推到最右边 */
-    display: flex; /* 确保它是一个flex容器 */
-    gap: 15px; /* 保持按钮间的间距 */
-}
-
-/* 4. 微调，确保标题在绝对居中和不重叠之间找到最佳平衡 */
-#world-book-screen .header > span:nth-of-type(2) {
-    /* 为世界书标题提供一个最大宽度，防止它过长时与按钮重叠 */
-    max-width: 40%; 
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* ▲▲▲ 修复结束 ▲▲▲ */
 
 
     </style>
@@ -13753,9 +13738,7 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
             // Dock栏的图标
             'api-settings': 'https://i.postimg.cc/MK8rJ8t7/IMG-6438.jpg',
             'font': 'https://i.postimg.cc/pXxk1JXk/IMG-6442.jpg',
-            'char-phone': 'https://i.postimg.cc/pXj9h20L/IMG-7275.jpg',
-            'forum': 'https://i.postimg.cc/8PLc3r57/xiaohongshu-icon.png' // 【核心修复】在这里补上论坛App
-
+            'char-phone': 'https://i.postimg.cc/pXj9h20L/IMG-7275.jpg'
         };
 
 
@@ -34773,7 +34756,7 @@ function renderCharIconSettings() {
             if (!grid) return;
             grid.innerHTML = '';
 
-            const appLabels = { 'world-book': '世界书', 'qq': 'QQ', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'wallpaper': '外观设置', 'font': '字体', 'char-phone': 'Cphone', 'forum': '论坛' };
+            const appLabels = { 'world-book': '世界书', 'qq': 'QQ', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'wallpaper': '外观设置', 'font': '字体', 'char-phone': 'Cphone' };
 
             for (const iconId in state.globalSettings.appIcons) {
                 const iconUrl = state.globalSettings.appIcons[iconId];
@@ -37693,7 +37676,7 @@ function openAppSelector(action) {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone', 'forum': '论坛' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -37791,7 +37774,7 @@ function openAppSelectorForSize() {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone', 'forum': '论坛' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -37848,7 +37831,7 @@ function openAppSelectorForAnimation(action) {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' , 'forum': '论坛'};
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -37944,92 +37927,17 @@ function getKeyframesCss(animData) {
 // ▲▲▲ 全新JS代码粘贴结束 ▲▲▲
 // ▼▼▼ 【全新V1.0】App命名更改功能核心代码 ▼▼▼
 
-// ▼▼▼ 【V3.0 | 最终修复版】请用这个全新的函数，完整替换旧的 getAppLabel ▼▼▼
 /**
  * 【辅助】获取一个App的显示名称，优先从自定义设置中读取
  * @param {string} iconId - App的ID
  * @returns {string} - 最终的显示名称
  */
 function getAppLabel(iconId) {
-    // 【核心修复】将 appLabels 定义为函数内部的常量，并包含所有App
-    const defaultLabels = { 
-        'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 
-        'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器',
-        'api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone', 
-        'forum': '论坛' 
-    };
+    const defaultLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    // 优先从 state.globalSettings.appIconLabels 中获取，如果没有，再使用默认标签
     return state.globalSettings.appIconLabels?.[iconId] || defaultLabels[iconId] || iconId;
 }
 
-// ▼▼▼ 【V3.0 | 最终修复版】请用这个全新的函数，完整替换旧的 renderIconSettings ▼▼▼
-/**
- * 【V2.1 | 支持自定义名称】在外观设置页面渲染出所有App图标的设置项
- */
-function renderIconSettings() {
-    const grid = document.getElementById('icon-settings-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
-
-    // 【核心修复】直接从 DEFAULT_APP_ICONS 循环，确保所有图标都被渲染
-    for (const iconId in DEFAULT_APP_ICONS) {
-        const iconUrl = state.globalSettings.appIcons[iconId] || DEFAULT_APP_ICONS[iconId];
-        const labelText = getAppLabel(iconId); // 使用修复后的函数获取名称
-
-        const item = document.createElement('div');
-        item.className = 'icon-setting-item';
-        item.dataset.iconId = iconId; 
-
-        item.innerHTML = `
-            <div class="icon-preview-wrapper">
-                <img class="icon-preview" src="${iconUrl}" alt="${labelText}">
-                <div class="main-icon-select-checkbox"></div>
-            </div>
-            <span class="label">${labelText}</span>
-            <button class="change-icon-btn">更换</button>
-        `;
-        grid.appendChild(item);
-    }
-}
-
-// ▼▼▼ 【V3.0 | 最终修复版】请用这个全新的函数，完整替换旧的 openAppSelectorForSize ▼▼▼
-/**
- * 【V2.0 | 支持大小重置】打开App选择器弹窗
- * @param {'apply' | 'reset' | 'apply_size' | 'reset_size'} action - 本次操作的类型
- */
-function openAppSelectorForSize(action) {
-    currentShapeAction = action;
-    const modal = document.getElementById('app-selector-modal');
-    const titleEl = document.getElementById('app-selector-title');
-    const listEl = document.getElementById('app-selector-list');
-    
-    // 动态设置标题
-    const titleMap = {
-        'apply': '选择要应用形状的App', 'reset': '选择要重置形状的App',
-        'apply_size': '选择要应用大小的App', 'reset_size': '选择要重置大小的App',
-        'apply_animation': '选择要应用动态的App', 'reset_animation': '选择要重置动态的App',
-        'reset_label': '选择要重置名称的App'
-    };
-    titleEl.textContent = titleMap[action] || '选择App';
-
-    listEl.innerHTML = '';
-    document.getElementById('app-selector-select-all').checked = false;
-
-    // 【核心修复】直接从 DEFAULT_APP_ICONS 循环，确保所有图标都出现在列表里
-    for (const iconId in DEFAULT_APP_ICONS) {
-        const item = document.createElement('div');
-        item.className = 'contact-picker-item';
-        item.innerHTML = `
-            <input type="checkbox" class="app-selector-checkbox" data-icon-id="${iconId}" style="margin-right: 15px;">
-            <img src="${state.globalSettings.appIcons[iconId] || DEFAULT_APP_ICONS[iconId]}" class="avatar" style="border-radius: 8px;">
-            <span class="name">${getAppLabel(iconId)}</span>
-        `;
-        listEl.appendChild(item);
-    }
-
-    modal.classList.add('visible');
-}
-
-// ▼▼▼ 【V3.0 | 最终修复版】请用这个全新的函数，完整替换旧的 openAppLabelEditor ▼▼▼
 /**
  * 【总入口】打开App名称编辑器
  */
@@ -38038,9 +37946,9 @@ function openAppLabelEditor() {
     const listEl = document.getElementById('app-label-editor-list');
     listEl.innerHTML = '';
 
-    // 【核心修复】直接从 DEFAULT_APP_ICONS 循环，确保所有图标都出现在编辑列表里
+    // 使用默认图标列表来确保所有App都被包含
     for (const iconId in DEFAULT_APP_ICONS) {
-        const currentLabel = getAppLabel(iconId); 
+        const currentLabel = getAppLabel(iconId); // 使用我们的新辅助函数获取当前名称
         const item = document.createElement('div');
         item.className = 'form-group';
         item.style.marginBottom = '10px';
@@ -38054,6 +37962,64 @@ function openAppLabelEditor() {
     modal.classList.add('visible');
 }
 
+/**
+ * 【核心】保存所有修改过的App名称
+ */
+async function saveAppLabels() {
+    if (!state.globalSettings.appIconLabels) {
+        state.globalSettings.appIconLabels = {};
+    }
+
+    const inputs = document.querySelectorAll('.app-label-input');
+    inputs.forEach(input => {
+        const iconId = input.dataset.iconId;
+        const newLabel = input.value.trim();
+        const defaultLabel = getAppLabel(iconId); // 获取原始默认名
+
+        // 如果新名称不为空且不等于默认名称，就保存它
+        if (newLabel && newLabel !== defaultLabel) {
+            state.globalSettings.appIconLabels[iconId] = newLabel;
+        } else {
+            // 如果新名称为空或等于默认名，就从自定义设置中删除它
+            delete state.globalSettings.appIconLabels[iconId];
+        }
+    });
+
+    // 保存并应用
+    await db.globalSettings.put(state.globalSettings);
+    applyAllAppLabels(); // 调用新的应用函数
+
+    document.getElementById('app-label-editor-modal').classList.remove('visible');
+    await showCustomAlert("成功", "App名称已更新！");
+}
+
+/**
+ * 【总入口】打开App选择器，用于重置名称
+ */
+function openAppSelectorForLabelReset() {
+    // 复用现有的App选择器弹窗，只需要把 action 标记为 'reset_label'
+    currentShapeAction = 'reset_label';
+    const modal = document.getElementById('app-selector-modal');
+    const titleEl = document.getElementById('app-selector-title');
+    const listEl = document.getElementById('app-selector-list');
+    
+    titleEl.textContent = '选择要重置名称的App';
+    listEl.innerHTML = '';
+    document.getElementById('app-selector-select-all').checked = false;
+
+    for (const iconId in DEFAULT_APP_ICONS) {
+        const item = document.createElement('div');
+        item.className = 'contact-picker-item';
+        item.innerHTML = `
+            <input type="checkbox" class="app-selector-checkbox" data-icon-id="${iconId}" style="margin-right: 15px;">
+            <img src="${state.globalSettings.appIcons[iconId] || DEFAULT_APP_ICONS[iconId]}" class="avatar" style="border-radius: 8px;">
+            <span class="name">${getAppLabel(iconId)}</span>
+        `;
+        listEl.appendChild(item);
+    }
+
+    modal.classList.add('visible');
+}
 
 // ▼▼▼ 【V2.0 | 彻底修复版】请用这个全新的函数，完整替换旧的 applyAllAppLabels ▼▼▼
 /**
