@@ -10328,7 +10328,531 @@
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 /* ▲▲▲ 修复结束 ▲▲▲ */
+/* ▼▼▼ 【全新】聊天记录搜索页面样式 ▼▼▼ */
 
+/* 1. 搜索页面背景 */
+#chat-search-screen {
+    background-color: #f0f2f5;
+}
+#phone-screen.dark-mode #chat-search-screen {
+    background-color: #000000;
+}
+
+/* 2. 头部搜索框容器 */
+#chat-search-screen .header .search-input-wrapper {
+    flex-grow: 1;
+    position: relative;
+    margin-left: 15px;
+}
+
+/* 3. 搜索框左侧的放大镜图标 */
+#chat-search-screen .header .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    fill: var(--text-secondary);
+}
+
+/* 4. 搜索输入框本身 */
+#chat-search-screen #chat-search-input {
+    width: 100%;
+    padding: 9px 35px; /* 上下、右、左 */
+    border-radius: 10px;
+    border: none;
+    background-color: var(--secondary-bg);
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+}
+#phone-screen.dark-mode #chat-search-screen #chat-search-input {
+    color: #fff;
+}
+
+/* 5. 搜索结果列表容器 */
+#chat-search-results {
+    padding: 0;
+}
+
+/* 6. 单个搜索结果项 */
+.search-result-item {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+.search-result-item:hover {
+    background-color: rgba(0,0,0,0.03);
+}
+#phone-screen.dark-mode .search-result-item:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+
+/* 7. 结果项中的头像 */
+.search-result-item .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* 8. 结果项右侧的信息区 */
+.search-result-item .info {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* 9. 结果项中的发送者和日期行 */
+.search-result-item .meta-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+.search-result-item .sender-name {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+.search-result-item .message-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* 10. 结果项中的内容预览 */
+.search-result-item .content-preview {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    /* 多行省略效果 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-all;
+}
+
+/* 11. 关键词高亮样式 */
+.search-result-item .content-preview .highlight {
+    color: #1a73e8;
+    background-color: transparent;
+    font-weight: 500;
+}
+
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+
+/* ▼▼▼ 【全新】聊天头像形状设置UI样式 ▼▼▼ */
+
+/* 1. 预设形状按钮，复用并微调现有样式 */
+#avatar-shape-settings-group .shape-preset-btn {
+    padding: 10px 15px;
+    height: auto;
+    font-size: 14px;
+}
+
+/* 2. 已保存形状列表的容器 */
+#saved-avatar-shapes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 3. 单个已保存形状的条目 */
+.saved-shape-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f9f9f9;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+#phone-screen.dark-mode .saved-shape-item {
+    background-color: #2c2c2e;
+}
+
+/* 4. 左侧的预览和目标指示 */
+.saved-shape-item .preview-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.saved-shape-item .shape-preview {
+    width: 34px;
+    height: 34px;
+    background-color: #ccc;
+    flex-shrink: 0;
+}
+.saved-shape-item .target-info {
+    font-size: 13px;
+    color: var(--text-primary);
+}
+
+/* 5. 右侧的删除按钮 */
+.saved-shape-item .delete-shape-btn {
+    background: none;
+    border: none;
+    color: #ff3b30;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】你画我猜App样式 ▼▼▼ */
+
+/* 1. App背景色，与其他App保持一致 */
+#draw-guess-screen {
+    background-color: #f0f2f5;
+}
+#phone-screen.dark-mode #draw-guess-screen {
+    background-color: #000000;
+}
+
+/* 2. 画板的容器，使用Flex布局实现完美居中 */
+#draw-guess-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 3. 画板本身的核心样式 */
+#drawing-canvas {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    /* 宽度占满容器的95%，留出一些边距 */
+    width: 95%;
+    /* 高宽比，让它看起来像个画板，而不是正方形 */
+    aspect-ratio: 4 / 3;
+    max-width: 400px; /* 在大屏上的最大宽度 */
+}
+
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新V2.0】你画我猜App交互UI样式 ▼▼▼ */
+
+/* 1. 主内容容器布局，从上到下排列 */
+#draw-guess-content {
+    flex-direction: column;
+    justify-content: space-between; /* 让内容上下分布 */
+    padding: 15px;
+}
+
+/* 2. 游戏交互区域 (头像、对话、输入) */
+#draw-guess-interactive-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.player-avatars-container {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 40px;
+}
+.player-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.player-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+}
+.player-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+#draw-guess-dialogue-box {
+    height: 80px; /* 固定高度 */
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+.draw-guess-input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+#draw-guess-action-bar {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px; /* 【核心修改】增加按钮之间的间距 */
+}
+
+#draw-guess-action-bar .action-bar-btn {
+    background: none;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.draw-guess-input-row {
+    display: flex;
+    gap: 8px;
+}
+#draw-guess-input {
+    flex-grow: 1;
+    border: 1px solid var(--border-color);
+    background-color: var(--secondary-bg);
+    border-radius: 6px;
+    padding: 0 12px;
+    font-size: 15px;
+    outline: none;
+}
+#draw-guess-send-btn {
+    flex-shrink: 0;
+    padding: 8px 18px;
+    border: none;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* 3. 中间核心区域 (欢迎语或画板) */
+#draw-guess-main-area {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+#draw-guess-welcome-text {
+    text-align: center;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+/* 画板样式保持不变，但要确保它能正确显示 */
+#drawing-canvas {
+    display: none; /* 默认隐藏 */
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    aspect-ratio: 4 / 3;
+    max-width: 400px;
+}
+
+/* 4. 底部操作栏 */
+#draw-guess-bottom-bar {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新V3.0】你画我猜 - 绘画工作室UI样式 ▼▼▼ */
+
+/* 1. 让 #draw-guess-main-area 成为一个Flex容器，以容纳工作室 */
+#draw-guess-main-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-grow: 1;
+}
+
+/* 2. “工作室”总容器，采用三列Flex布局 */
+#draw-guess-studio {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px; /* 工具栏和画板的间距 */
+}
+
+/* 3. 左右工具栏的通用样式 */
+.drawing-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+/* 4. 左侧工具栏独有样式 */
+.drawing-tools.left {
+    flex-shrink: 0;
+}
+.color-palette {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+.color-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.color-dot.active {
+    transform: scale(1.2);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.tool-buttons {
+    display: flex;
+    gap: 8px;
+}
+.tool-btn {
+    background-color: #f0f2f5;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.tool-btn.active {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+/* 5. 画板样式 (现在从 #drawing-canvas 移到这里统一控制) */
+#draw-guess-studio #drawing-canvas {
+    display: block; /* 确保它显示出来 */
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex-grow: 1; /* 占据所有剩余空间 */
+    height: auto; /* 高度由宽度和高宽比决定 */
+    aspect-ratio: 4 / 3;
+    max-width: 400px;
+}
+
+/* 6. 右侧游戏控制按钮样式 */
+.game-control-btn {
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 15px;
+    font-size: 14px;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+/* 7. 底部操作栏的按钮样式，使用蓝色主题 */
+#draw-guess-bottom-bar .form-button {
+    background-color: var(--accent-color);
+    border-radius: 22px; /* 更大的圆角 */
+    height: 44px;
+    font-size: 16px;
+}
+
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】为你画我猜对话框添加占位符样式 ▼▼▼ */
+#draw-guess-dialogue-box:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text-secondary);
+    font-style: italic;
+    /* 实现一个闪烁的动画，更有“正在思考”的感觉 */
+    animation: typing-pulse 1.5s infinite;
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新V4.0】你画我猜 - 绘画功能样式 ▼▼▼ */
+
+/* 1. 画板激活时的光标样式 */
+#drawing-canvas.active {
+    cursor: crosshair !important; /* 强制光标为十字 */
+}
+
+/* 2. 笔刷设置区域的通用样式 */
+#brush-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px; /* 和上方的工具按钮拉开距离 */
+    padding: 10px;
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+#brush-settings label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    display: block;
+}
+#brush-settings select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--secondary-bg);
+    color: var(--text-primary);
+}
+
+/* 3. 大小控制滑块和输入框的布局 */
+.size-control {
+    display: flex;
+    flex-direction: column;
+}
+.size-control input[type="range"] {
+    width: 100%;
+}
+.size-control input[type="number"] {
+    margin-top: 5px;
+    width: 100%;
+    text-align: center;
+    padding: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--secondary-bg);
+    color: var(--text-primary);
+}
+/* 隐藏数字输入框默认的上下箭头 */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新V5.0】你画我猜 - AI绘画动画样式 ▼▼▼ */
+
+/* 1. 让画板容器成为定位的“锚点” */
+#draw-guess-studio {
+    position: relative;
+}
+
+/* 2. AI绘画动画专用画板的样式 */
+#ai-drawing-animation-canvas {
+    position: absolute; /* 绝对定位，脱离文档流 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* 让它覆盖在所有工具和画板之上，但在弹窗之下 */
+    z-index: 10;
+    /* 默认隐藏，且不响应任何点击事件 */
+    display: none;
+    pointer-events: none; 
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
 
     </style>
 </head>
@@ -10409,16 +10933,25 @@
                     </div>
                 </div>
             </div>
-            <!-- 页面2: 新增阅读器App -->
+            <!-- 页面2: 新增阅读器App和你画我猜App -->
             <div class="home-screen-page">
                 <div id="desktop-app-container" style="align-self: flex-start; margin-top: 20px;">
-                    <!-- 【【【核心修复】】】将 onclick 事件从 alert 改为调用新函数 -->
+                    <!-- 阅读器图标 (保持不变) -->
                     <div class="desktop-app-icon" onclick="openReaderBookshelf()">
                         <div class="icon-bg-desktop"><img id="icon-img-reader" src="https://i.postimg.cc/VLZpPj1h/reader-icon.png" alt="阅读器"></div>
                         <span class="label">阅读器</span>
                     </div>
+
+                    <!-- ▼▼▼ 在这里粘贴新图标 ▼▼▼ -->
+                    <div class="desktop-app-icon" onclick="openDrawAndGuess()">
+                        <div class="icon-bg-desktop"><img id="icon-img-draw-guess" src="https://i.postimg.cc/k5dG3B4p/draw-guess-icon.png" alt="你画我猜"></div>
+                        <span class="label">你画我猜</span>
+                    </div>
+                    <!-- ▲▲▲ 新增图标结束 ▲▲▲ -->
+
                 </div>
             </div>
+
 
 
             <!-- 页面3: 放置新App -->
@@ -12496,6 +13029,39 @@
                 </div>
             </div>
         </div>
+        <!-- ▼▼▼ 【全新】聊天生图开关 ▼▼▼ -->
+        <div class="form-group" id="ai-image-generation-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label for="ai-image-gen-toggle" style="margin-bottom: 0;">
+                    启用聊天AI生图
+                    <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px;">
+                        关闭后，AI发的图片将显示为一张通用占位图，图片描述可在点击后查看。
+                    </p>
+                </label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="ai-image-gen-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+        <!-- ▼▼▼ 【全新】视频记录挂载开关 ▼▼▼ -->
+        <div class="form-group" id="video-memory-mount-group">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label for="video-memory-mount-toggle" style="margin-bottom: 0;">
+                    视频记录挂载到主聊天
+                    <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px;">
+                        开启后，最近一次视频通话的对话内容将被注入到AI的记忆中。
+                    </p>
+                </label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="video-memory-mount-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
         <div class="form-group" id="linked-memory-group">
             <label for="link-memory-toggle">挂载其他聊天记忆</label>
             <input type="checkbox" id="link-memory-toggle" style="width: auto; height: 20px; vertical-align: middle; margin-left: 10px;">
@@ -12621,6 +13187,37 @@
 
 </div>
 <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】头像形状设置区域 ▼▼▼ -->
+<div class="form-group" id="avatar-shape-settings-group">
+    <hr style="opacity: 0.3; margin: 20px 0;">
+    <label>聊天头像形状</label>
+
+    <!-- 1. 预设形状按钮 -->
+    <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin: 15px 0;">
+        <button class="form-button-secondary shape-preset-btn" data-shape-css="border-radius: 20%;">默认方圆</button>
+        <button class="form-button-secondary shape-preset-btn" data-shape-css="border-radius: 50%;">圆形</button>
+    </div>
+
+    <!-- 2. 自定义CSS输入框 -->
+    <div class="form-group" style="margin-bottom: 15px;">
+        <label for="avatar-shape-css-input" style="font-size: 0.9em;">自定义形状 (CSS)</label>
+        <textarea id="avatar-shape-css-input" rows="3" style="width: 100%; margin-top: 8px; font-family: monospace; font-size: 14px; resize: vertical;" placeholder="例如: clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);"></textarea>
+    </div>
+
+    <!-- 3. 应用目标选择 -->
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <label style="font-weight: normal;">应用到:</label>
+        <label><input type="checkbox" class="avatar-shape-target" value="ai" checked> 对方</label>
+        <label><input type="checkbox" class="avatar-shape-target" value="user" checked> 我方</label>
+        <button id="apply-avatar-shape-btn" class="form-button" style="margin-top: 0; margin-left: auto;">应用形状</button>
+    </div>
+
+    <!-- 4. 已保存形状列表 -->
+    <div id="saved-avatar-shapes-list" style="margin-top: 20px;">
+        <!-- JS会在这里动态生成已保存的形状 -->
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 
         <hr style="opacity: 0.3; margin: 20px 0;">
         <div class="form-group">
@@ -12680,6 +13277,9 @@
         </div>
         <hr style="margin: 25px 0; border: none; border-top: 1px solid #eee;">
         <button class="form-button form-button-secondary" id="block-chat-btn" style="background-color: #ff3b30; color: white; border-color: #ff3b30;">拉黑对方</button>
+        <!-- ▼▼▼ 在这里粘贴新按钮 ▼▼▼ -->
+        <button class="form-button form-button-secondary" id="search-chat-history-btn" style="margin-top: 10px;">搜索聊天记录</button>
+        <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 <!-- ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼ -->
 <hr style="margin: 25px 0; border: none; border-top: 1px solid #eee;">
 <button class="form-button form-button-secondary" id="export-single-chat-btn" style="background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9;">导出该聊天</button>
@@ -13793,6 +14393,10 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
             'renderer': 'https://s3plus.meituan.net/opapisdk/op_ticket_885190757_1756312261242_qdqqd_g0eriz.jpeg',
             'tutorial': 'https://i.postimg.cc/xT2C1M4p/tutorial-icon.png',
             'reader': 'https://i.postimg.cc/VLZpPj1h/reader-icon.png',
+            // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+            'draw-guess': 'https://i.postimg.cc/k5dG3B4p/draw-guess-icon.png',
+            // ▲▲▲ 新增代码结束 ▲▲▲
+
             // Dock栏的图标
             'api-settings': 'https://i.postimg.cc/MK8rJ8t7/IMG-6438.jpg',
             'font': 'https://i.postimg.cc/pXxk1JXk/IMG-6442.jpg',
@@ -16034,6 +16638,13 @@ async function loadAllDataFromDB() {
         if (!chat.settings.autoMemoryInterval) chat.settings.autoMemoryInterval = 20;
         if (typeof chat.settings.showTimestamps === 'undefined') chat.settings.showTimestamps = true; // 默认开启
         if (typeof chat.settings.coupleAvatarAwareness === 'undefined') chat.settings.coupleAvatarAwareness = false; // 默认关闭
+   // ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼
+        if (typeof chat.settings.enableAiImageGen === 'undefined') chat.settings.enableAiImageGen = false; // 默认关闭
+        // ▲▲▲ 新增代码结束 ▲▲▲
+        // ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼
+        if (typeof chat.settings.mountVideoMemory === 'undefined') chat.settings.mountVideoMemory = false; // 默认关闭
+        // ▲▲▲ 新增代码结束 ▲▲▲
+if (typeof chat.settings.avatarShapes === 'undefined') chat.settings.avatarShapes = []; // 默认为空数组
 // ▼▼▼ 在这里粘贴新代码 ▼▼▼
 if (typeof chat.settings.enableCustomBubbleColors === 'undefined') chat.settings.enableCustomBubbleColors = false; // 默认关闭
 if (!chat.settings.customBubbleColors) chat.settings.customBubbleColors = { ai: '#FFFFFF', user: '#DCE8FA' }; // 设置默认颜色
@@ -17636,12 +18247,25 @@ applyCustomBubbleColors(chat); // 应用自定义颜色
                     const imageUrl = msg.imageUrl;
                     let mapAreaStyle = imageUrl ? `style="background-image: url('${imageUrl}');"` : '';
                     contentHtml = `<div class="location-share-card"><div class="card-text-area"><div class="card-text-primary">${msg.content}</div><div class="card-text-secondary">位置分享</div></div><div class="card-map-area" ${mapAreaStyle}><div class="card-pin-icon"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 11.5C11.1716 11.5 10.5 10.8284 10.5 10C10.5 9.17157 11.1716 8.5 12 8.5C12.8284 8.5 13.5 9.17157 13.5 10C13.5 10.8284 12.8284 11.5 12 11.5Z"></path><path d="M12 2C7.92134 2 4.5 5.42134 4.5 9.5C4.5 14.5312 11.2188 21.4375 11.5938 21.8125C11.7954 22.014 12.2046 22.014 12.4062 21.8125C12.7812 21.4375 19.5 14.5312 19.5 9.5C19.5 5.42134 16.0787 2 12 2ZM12 12.5C10.6193 12.5 9.5 11.3807 9.5 10C9.5 8.61929 10.6193 7.5 12 7.5C13.3807 7.5 14.5 8.61929 14.5 10C14.5 11.3807 13.3807 12.5 12 12.5Z"></path></svg></div></div></div>`;
-                } else if (msg.type === 'user_photo' || msg.type === 'ai_image') {
-    bubble.classList.add('is-ai-image', 'is-card-like');
-    const altText = msg.type === 'user_photo' ? "用户描述的照片" : "AI生成的图片";
-    const imageUrl = msg.image_prompt ? `https://image.pollinations.ai/prompt/${msg.image_prompt}` : 'https://i.postimg.cc/KYr2qRCK/1.jpg';
-    contentHtml = `<img src="${imageUrl}" class="ai-generated-image" alt="${altText}" data-description="${msg.content}">`;
-                } else if (msg.type === 'voice_message') {
+                    } else if (msg.type === 'ai_image') {
+                        bubble.classList.add('is-ai-image', 'is-card-like');
+                        const altText = "AI生成的图片";
+                        let imageUrl;
+
+                        // 【【【这就是核心判断逻辑】】】
+                        // 1. 检查开关是否开启，并且AI是否真的返回了 image_prompt
+                        if (chat.settings.enableAiImageGen === true && msg.image_prompt) {
+                            // 如果开启，则使用AI生图URL
+                            imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(msg.image_prompt)}`;
+                        } else {
+                            // 如果关闭或没有prompt，则使用通用的占位图
+                            imageUrl = 'https://i.postimg.cc/KYr2qRCK/1.jpg'; // 这是你之前用过的“点击查看详情”的图片
+                        }
+                        
+                        // 无论使用哪个图片，都将图片的描述信息保存在 data-description 中，以便点击查看
+                        contentHtml = `<img src="${imageUrl}" class="ai-generated-image" alt="${altText}" data-description="${msg.content}">`;
+                    } else if (msg.type === 'voice_message') {
+
                     bubble.classList.add('is-voice-message', 'is-card-like');
                     bubble.dataset.voiceText = msg.content;
     // 【核心修改】在这里为气泡添加一个初始状态 data-state="collapsed"
@@ -18196,6 +18820,36 @@ if (lastBookId && chat.coReading?.[lastBookId]?.mountToMainChat) {
     }
 }
 // ▲▲▲ 新增代码结束 ▲▲▲
+        // ▼▼▼ 【全新】视频通话记录挂载逻辑 ▼▼▼
+        let videoCallContext = '';
+        // 1. 检查开关是否开启
+        if (chat.settings.mountVideoMemory === true) {
+            // 2. 从数据库中获取这个聊天ID的【最新一条】通话记录
+            const lastCallRecord = await db.callRecords.where('chatId').equals(chatId).last();
+            
+            // 3. 如果找到了记录，并且里面有文字稿
+            if (lastCallRecord && lastCallRecord.transcript && lastCallRecord.transcript.length > 0) {
+                // 4. 将文字稿格式化为AI易于理解的对话格式
+                const transcriptText = lastCallRecord.transcript.map(entry => {
+                    const sender = entry.role === 'user' ? (chat.settings.myNickname || '我') : (entry.senderName || chat.name);
+                    return `${sender}: ${entry.content}`;
+                }).join('\n');
+                
+                // 5. 构建注入到Prompt的上下文文本
+                videoCallContext = `
+# 附加上下文：最近一次的视频通话记录
+-   你和用户最近进行了一次视频通话，以下是通话的文字记录。
+-   你【必须】记住这次通话中发生的事情，并在接下来的对话中自然地提及或表现出你记得这些内容。
+---
+[视频通话记录开始]
+${transcriptText}
+[视频通话记录结束]
+---
+`;
+            }
+        }
+        // ▲▲▲ 新增代码结束 ▲▲▲
+
 
                 const gomokuContext = formatGomokuStateForAI(gomokuState[chatId]);
         
@@ -18516,6 +19170,7 @@ ${forbiddenNamesContext}
 ### 核心聊天
 -   **发文本**: \`{"type": "text", "name": "角色本名", "message": "内容"}\`
 -   **发表情**: \`{"type": "sticker", "name": "角色本名", "url": "https://...表情URL...", "meaning": "(可选)表情含义"}\`
+-  **【表情包铁律】**: 你【绝对不能】自己编造表情包URL！
 -   **发图片**: \`{"type": "ai_image", "name": "角色本名", "description": "中文描述", "image_prompt": "图片的【英文】关键词, 用%20分隔, 风格为风景/动漫/插画/二次元等, 禁止真人"}\`
 -   **发语音**: \`{"type": "voice_message", "name": "角色本名", "content": "语音文字"}\`
 -   **引用回复**: \`{"type": "quote_reply", "target_timestamp": 时间戳, "reply_content": "回复内容"}\`
@@ -18927,7 +19582,7 @@ systemPrompt = `
 - 数组中的【每一个元素都必须是一个带有 "type" 字段的JSON对象】。
 
 # 角色扮演核心规则
-1.  **对话节奏**: 模拟真人的聊天习惯，将你想说的话拆分成【多条、简短的】消息。每次回复至少3-20条，且条数不要总是一样。但可以根据对话的需要灵活调整，以保持对话的流畅和自然，严禁发展线下剧情。
+1.  **对话节奏**: 模拟真人的聊天习惯，将你想说的话拆分成【多条、简短的】消息。每次回复至少1-20条，且条数不要总是一样。但可以根据对话的需要灵活调整，以保持对话的流畅和自然，严禁发展线下剧情。
 2.  **情景感知**:
     - **时间**: 你必须感知到当前是 ${currentTime} (${timeOfDayGreeting})，并在对话中自然地体现出来。
     - **音乐**: ${musicContext ? '你们正在一起听歌，' + musicContext : '你们没有在听歌。'}
@@ -18964,6 +19619,8 @@ ${coupleAvatarContext}
 ### 核心聊天指令
 -   **发文本**: \`{"type": "text", "content": "你好呀！"}\`
 -   **发表情**: \`{"type": "sticker", "url": "https://...表情URL...", "meaning": "(可选)表情含义"}\`
+-  **【表情包铁律】**: 你【绝对不能】自己编造表情包URL！
+
 -   **发图片**: \`{"type": "ai_image", "description": "详细中文描述", "image_prompt": "图片的【英文】关键词, 用%20分隔, 风格为风景/动漫/插画/二次元等, 禁止真人"}\`
 -   **发语音**: \`{"type": "voice_message", "content": "语音文字内容"}\`
 -   **引用回复**: \`{"type": "quote_reply", "target_timestamp": 消息时间戳, "reply_content": "回复内容"}\`
@@ -19010,11 +19667,25 @@ ${chat.settings.myPersona}
 
 # 社交圈与动态
 # 【【【重要社交任务：小红书互动】】】
--   **情景**: 你知道用户也有一个小红书风格的论坛账号，TA的小红书号是: **"${userXhsId}"**
+-   **情景**: 你知道用户也有一个小红书风格的论坛账号。
+-   **【【【用户的真实个人资料（禁止脑补！）】】】**:
+    -   **昵称**: "${state.qzoneSettings.nickname || '用户'}"
+    -   **小红书号**: "${userXhsId}"
+    -   **签名**: "${state.qzoneSettings.signature || '这个人很懒，什么都没写...'}"
+    -   **粉丝数**: ${state.qzoneSettings.stats?.followers || 0}
+    -   **关注数**: ${state.qzoneSettings.stats?.following || 0}
+    -   **获赞与收藏**: ${state.qzoneSettings.stats?.likes || 0}
+-   **【【【用户的真实笔记列表（禁止脑补！）】】】**:
+    ${
+        (state.qzoneSettings.forumProfile?.posts && state.qzoneSettings.forumProfile.posts.length > 0)
+        ? state.qzoneSettings.forumProfile.posts.map(p => `- 标题: "${p.title}" | 内容: "${(p.caption || '').substring(0, 50)}..."`).join('\n')
+        : '- (用户还没有发布任何笔记。)'
+    }
 -   **你的任务**:
     1.  你【必须】在本次回复中，使用 \`{"type": "follow_user"}\` 指令来关注用户。
-    2.  关注后，你【必须】根据用户的角色设定、你们的关系、以及你自己的性格，来决定是否要评论用户的笔记。
-    3.  如果决定评论，就使用 \`{"type": "comment_user_post", "content": "你的评论内容"}\` 指令。如果用户的笔记列表为空，或者你觉得没什么好评论的，就【不要】使用这个指令。
+    2.  关注后，请仔细阅读用户的【真实个人资料】和【真实笔记列表】。
+    3.  根据你对这些真实信息的理解，以及你自身的人设，来决定是否要评论用户的笔记。
+    4.  如果决定评论，就使用 \`{"type": "comment_user_post", "content": "你的评论内容"}\` 指令。如果用户的笔记列表为空，或者你觉得没什么好评论的，就【绝对不要】使用这个指令。
 
 ${contactsList}
 ${postsContext}
@@ -19025,6 +19696,7 @@ ${timeContext}
 ${worldBookContent}
 ${linkedMemoryContext}
 ${mountedCoReadingContext} // <--- 在这里添加这一行
+${videoCallContext}  // <--- 在这里添加这一行！
 ${forumContext}
 # 当前音乐情景
 ${musicContext}
@@ -19487,11 +20159,11 @@ case 'gomoku_move': { // 使用花括号创建块级作用域
         
                         case 'qzone_post':
                             const newPost = { 
-                                type: msgData.postType, 
-                                content: msgData.content || '', 
-                                publicText: msgData.publicText || '', 
-                                hiddenContent: msgData.hiddenContent || '', 
-        image_prompt: msgData.image_prompt || '', // 这是最关键的一行！
+                                type: action.postType, 
+                                content: action.content || '', 
+                                publicText: action.publicText || '', 
+                                hiddenContent: action.hiddenContent || '', 
+                                image_prompt: action.image_prompt || '', // 这是最关键的一行！
                                 timestamp: Date.now(), 
                                 authorId: chatId, 
                                 authorOriginalName: chat.originalName,
@@ -19504,6 +20176,7 @@ case 'gomoku_move': { // 使用花括号创建块级作用域
                                await renderQzonePosts();
                             }
                             continue;
+
         
                         case 'qzone_comment': { 
                             const postToComment = await db.qzonePosts.get(parseInt(msgData.postId));
@@ -29705,6 +30378,8 @@ ${coupleAvatarContext}
 ### 核心聊天指令
 -   **发文本**: \`{"type": "text", "content": "你好呀！"}\`
 -   **发表情**: \`{"type": "sticker", "url": "https://...表情URL...", "meaning": "(可选)表情含义"}\`
+**【表情包铁律】**: 你【绝对不能】自己编造表情包URL！
+
 -   **发图片**: \`{"type": "ai_image", "description": "详细中文描述"}\`
 -   **发语音**: \`{"type": "voice_message", "content": "语音文字内容"}\`
 -   **引用回复**: \`{"type": "quote_reply", "target_timestamp": 消息时间戳, "reply_content": "回复内容"}\`
@@ -34814,7 +35489,7 @@ function renderCharIconSettings() {
             if (!grid) return;
             grid.innerHTML = '';
 
-            const appLabels = { 'world-book': '世界书', 'qq': 'QQ', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'wallpaper': '外观设置', 'font': '字体', 'char-phone': 'Cphone' };
+            const appLabels = { 'world-book': '世界书', 'qq': 'QQ', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜','api-settings': 'API设置', 'wallpaper': '外观设置', 'font': '字体', 'char-phone': 'Cphone' };
 
             for (const iconId in state.globalSettings.appIcons) {
                 const iconUrl = state.globalSettings.appIcons[iconId];
@@ -37734,7 +38409,7 @@ function openAppSelector(action) {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -37832,7 +38507,7 @@ function openAppSelectorForSize() {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -37889,7 +38564,7 @@ function openAppSelectorForAnimation(action) {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -37991,7 +38666,7 @@ function getKeyframesCss(animData) {
  * @returns {string} - 最终的显示名称
  */
 function getAppLabel(iconId) {
-    const defaultLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const defaultLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
     // 优先从 state.globalSettings.appIconLabels 中获取，如果没有，再使用默认标签
     return state.globalSettings.appIconLabels?.[iconId] || defaultLabels[iconId] || iconId;
 }
@@ -39572,6 +40247,1028 @@ function appendCommentsToDetailView(newComments) {
     commentsContainer.appendChild(fragment);
 }
 // ▲▲▲ 新增函数结束 ▲▲▲
+// ▼▼▼ 【全新】聊天记录搜索功能核心代码 ▼▼▼
+
+/**
+ * 【总入口】打开聊天记录搜索页面
+ */
+function openChatHistorySearch() {
+    if (!state.activeChatId) return;
+    
+    // 清空搜索框和结果列表
+    const searchInput = document.getElementById('chat-search-input');
+    const resultsContainer = document.getElementById('chat-search-results');
+    searchInput.value = '';
+    resultsContainer.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">输入关键词搜索聊天记录</p>';
+    
+    // 显示搜索页面
+    showScreen('chat-search-screen');
+    searchInput.focus();
+}
+
+/**
+ * 【核心】执行搜索逻辑
+ */
+async function executeChatSearch() {
+    const searchInput = document.getElementById('chat-search-input');
+    const resultsContainer = document.getElementById('chat-search-results');
+    const keyword = searchInput.value.trim().toLowerCase();
+
+    if (!keyword) {
+        resultsContainer.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">请输入关键词</p>';
+        return;
+    }
+
+    resultsContainer.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">正在努力搜索中...</p>';
+
+    const chat = state.chats[state.activeChatId];
+    const matchingMessages = [];
+
+    // Dexie 不支持直接对 JSON 数组内的对象进行高效全文搜索，
+    // 所以我们必须在前端进行遍历和筛选。
+    for (const msg of chat.history) {
+        let contentText = '';
+        
+        // 将各种类型的消息内容转换为可搜索的纯文本
+        if (msg.type === 'voice_message') {
+            contentText = msg.content || '';
+        } else if (msg.type === 'ai_image' || msg.type === 'user_photo') {
+            contentText = msg.content || '';
+        } else if (msg.type === 'transfer') {
+            contentText = `[转账] ¥${msg.amount} ${msg.note || ''}`;
+        } else if (typeof msg.content === 'string') {
+            contentText = msg.content;
+        }
+
+        if (contentText.toLowerCase().includes(keyword)) {
+            matchingMessages.push(msg);
+        }
+    }
+
+    // 渲染搜索结果
+    renderChatSearchResults(matchingMessages, keyword);
+}
+
+/**
+ * 【辅助】渲染搜索结果列表
+ * @param {Array} messages - 匹配到的消息数组
+ * @param {string} keyword - 用户输入的关键词
+ */
+function renderChatSearchResults(messages, keyword) {
+    const resultsContainer = document.getElementById('chat-search-results');
+    resultsContainer.innerHTML = '';
+
+    if (messages.length === 0) {
+        resultsContainer.innerHTML = `<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">未能找到与“${keyword}”相关的记录</p>`;
+        return;
+    }
+
+    // 从最新到最旧显示结果
+    messages.slice().reverse().forEach(msg => {
+        const itemEl = createSearchResultItem(msg, keyword);
+        resultsContainer.appendChild(itemEl);
+    });
+}
+
+/**
+ * 【辅助】创建单个搜索结果项的DOM元素
+ * @param {object} msg - 单个消息对象
+ * @param {string} keyword - 用户输入的关键词
+ * @returns {HTMLElement} - 创建好的DOM元素
+ */
+function createSearchResultItem(msg, keyword) {
+    const itemEl = document.createElement('div');
+    itemEl.className = 'search-result-item';
+    itemEl.dataset.timestamp = msg.timestamp;
+
+    const chat = state.chats[state.activeChatId];
+    let senderName, senderAvatar;
+
+    // 获取发送者信息
+    if (msg.role === 'user') {
+        senderName = chat.settings.myNickname || '我';
+        senderAvatar = chat.settings.myAvatar || defaultAvatar;
+    } else {
+        if (chat.isGroup) {
+            senderName = getDisplayNameInGroup(chat, msg.senderName);
+            const member = chat.members.find(m => m.originalName === msg.senderName);
+            senderAvatar = member ? member.avatar : defaultGroupMemberAvatar;
+        } else {
+            senderName = chat.name;
+            senderAvatar = chat.settings.aiAvatar || defaultAvatar;
+        }
+    }
+
+    // 格式化内容预览和高亮关键词
+    let contentPreview = '';
+    let rawContent = '';
+
+    if (msg.type === 'voice_message') {
+        rawContent = `[语音] ${msg.content || ''}`;
+    } else if (msg.type === 'ai_image' || msg.type === 'user_photo') {
+        rawContent = `[图片] ${msg.content || ''}`;
+    } else if (msg.type === 'transfer') {
+        rawContent = `[转账] ¥${msg.amount} ${msg.note || ''}`;
+    } else if (typeof msg.content === 'string') {
+        rawContent = msg.content;
+    }
+    // 其他卡片类型也可以在这里添加预览逻辑...
+
+    // 高亮关键词
+    const regex = new RegExp(`(${keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi');
+    contentPreview = rawContent.replace(regex, '<span class="highlight">$1</span>');
+
+    // 格式化日期
+    const date = new Date(msg.timestamp);
+    const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+    itemEl.innerHTML = `
+        <img src="${senderAvatar}" class="avatar">
+        <div class="info">
+            <div class="meta-line">
+                <span class="sender-name">${senderName}</span>
+                <span class="message-date">${dateString}</span>
+            </div>
+            <div class="content-preview">${contentPreview}</div>
+        </div>
+    `;
+
+    return itemEl;
+}
+
+        /**
+         * 【V3.0 | 替代方案 | 保证跳转成功】点击搜索结果后，跳转到原始聊天位置
+         * @param {number} timestamp - 目标消息的时间戳
+         */
+        async function jumpToMessage(timestamp) {
+            if (!state.activeChatId) return;
+            const chatId = state.activeChatId;
+
+            // 1. 切换到聊天界面，并使用默认的 renderChatInterface 加载最新的50条消息
+            await openChat(chatId);
+            showScreen('chat-interface-screen');
+
+            // 2. 给出“正在定位”的提示，提升用户体验
+            await showCustomAlert("请稍候...", "正在定位历史消息...");
+
+            try {
+                // 3. 循环加载所有历史记录
+                let loadMoreBtn = document.getElementById('load-more-btn');
+                // 只要“加载更多”按钮还存在，就一直模拟点击它
+                while (loadMoreBtn) {
+                    await loadMoreMessages();
+                    // 每次加载完，都重新检查一下按钮是否还存在
+                    loadMoreBtn = document.getElementById('load-more-btn');
+                }
+
+                // 4. 当循环结束，说明所有消息都已加载完毕
+                console.log("所有历史记录已加载完毕。");
+
+                // 5. 使用 setTimeout 确保DOM完全更新后再执行滚动和高亮
+                setTimeout(() => {
+                    const targetMessage = document.querySelector(`.message-bubble[data-timestamp="${timestamp}"]`);
+                    
+                    if (targetMessage) {
+                        // 滚动到目标消息，并使其居中
+                        targetMessage.scrollIntoView({ behavior: 'auto', block: 'center' });
+                        
+                        // 添加高亮效果
+                        targetMessage.classList.add('highlighted');
+                        
+                        // 2秒后自动移除高亮效果
+                        setTimeout(() => {
+                            targetMessage.classList.remove('highlighted');
+                        }, 2000);
+                    } else {
+                        console.error("跳转失败：在全量加载后，依然无法在DOM中找到目标消息。时间戳: ", timestamp);
+                        showCustomAlert("跳转失败", "未能定位到原始消息，可能该消息已被删除或数据异常。");
+                    }
+                }, 200); // 延迟时间可以稍微长一点，确保DOM渲染完成
+
+            } catch (error) {
+                console.error("在加载更多消息以进行跳转时发生错误:", error);
+                await showCustomAlert("操作失败", "定位消息时发生错误，请重试。");
+            }
+        }
+// ▼▼▼ 【全新】聊天头像形状自定义功能核心代码 ▼▼▼
+
+/**
+ * 【核心】根据当前聊天的设置，生成并应用所有头像形状的CSS规则
+ */
+function applyAvatarShapes() {
+    let styleTag = document.getElementById('chat-avatar-shapes-style');
+    if (!styleTag) {
+        styleTag = document.createElement('style');
+        styleTag.id = 'chat-avatar-shapes-style';
+        document.head.appendChild(styleTag);
+    }
+
+    const chat = state.chats[state.activeChatId];
+    if (!chat || !chat.settings.avatarShapes) {
+        styleTag.innerHTML = '';
+        return;
+    }
+
+    let cssRules = '';
+    chat.settings.avatarShapes.forEach(shapeRule => {
+        const targets = shapeRule.targets || [];
+        // 为确保新旧数据兼容，如果targets是字符串，也转为数组
+        const targetArray = Array.isArray(targets) ? targets : [targets]; 
+
+        targetArray.forEach(target => {
+            // 构建精确的CSS选择器，确保只影响聊天界面
+            const selector = `#chat-interface-screen .message-bubble.${target} .avatar-group .avatar, 
+                              #chat-interface-screen .message-bubble.${target} .avatar-group .avatar-img`;
+            
+            // 生成CSS规则，使用 !important 确保最高优先级
+            cssRules += `
+                ${selector} {
+                    ${shapeRule.css} !important;
+                }
+            `;
+        });
+    });
+
+    styleTag.innerHTML = cssRules;
+}
+
+
+/**
+ * 【总入口】当用户点击“应用形状”按钮时触发
+ */
+async function handleApplyAvatarShape() {
+    if (!state.activeChatId) return;
+
+    const cssInput = document.getElementById('avatar-shape-css-input');
+    const shapeCss = cssInput.value.trim();
+    if (!shapeCss) {
+        alert("请输入自定义的CSS形状规则！");
+        return;
+    }
+
+    const targetCheckboxes = document.querySelectorAll('.avatar-shape-target:checked');
+    if (targetCheckboxes.length === 0) {
+        alert("请至少选择一个应用目标（对方或我方）。");
+        return;
+    }
+
+    const targets = Array.from(targetCheckboxes).map(cb => cb.value);
+
+    const newShapeRule = {
+        id: 'shape_' + Date.now(), // 为每个规则生成唯一ID
+        css: shapeCss,
+        targets: targets
+    };
+
+    // 保存到数据库和内存
+    const chat = state.chats[state.activeChatId];
+    if (!chat.settings.avatarShapes) {
+        chat.settings.avatarShapes = [];
+    }
+    chat.settings.avatarShapes.push(newShapeRule);
+    await db.chats.put(chat);
+
+    // 立即应用并刷新UI
+    applyAvatarShapes();
+    renderSavedAvatarShapes();
+    cssInput.value = ''; // 清空输入框
+}
+
+/**
+ * 【辅助】渲染已保存的头像形状规则列表
+ */
+function renderSavedAvatarShapes() {
+    const listEl = document.getElementById('saved-avatar-shapes-list');
+    listEl.innerHTML = '';
+    const chat = state.chats[state.activeChatId];
+    const savedShapes = chat.settings.avatarShapes || [];
+
+    if (savedShapes.length > 0) {
+        listEl.innerHTML = '<label style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 5px; display: block;">已应用规则:</label>';
+    }
+
+    savedShapes.forEach(shapeRule => {
+        const item = document.createElement('div');
+        item.className = 'saved-shape-item';
+
+        const targetsText = (shapeRule.targets || []).map(t => t === 'ai' ? '对方' : '我方').join(' & ');
+        
+        item.innerHTML = `
+            <div class="preview-group">
+                <div class="shape-preview" style="${shapeRule.css}"></div>
+                <span class="target-info">应用于: ${targetsText}</span>
+            </div>
+            <button class="delete-shape-btn" data-shape-id="${shapeRule.id}">×</button>
+        `;
+        listEl.appendChild(item);
+    });
+}
+
+/**
+ * 【核心】删除一条已保存的头像形状规则
+ * @param {string} shapeId - 要删除的规则的ID
+ */
+async function deleteAvatarShapeRule(shapeId) {
+    if (!state.activeChatId) return;
+    const chat = state.chats[state.activeChatId];
+    if (!chat.settings.avatarShapes) return;
+
+    chat.settings.avatarShapes = chat.settings.avatarShapes.filter(rule => rule.id !== shapeId);
+    await db.chats.put(chat);
+
+    // 立即应用并刷新UI
+    applyAvatarShapes();
+    renderSavedAvatarShapes();
+}
+
+// ▲▲▲ 新增JS代码结束 ▲▲▲
+// ▼▼▼ 【全新】你画我猜功能函数 ▼▼▼
+/**
+ * 【总入口】打开你画我猜App
+ */
+function openDrawAndGuess() {
+    showScreen('draw-guess-screen');
+}
+// ▲▲▲ 新增代码结束 ▲▲▲
+// ▼▼▼ 【全新V5.0 | 修复绘图BUG的最终版】你画我猜 - AI绘画与互动核心代码 ▼▼▼
+
+/**
+ * 【总入口】当用户点击“轮到他了”按钮时触发
+ */
+        async function handleAiTurnToDraw() {
+            if (drawGuessState.isAiResponding) return;
+
+            // 1. 弹出“正在思考”提示
+            await showCustomAlert("请稍候...", "对方正在思考要画什么...");
+
+            try {
+                // 2. 【核心修复】在这里，我们不再隐藏画室，而是直接准备好让AI画画
+                document.getElementById('draw-guess-welcome-text').style.display = 'none';
+                document.getElementById('draw-guess-studio').style.display = 'flex';
+                // 确保画板是激活状态，以便显示正确的十字光标
+                document.getElementById('drawing-canvas').classList.add('active');
+
+                // 清理之前的画板内容
+                drawingBoard.ctx.clearRect(0, 0, drawingBoard.canvas.width, drawingBoard.canvas.height);
+                drawingBoard.history = [];
+                drawingBoard.saveState();
+                
+                // 3. 调用AI决策函数，获取绘画路径
+                const drawingData = await decideAiDrawing();
+                if (!drawingData || !drawingData.paths) throw new Error("AI未能决定要画什么或返回了无效的绘画数据。");
+
+                // 4. 【核心】播放绘画动画，现在用户可以看到这个过程了
+                await playAiDrawingAnimation(drawingData.paths);
+
+                // 5. 画完后，弹出提示，并准备让用户猜测
+                await showCustomAlert("他画完啦！", "快在上面的对话框里猜猜看他画的是什么吧！");
+                
+                // 6. 将画作信息和“该你了”的指令，作为隐藏消息发给AI
+                const hiddenMessageForAi = {
+                    role: 'system',
+                    content: `[系统提示：你刚刚画完了一幅关于“${drawingData.topic}”的画。现在轮到用户猜测了，请根据TA的猜测给出回应。]`,
+                    timestamp: Date.now(),
+                    isHidden: true
+                };
+                const chat = state.chats[drawGuessState.partnerId];
+                chat.history.push(hiddenMessageForAi);
+                await db.chats.put(chat);
+
+        } catch (error) {
+                console.error("AI绘画流程出错:", error);
+                await showCustomAlert("出错了", `AI在绘画时遇到了问题: ${error.message}`);
+                // 即使出错，也保持画室界面，以便用户可以自己开始画
+                document.getElementById('draw-guess-studio').style.display = 'flex';
+                document.getElementById('draw-guess-welcome-text').style.display = 'none';
+            }
+        }
+
+
+/**
+ * 【AI决策模块 V2.0 | 强化指令】请求AI决定要画什么，并返回绘画路径
+ * @returns {Promise<object|null>} - 返回包含主题和绘画路径的对象，或在失败时返回null
+ */
+async function decideAiDrawing() {
+    const chat = state.chats[drawGuessState.partnerId];
+    const { proxyUrl, apiKey, model } = state.apiConfig;
+    
+    const mainChatHistory = chat.history.slice(-5).map(msg => `${msg.role === 'user' ? (chat.settings.myNickname || '我') : chat.name}: ${String(msg.content)}`).join('\n');
+    const drawGuessHistory = drawGuessState.history.map(msg => `${msg.sender}: ${msg.content}`).join('\n');
+
+    const systemPrompt = `
+# 你的任务
+你正在和用户玩“你画我猜”游戏，现在轮到你画画了。你的任务是：
+1.  根据你的人设、你们的对话历史，想一个【简单、可以用几笔画出来】的物体或概念。
+2.  将这个物体的绘画过程，描述成一个由坐标和颜色组成的JSON数据。
+
+# 核心规则
+1.  **主题简单**: 必须选择非常简单的、能用几笔线条就勾勒出轮廓的物体。例如：苹果、太阳、爱心、鱼、猫的简笔画轮廓、房子。
+2.  **绘画简洁**: 整个绘画过程的【总笔画数（paths数组的长度）不能超过15笔】。
+3.  **格式铁律 (最高优先级)**: 你的回复【必须且只能】是一个JSON对象，格式如下：
+    \`\`\`json
+    {
+      "topic": "你画的这个东西的中文名，例如：一只猫",
+      "paths": [
+        { "color": "#000000", "size": 3, "points": [[x1, y1], [x2, y2], [x3, y3]] },
+        { "color": "#ff3b30", "size": 5, "points": [[x4, y4], [x5, y5]] }
+      ]
+    }
+    \`\`\`
+    - **topic**: 字符串，这幅画的谜底。
+    - **paths**: 一个数组，代表一笔一划。每个元素都是一笔。
+    - **color**: 16进制颜色字符串。
+    - **size**: 笔画的粗细 (数字)。
+    - **points**: 一个由坐标 \`[x, y]\` 组成的数组，代表这一笔的路径。坐标范围 x 在 0-400, y 在 0-300。
+
+# 供你参考的上下文
+- **你的角色设定**: ${chat.settings.aiPersona}
+- **你们在主聊天里的对话**:
+${mainChatHistory || '无'}
+- **你们在这个游戏里的对话**:
+${drawGuessHistory || '无'}
+
+现在，请构思一个简单的物体，并生成它的绘画路径JSON。`;
+
+    const messagesForApi = [{ role: 'user', content: "轮到你画了，请决定要画什么并给出绘画数据。" }];
+    let isGemini = proxyUrl.includes('generativelanguage');
+    let geminiConfig = toGeminiRequestData(model, apiKey, systemPrompt, messagesForApi);
+    
+    const response = isGemini 
+        ? await fetch(geminiConfig.url, geminiConfig.data) 
+        : await fetch(`${proxyUrl}/v1/chat/completions`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
+            body: JSON.stringify({ model, messages: [{role: 'system', content: systemPrompt}, ...messagesForApi], temperature: 1.0, response_format: { "type": "json_object" } })
+        });
+    if (!response.ok) throw new Error(`API 错误: ${response.statusText}`);
+    const data = await response.json();
+    const aiResponseContent = getGeminiResponseText(data);
+    const cleanedJson = aiResponseContent.replace(/^```json\s*/, '').replace(/```$/, '');
+    return JSON.parse(cleanedJson);
+}
+
+        /**
+         * 【动画引擎 V3.0 | 修复出界BUG】在专用画板上一笔一划地播放绘画动画
+         * @param {Array} paths - 从AI获取的绘画路径数据
+         */
+        async function playAiDrawingAnimation(paths) {
+            const canvas = document.getElementById('ai-drawing-animation-canvas');
+            const userCanvas = document.getElementById('drawing-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = userCanvas.width;
+            canvas.height = userCanvas.height;
+            
+            canvas.style.display = 'block';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // --- 【【【这就是本次修复的核心！】】】 ---
+            // 1. 保存当前的绘图上下文状态
+            ctx.save();
+            
+            // 2. 创建一个和画板一样大小的矩形路径
+            ctx.beginPath();
+            ctx.rect(0, 0, canvas.width, canvas.height);
+            
+            // 3. 将这个矩形路径设置为“剪切区域”
+            //    这之后的所有绘制操作，都只会在这个矩形内部显示出来！
+            ctx.clip();
+            // --- 【【【修复代码结束】】】 ---
+
+            for (const path of paths) {
+                const points = path.points;
+                if (!points || points.length < 2) continue;
+                
+                ctx.strokeStyle = path.color || '#000000';
+                ctx.lineWidth = path.size || 3;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                
+                ctx.beginPath();
+                ctx.moveTo(points[0][0], points[0][1]);
+
+                for (let i = 1; i < points.length; i++) {
+                    ctx.lineTo(points[i][0], points[i][1]);
+                    ctx.stroke();
+                    await new Promise(resolve => setTimeout(resolve, 50)); 
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, Math.random() * 500 + 200));
+            }
+            
+            // 在所有绘制结束后，恢复绘图上下文状态，移除剪切区域
+            ctx.restore();
+
+            // 将最终的画作复制到用户画板上，并隐藏动画层
+            drawingBoard.ctx.drawImage(canvas, 0, 0);
+            drawingBoard.saveState();
+            canvas.style.display = 'none';
+        }
+
+
+
+// ▼▼▼ 【全新V4.0】你画我猜 - 绘画引擎核心代码 ▼▼▼
+
+const drawingBoard = {
+    canvas: null,
+    ctx: null,
+    isDrawing: false,
+    lastX: 0,
+    lastY: 0,
+    history: [], // 用于存储绘画步骤以实现撤回
+    
+    // 当前工具状态
+    tool: 'pen', // 'pen', 'eraser'
+    color: '#000000',
+    brushSize: 5,
+    penType: 'pen', // 'pen', 'pencil', 'watercolor', 'brush', 'calligraphy'
+
+    // 初始化画板
+    init(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.canvas.width = this.canvas.offsetWidth;
+        this.canvas.height = this.canvas.offsetHeight;
+        
+        // 清空历史记录和画布
+        this.history = [];
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.saveState(); // 保存一个空白的初始状态
+
+        this.addEventListeners();
+    },
+
+    // 绑定所有事件
+    addEventListeners() {
+        // 使用具名函数，方便后续移除
+        this.handleDown = this.handleDown.bind(this);
+        this.handleMove = this.handleMove.bind(this);
+        this.handleUp = this.handleUp.bind(this);
+
+        // PC端鼠标事件
+        this.canvas.addEventListener('mousedown', this.handleDown);
+        this.canvas.addEventListener('mousemove', this.handleMove);
+        this.canvas.addEventListener('mouseup', this.handleUp);
+        this.canvas.addEventListener('mouseleave', this.handleUp); // 鼠标移出也算结束
+
+        // 移动端触摸事件
+        this.canvas.addEventListener('touchstart', this.handleDown, { passive: false });
+        this.canvas.addEventListener('touchmove', this.handleMove, { passive: false });
+        this.canvas.addEventListener('touchend', this.handleUp);
+    },
+
+    // 获取事件在Canvas上的坐标
+    getCoords(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
+    },
+
+    // 处理按下事件 (开始绘画)
+    handleDown(e) {
+        e.preventDefault();
+        this.isDrawing = true;
+        const { x, y } = this.getCoords(e);
+        [this.lastX, this.lastY] = [x, y];
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, y);
+    },
+
+    // 处理移动事件 (绘画过程)
+    handleMove(e) {
+        if (!this.isDrawing) return;
+        e.preventDefault();
+        const { x, y } = this.getCoords(e);
+        this.drawLine(this.lastX, this.lastY, x, y);
+        [this.lastX, this.lastY] = [x, y];
+    },
+
+    // 处理松开事件 (结束绘画)
+    handleUp() {
+        if (!this.isDrawing) return;
+        this.isDrawing = false;
+        this.ctx.closePath();
+        this.saveState(); // 保存这一笔画
+    },
+
+    // 绘制线条
+    drawLine(x1, y1, x2, y2) {
+        this.ctx.beginPath();
+
+        if (this.tool === 'eraser') {
+            this.ctx.globalCompositeOperation = 'destination-out';
+            this.ctx.strokeStyle = 'rgba(0,0,0,1)';
+        } else {
+            this.ctx.globalCompositeOperation = 'source-over';
+            this.ctx.strokeStyle = this.color;
+        }
+
+        this.ctx.lineWidth = this.brushSize;
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+        
+        // 根据不同笔刷类型设置不同效果
+        switch(this.penType) {
+            case 'pencil':
+                this.ctx.globalAlpha = 0.4; // 铅笔颜色淡一点
+                this.ctx.lineWidth = this.brushSize * 0.5; // 铅笔细一点
+                break;
+            case 'watercolor':
+                this.ctx.globalAlpha = 0.2; // 水彩更透明
+                break;
+            case 'brush':
+                this.ctx.globalAlpha = 0.8;
+                // 模拟压力感应
+                this.ctx.lineWidth = Math.random() * (this.brushSize - 2) + 2;
+                break;
+            case 'calligraphy':
+                this.ctx.globalAlpha = 1;
+                 // 模拟毛笔的粗细变化
+                const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                this.ctx.lineWidth = Math.max(this.brushSize - distance / 2, 1);
+                break;
+            case 'pen':
+            default:
+                 this.ctx.globalAlpha = 1;
+                break;
+        }
+
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.stroke();
+        this.ctx.globalAlpha = 1.0; // 每次画完恢复透明度
+    },
+
+    // 保存当前画布状态到历史记录
+    saveState() {
+        if (this.history.length >= 20) { // 最多保存20步
+            this.history.shift();
+        }
+        this.history.push(this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height));
+    },
+
+    // 撤回上一步
+    undo() {
+        if (this.history.length > 1) {
+            this.history.pop(); // 移除当前状态
+            this.ctx.putImageData(this.history[this.history.length - 1], 0, 0); // 恢复上一个状态
+        } else {
+            // 如果只剩初始状态，则清空画布
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.history = [];
+            this.saveState();
+        }
+    },
+    
+    // 切换工具
+    setTool(tool) {
+        this.tool = tool;
+        document.getElementById('pen-settings').style.display = tool === 'pen' ? 'block' : 'none';
+    },
+
+    // 切换颜色
+    setColor(color) {
+        this.color = color;
+    },
+
+    // 切换大小
+    setSize(size) {
+        this.brushSize = size;
+    },
+
+    // 切换画笔类型
+    setPenType(type) {
+        this.penType = type;
+    }
+};
+
+// ▲▲▲ 新增JS代码结束 ▲▲▲
+
+// ▼▼▼ 【全新V4.0】你画我猜 - 完整交互功能核心代码 ▼▼▼
+
+let drawGuessState = {
+    isActive: false,
+    partnerId: null,
+    history: [], // 存储格式: { sender: '名字', content: '内容', timestamp: Date.now() }
+    isAiResponding: false,
+    // 【新增】用于管理弹窗的状态
+    messageManager: {
+        isOpen: false,
+        mode: null, // 'edit' 或 'delete'
+        selectedTimestamps: new Set()
+    }
+};
+
+/**
+ * 【总入口 V4.0 | 状态重置】打开你画我猜App
+ */
+function openDrawAndGuess() {
+    // 1. 重置所有UI到初始状态
+    document.getElementById('draw-guess-interactive-area').style.display = 'none';
+    document.getElementById('draw-guess-welcome-text').style.display = 'block';
+    document.getElementById('draw-guess-studio').style.display = 'none';
+    document.getElementById('draw-guess-bottom-bar').style.display = 'none';
+    document.getElementById('start-draw-guess-game-btn').textContent = '开始游戏';
+    document.getElementById('draw-guess-dialogue-box').textContent = '';
+    document.getElementById('draw-guess-input').value = '';
+    document.getElementById('draw-guess-action-bar').style.display = 'none';
+
+    // 2. 重置所有游戏状态
+    drawGuessState = {
+        isActive: false,
+        partnerId: null,
+        history: [],
+        isAiResponding: false,
+        messageManager: { isOpen: false, mode: null, selectedTimestamps: new Set() }
+    };
+    
+    showScreen('draw-guess-screen');
+}
+
+/**
+ * 【V3.0 | AI主动开场】当用户选择角色后，更新UI并准备游戏
+ */
+async function setupDrawAndGuessSession(characterId) {
+    if (!characterId) return;
+
+    drawGuessState.isActive = true;
+    drawGuessState.partnerId = characterId;
+    drawGuessState.history = [];
+
+    const chat = state.chats[characterId];
+    if (!chat) return;
+
+    const userAvatar = chat.settings.myAvatar || defaultAvatar;
+    const userNickname = chat.settings.myNickname || '我';
+    const charAvatar = chat.settings.aiAvatar || defaultAvatar;
+    const charNickname = chat.name;
+
+    document.getElementById('draw-guess-user-avatar').src = userAvatar;
+    document.getElementById('draw-guess-user-name').textContent = userNickname;
+    document.getElementById('draw-guess-char-avatar').src = charAvatar;
+    document.getElementById('draw-guess-char-name').textContent = charNickname;
+    
+    document.getElementById('draw-guess-interactive-area').style.display = 'flex';
+    document.getElementById('draw-guess-welcome-text').style.display = 'none';
+    document.getElementById('draw-guess-bottom-bar').style.display = 'block';
+
+    showScreen('draw-guess-screen');
+
+    await triggerDrawAndGuessAiResponse(true);
+            // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+    document.getElementById('draw-guess-action-bar').style.display = 'flex';
+            // ▲▲▲ 新增代码结束 ▲▲▲
+}
+
+/**
+ * 【V2.0 | 真实发送】用户发送消息
+ */
+function sendDrawGuessMessage() {
+    const input = document.getElementById('draw-guess-input');
+    const content = input.value.trim();
+    if (!content || !drawGuessState.partnerId) return;
+
+    const chat = state.chats[drawGuessState.partnerId];
+    if (!chat) return;
+
+    const userMessage = {
+        sender: chat.settings.myNickname || '我',
+        content: content,
+        timestamp: Date.now()
+    };
+
+    drawGuessState.history.push(userMessage);
+    appendDrawGuessMessage(userMessage);
+
+    input.value = '';
+    handleDrawGuessInput(); // 输入框清空后，自动隐藏操作栏
+}
+
+
+        /**
+         * 【核心 V2.0 | 支持图片识别】触发AI在你画我猜游戏中的响应
+         * @param {boolean} [isInitial=false] - 是否是游戏开始的第一次触发
+         * @param {string|null} [imageBase64=null] - 用户画作的Base64数据
+         */
+        async function triggerDrawAndGuessAiResponse(isInitial = false, imageBase64 = null) {
+            if (drawGuessState.isAiResponding || !drawGuessState.isActive || !drawGuessState.partnerId) return;
+
+            drawGuessState.isAiResponding = true;
+            
+            const dialogueBox = document.getElementById('draw-guess-dialogue-box');
+            if (dialogueBox.childElementCount === 0) {
+                dialogueBox.setAttribute('data-placeholder', '对方正在思考...');
+            }
+
+            try {
+                const { proxyUrl, apiKey, model } = state.apiConfig;
+                if (!proxyUrl || !apiKey || !model) throw new Error('API未配置');
+
+                const chat = state.chats[drawGuessState.partnerId];
+                const userNickname = chat.settings.myNickname || '我';
+                
+                // --- 准备所有上下文信息 (与之前基本一致) ---
+                const mainChatHistory = chat.history.slice(-10).map(msg => `${msg.role === 'user' ? userNickname : chat.name}: ${String(msg.content)}`).join('\n');
+                const worldBookContext = (chat.settings.linkedWorldBookIds || []).map(bookId => state.worldBooks.find(wb => wb.id === bookId)).filter(Boolean).map(book => `\n## 世界书《${book.name}》设定:\n${book.content.filter(e => e.enabled).map(e => `- ${e.content}`).join('\n')}`).join('');
+                const drawGuessHistory = drawGuessState.history.map(msg => `${msg.sender}: ${msg.content}`).join('\n');
+                
+                // 【核心修改1】画板内容描述现在是动态的
+                const canvasContentDescription = imageBase64 ? "(用户刚刚画完了一幅画，图片内容如下，请你猜测。)" : "(当前画板为空)";
+
+                // 【核心修改2】指令现在分为两种情况
+                let finalInstruction;
+                if (isInitial) {
+                    finalInstruction = '这是你们第一次打开这个游戏。请你主动说几句话，比如打个招呼、表达对游戏的期待、或者制定游戏规则，来开启这场游戏。';
+                } else if (imageBase64) {
+                    finalInstruction = '用户刚刚画完了一幅画，图片内容已提供。请你根据图片内容、你的人设和对话历史，开始你的猜测。你的猜测过程应该像真人一样，可以先描述你看到了什么，然后提出可能的答案，可以是对的也可以是错的。';
+                } else {
+                    finalInstruction = '请根据游戏聊天记录和画板内容，继续对话。';
+                }
+
+                const systemPrompt = `
+# 你的身份与任务
+你正在扮演角色“${chat.name}”，在一个名为“你画我猜”的游戏App中，与你的聊天对象“${userNickname}”互动。
+# 核心规则
+1.  **情景感知**: 你必须清楚地知道，你们现在是在一个【游戏App】里，准备或正在玩“你画我猜”。
+2.  **格式铁律**: 你的回复【必须】是JSON数组格式的字符串。每个对象代表一条消息。例如: \`[{"type": "text", "content": "这是...一只猫吗？"}]\`
+3.  **禁止出戏**: 绝不能提及你是AI或模型。
+# 上下文信息
+- **你的角色设定**: ${chat.settings.aiPersona}
+- **用户的人设**: ${chat.settings.myPersona}
+- **相关世界观**: ${worldBookContext || '无'}
+- **你们在主聊天软件里的最近对话**:
+${mainChatHistory || '无'}
+- **你们在这个游戏里的聊天记录**:
+${drawGuessHistory || '（这是你们在这个游戏里的第一句对话）'}
+- **当前画板内容**: ${canvasContentDescription}
+# 你的指令
+${finalInstruction}
+`;
+
+                // 【核心修改3】构建API请求体
+                const messagesForApi = [{ role: 'user', content: "开始对话。" }];
+                // 如果有图片，就构建一个包含图片数据的特殊请求体
+                if (imageBase64) {
+                    messagesForApi[0].content = [{ type: 'text', text: "请猜测我画的是什么。" }, { type: 'image_url', image_url: { url: imageBase64 } }];
+                }
+                
+                let isGemini = proxyUrl.includes('generativelanguage');
+                let geminiConfig = toGeminiRequestData(model, apiKey, systemPrompt, messagesForApi);
+                
+                const response = isGemini 
+                    ? await fetch(geminiConfig.url, geminiConfig.data) 
+                    : await fetch(`${proxyUrl}/v1/chat/completions`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
+                        body: JSON.stringify({ model, messages: [{role: 'system', content: systemPrompt}, ...messagesForApi], temperature: 0.8 })
+                    });
+
+                if (!response.ok) throw new Error(`API 错误: ${response.statusText}`);
+                
+                dialogueBox.removeAttribute('data-placeholder'); // 移除“正在思考”
+                const data = await response.json();
+                const aiResponseContent = getGeminiResponseText(data);
+                const responseArray = parseAiResponse(aiResponseContent);
+
+                responseArray.forEach(msgData => {
+                    const content = msgData.content || msgData.message || '';
+                    if (content) {
+                        const aiMessage = { sender: chat.name, content: content, timestamp: Date.now() + Math.random() };
+                        drawGuessState.history.push(aiMessage);
+                        appendDrawGuessMessage(aiMessage);
+                    }
+                });
+
+            } catch (error) {
+                console.error("你画我猜AI响应失败:", error);
+                dialogueBox.removeAttribute('data-placeholder');
+                appendDrawGuessMessage({ sender: '系统', content: `[错误: ${error.message}]`, timestamp: Date.now() });
+            } finally {
+                drawGuessState.isAiResponding = false;
+            }
+        }
+
+/**
+ * 【辅助V2.0】在对话框中追加一条消息
+ * @param {object} msg - 消息对象 { sender, content }
+ * @returns {HTMLElement} - 返回创建的 <p> 元素，方便后续操作
+ */
+function appendDrawGuessMessage(msg) {
+    const dialogueBox = document.getElementById('draw-guess-dialogue-box');
+    const p = document.createElement('p');
+    p.innerHTML = `<strong>${msg.sender}:</strong> ${msg.content}`;
+    p.dataset.timestamp = msg.timestamp;
+    dialogueBox.appendChild(p);
+    dialogueBox.scrollTop = dialogueBox.scrollHeight;
+    return p; // 返回DOM元素
+}
+
+/**
+ * 【全新】重说功能：清除AI上一轮的回复
+ */
+async function handleDrawGuessResay() {
+    const lastAiMsgIndex = drawGuessState.history.findLastIndex(msg => msg.sender !== (state.chats[drawGuessState.partnerId]?.settings.myNickname || '我'));
+    if (lastAiMsgIndex === -1) {
+        alert("还没有AI的回复可供“重说”。");
+        return;
+    }
+    // 找到第一个属于AI上一轮回复的消息
+    let firstAiMsgIndex = lastAiMsgIndex;
+    while(firstAiMsgIndex > 0 && drawGuessState.history[firstAiMsgIndex - 1].sender !== (state.chats[drawGuessState.partnerId]?.settings.myNickname || '我')) {
+        firstAiMsgIndex--;
+    }
+    
+    // 删除从第一个AI回复到结尾的所有消息
+    drawGuessState.history.splice(firstAiMsgIndex);
+    
+    // 重新渲染对话框
+    const dialogueBox = document.getElementById('draw-guess-dialogue-box');
+    dialogueBox.innerHTML = '';
+    drawGuessState.history.forEach(appendDrawGuessMessage);
+    
+    // 重新触发AI响应
+    await triggerDrawAndGuessAiResponse();
+}
+
+/**
+ * 【全新】打开消息管理弹窗
+ * @param {'edit'|'delete'} mode - 要执行的操作模式
+ */
+function openMessageManager(mode) {
+    drawGuessState.messageManager.mode = mode;
+    drawGuessState.messageManager.selectedTimestamps.clear();
+
+    const modal = document.getElementById('draw-guess-message-manager-modal');
+    const titleEl = document.getElementById('draw-guess-manager-title');
+    const confirmBtn = document.getElementById('draw-guess-manager-confirm-btn');
+    const listEl = document.getElementById('draw-guess-manager-list');
+    listEl.innerHTML = '';
+
+    titleEl.textContent = mode === 'edit' ? '选择要编辑的消息' : '选择要删除的消息';
+    confirmBtn.textContent = mode === 'edit' ? '开始编辑' : '确认删除';
+    confirmBtn.classList.toggle('btn-danger', mode === 'delete');
+
+    // 渲染消息列表
+    drawGuessState.history.forEach(msg => {
+        const item = document.createElement('div');
+        item.className = 'contact-picker-item'; // 复用样式
+        item.dataset.timestamp = msg.timestamp;
+        item.innerHTML = `
+            <div class="checkbox"></div>
+            <div class="info" style="display: block;">
+                <p style="margin:0; font-weight:500;">${msg.sender}:</p>
+                <p style="margin:0; color: #8a8a8a;">${msg.content.substring(0, 30)}...</p>
+            </div>
+        `;
+        listEl.appendChild(item);
+    });
+    
+    modal.classList.add('visible');
+}
+
+/**
+ * 【全新】处理消息管理弹窗中的确认操作
+ */
+        async function handleMessageManagerConfirm() {
+            const { mode, selectedTimestamps } = drawGuessState.messageManager;
+            if (selectedTimestamps.size === 0) {
+                alert("请至少选择一条消息。");
+                return;
+            }
+
+            if (mode === 'delete') {
+                drawGuessState.history = drawGuessState.history.filter(m => !selectedTimestamps.has(m.timestamp));
+                // 【核心修复】：直接重绘，不再添加任何系统提示
+                const dialogueBox = document.getElementById('draw-guess-dialogue-box');
+                dialogueBox.innerHTML = '';
+                drawGuessState.history.forEach(appendDrawGuessMessage);
+            } else if (mode === 'edit') {
+                if (selectedTimestamps.size > 1) {
+                    alert("编辑模式下只能选择一条消息。");
+                    return;
+                }
+                const timestampToEdit = [...selectedTimestamps][0];
+                const msgIndex = drawGuessState.history.findIndex(m => m.timestamp === timestampToEdit);
+                if (msgIndex > -1) {
+                    const currentContent = drawGuessState.history[msgIndex].content;
+                    const newContent = await showCustomPrompt('编辑消息', '', currentContent, 'textarea');
+                    if (newContent !== null) {
+                        drawGuessState.history[msgIndex].content = newContent.trim();
+                        // 【核心修复】：直接重绘，不添加任何系统提示
+                        const dialogueBox = document.getElementById('draw-guess-dialogue-box');
+                        dialogueBox.innerHTML = '';
+                        drawGuessState.history.forEach(appendDrawGuessMessage);
+                    }
+                }
+            }
+            
+            // 操作完成后关闭弹窗
+            document.getElementById('draw-guess-message-manager-modal').classList.remove('visible');
+        }
 
               // ===================================================================
                 // 4. 初始化函数 init()
@@ -39589,7 +41286,9 @@ setupCharPlayerControls();
     window.openTutorialScreen = openTutorialScreen;
         // 【全新】阅读器App事件绑定
         window.openReaderBookshelf = openReaderBookshelf;
-
+        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+        window.openDrawAndGuess = openDrawAndGuess;
+        // ▲▲▲ 新增代码结束 ▲▲▲
         document.getElementById('reader-manage-btn').addEventListener('click', () => {
             isReaderManagementMode = !isReaderManagementMode;
             updateReaderManagementUI();
@@ -39729,6 +41428,344 @@ window.switchToCharHomeScreen = switchToCharHomeScreen;
                     // ==========================================================
                     // --- 各种事件监听器 ---
                     // ==========================================================
+        // ▼▼▼ 【全新】你画我猜 - 临时信息修改功能事件绑定 ▼▼▼
+
+        const interactiveArea = document.getElementById('draw-guess-interactive-area');
+
+        // 使用事件委托，监听整个交互区域的点击事件
+        interactiveArea.addEventListener('click', async (e) => {
+            const target = e.target;
+            
+            // --- 1. 处理头像更换 ---
+            // 检查点击的是否是头像图片
+            if (target.classList.contains('player-avatar')) {
+                const isUserAvatar = target.id === 'draw-guess-user-avatar';
+                
+                // a. 弹出选项，让用户选择上传方式
+                const choice = await showChoiceModal("更换头像", [
+                    { text: '📁 从本地上传', value: 'local' },
+                    { text: '🌐 使用网络URL', value: 'url' }
+                ]);
+
+                let newAvatarUrl = null;
+
+                // b. 根据选择获取新的图片URL
+                if (choice === 'local') {
+                    newAvatarUrl = await uploadImageLocally();
+                } else if (choice === 'url') {
+                    newAvatarUrl = await showCustomPrompt("更换头像", "请输入新的图片URL：", "", "url");
+                }
+
+                // c. 如果获取到了新URL，就直接更新界面上的<img>标签的src
+                if (newAvatarUrl && newAvatarUrl.trim()) {
+                    target.src = newAvatarUrl.trim();
+                    // 【重要】这里绝对不执行任何数据库保存操作！
+                } else if (newAvatarUrl !== null) {
+                    alert("请输入一个有效的URL或选择一个本地文件！");
+                }
+                
+            } 
+            // --- 2. 处理昵称更改 ---
+            // 检查点击的是否是昵称的<span>标签
+            else if (target.classList.contains('player-name')) {
+                const isUserName = target.id === 'draw-guess-user-name';
+                const currentName = target.textContent;
+                const promptTitle = isUserName ? "修改你的昵称" : "修改对方的昵称";
+
+                // a. 弹出输入框，让用户输入新昵称
+                const newName = await showCustomPrompt(promptTitle, "请输入新的昵称（仅本次游戏生效）：", currentName);
+
+                // b. 如果用户输入了新昵称，就直接更新界面上的<span>标签的文本
+                if (newName !== null && newName.trim()) {
+                    target.textContent = newName.trim();
+                    // 【重要】这里同样不执行任何数据库保存操作！
+                } else if (newName !== null) {
+                    alert("昵称不能为空！");
+                }
+            }
+        });
+
+        // ▲▲▲ 新增事件绑定结束 ▲▲▲
+
+
+        // ▼▼▼ 【全新V4.0】你画我猜App事件监听器 ▼▼▼
+        
+        // 1. 绑定右上角“选择”按钮 (逻辑不变)
+        document.getElementById('draw-guess-select-char-btn').addEventListener('click', () => {
+            contactPickerContext = 'draw-guess'; 
+            selectedContacts.clear();
+            const contactPickerScreen = document.getElementById('contact-picker-screen');
+            const confirmBtn = document.getElementById('confirm-contact-picker-btn');
+            const listEl = document.getElementById('contact-picker-list');
+            listEl.innerHTML = '';
+            Object.values(state.chats).filter(c => !c.isGroup).forEach(contact => {
+                const item = document.createElement('div');
+                item.className = 'contact-picker-item';
+                item.dataset.contactId = contact.id;
+                item.innerHTML = `<div class="checkbox"></div><img src="${contact.settings.aiAvatar || defaultAvatar}" class="avatar"><span class="name">${contact.name}</span>`;
+                listEl.appendChild(item);
+            });
+            const newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+            newConfirmBtn.addEventListener('click', () => {
+                if (selectedContacts.size !== 1) { alert("请选择一个角色进行游戏。"); return; }
+                const selectedId = [...selectedContacts][0];
+                setupDrawAndGuessSession(selectedId);
+            });
+            updateContactPickerConfirmButton();
+            showScreen('contact-picker-screen');
+        });
+
+
+        
+        // 3. 【核心修改】绑定“发送”按钮和回车键，实现真正的消息发送
+        document.getElementById('draw-guess-send-btn').addEventListener('click', sendDrawGuessMessage);
+        document.getElementById('draw-guess-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendDrawGuessMessage();
+            }
+        });
+
+        // ▼▼▼ 【全新 V5.0 | 完整AI猜图逻辑】 ▼▼▼
+
+        /**
+         * 【核心】处理用户点击“我画好了”的逻辑
+         */
+        async function handleDrawingFinished() {
+            if (!drawingBoard.canvas || drawGuessState.isAiResponding) return;
+
+            // 1. 从画板获取图片数据 (Base64格式)
+            const drawingBase64 = drawingBoard.canvas.toDataURL('image/png');
+
+            // 2. 为了防止发送空白画板，做一个简单的检查
+            // 创建一个临时canvas来检查是否为空白
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = drawingBoard.canvas.width;
+            tempCanvas.height = drawingBoard.canvas.height;
+            tempCtx.fillStyle = '#FFFFFF'; // 用白色填充
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            // 如果用户画的内容和空白画板一样，则认为没画
+            if (drawingBoard.canvas.toDataURL() === tempCanvas.toDataURL()) {
+                alert("画板上还没有内容哦，快来画点什么吧！");
+                return;
+            }
+            // --- 【【【核心修改就在这里！】】】 ---
+            const chat = state.chats[drawGuessState.partnerId];
+            if (chat) {
+                // 1. 在触发AI之前，先弹出提示框
+                await showCustomAlert("提交成功", `已经把你的画作提交给“${chat.name}”了！\nTA正在努力猜测中...`);
+            }
+            // --- 【【【修改结束】】】 ---
+            // 3. 【重要】不将图片消息存入历史记录，也不在UI上显示
+            // 而是直接触发AI响应，并将图片数据作为额外上下文传递
+            await triggerDrawAndGuessAiResponse(false, drawingBase64);
+
+            // 4. 清空画板并重置按钮状态，准备下一轮
+            drawingBoard.ctx.clearRect(0, 0, drawingBoard.canvas.width, drawingBoard.canvas.height);
+            drawingBoard.history = [];
+            drawingBoard.saveState();
+            document.getElementById('start-draw-guess-game-btn').textContent = '开始游戏';
+            document.getElementById('draw-guess-studio').style.display = 'none';
+            document.getElementById('draw-guess-welcome-text').style.display = 'block';
+            document.getElementById('draw-guess-welcome-text').textContent = '对方正在猜...';
+        }
+
+        // 绑定底部“开始游戏”/“我画好了”按钮的事件
+        document.getElementById('start-draw-guess-game-btn').addEventListener('click', (e) => {
+            const btn = e.target;
+            if (btn.textContent === '开始游戏') {
+                document.getElementById('draw-guess-welcome-text').style.display = 'none';
+                document.getElementById('draw-guess-studio').style.display = 'flex';
+                drawingBoard.init('drawing-canvas');
+                document.getElementById('drawing-canvas').classList.add('active');
+                btn.textContent = '我画好了';
+            } else {
+                handleDrawingFinished(); // 调用我们新的核心处理函数
+            }
+        });
+
+        
+        // 5. 【V4.0 | 真实工具切换】为左侧工具栏绑定事件
+        const leftTools = document.querySelector('.drawing-tools.left');
+        leftTools.addEventListener('click', (e) => {
+            const target = e.target;
+
+            // 切换颜色
+            if (target.classList.contains('color-dot')) {
+                leftTools.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
+                target.classList.add('active');
+                drawingBoard.setColor(target.dataset.color);
+                return;
+            }
+            
+            // 切换工具（笔/橡皮/撤回）
+            const toolBtn = target.closest('.tool-btn');
+            if (toolBtn) {
+                const tool = toolBtn.dataset.tool;
+                if (tool === 'undo') {
+                    drawingBoard.undo();
+                } else {
+                    leftTools.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+                    toolBtn.classList.add('active');
+                    drawingBoard.setTool(tool);
+                    document.getElementById('brush-settings').style.display = 'block';
+                }
+            }
+        });
+        
+        // 6. 【V4.0 | 笔刷设置】为笔刷设置区域绑定事件
+        const brushSettings = document.getElementById('brush-settings');
+        const brushSizeSlider = document.getElementById('brush-size-slider');
+        const brushSizeInput = document.getElementById('brush-size-input');
+        const penTypeSelect = document.getElementById('pen-type-select');
+
+        brushSizeSlider.addEventListener('input', () => {
+            const size = brushSizeSlider.value;
+            brushSizeInput.value = size;
+            drawingBoard.setSize(size);
+        });
+        brushSizeInput.addEventListener('input', () => {
+            const size = parseInt(brushSizeInput.value) || 1;
+            brushSizeSlider.value = Math.min(Math.max(size, 1), 50); // 限制在滑块范围内
+            drawingBoard.setSize(size);
+        });
+        penTypeSelect.addEventListener('change', () => {
+            drawingBoard.setPenType(penTypeSelect.value);
+        });
+        
+        // 7. 【V5.0 | AI绘画】为右侧游戏控制按钮绑定事件
+        document.getElementById('draw-guess-get-topic-btn').addEventListener('click', () => alert('AI出题功能开发中...'));
+        document.getElementById('draw-guess-ai-turn-btn').addEventListener('click', handleAiTurnToDraw);
+
+        
+        // 5. 【核心修改】为操作栏的按钮绑定全新的、真正的功能
+        document.getElementById('draw-guess-action-bar').addEventListener('click', (e) => {
+            if(e.target.classList.contains('action-bar-btn')) {
+                const action = e.target.dataset.action;
+                switch(action) {
+                    case 'reply':
+                        triggerDrawAndGuessAiResponse();
+                        break;
+                    case 'resay':
+                        handleDrawGuessResay();
+                        break;
+                    case 'edit':
+                        openMessageManager('edit');
+                        break;
+                    case 'delete':
+                        openMessageManager('delete');
+                        break;
+                }
+            }
+        });
+
+        // 6. 【全新】为消息管理弹窗绑定事件
+        document.getElementById('draw-guess-manager-cancel-btn').addEventListener('click', () => {
+            document.getElementById('draw-guess-message-manager-modal').classList.remove('visible');
+        });
+        document.getElementById('draw-guess-manager-confirm-btn').addEventListener('click', handleMessageManagerConfirm);
+        document.getElementById('draw-guess-manager-select-all').addEventListener('change', (e) => {
+            const isChecked = e.target.checked;
+            document.querySelectorAll('#draw-guess-manager-list .contact-picker-item').forEach(item => {
+                item.classList.toggle('selected', isChecked);
+                const timestamp = parseFloat(item.dataset.timestamp);
+                if (isChecked) {
+                    drawGuessState.messageManager.selectedTimestamps.add(timestamp);
+                } else {
+                    drawGuessState.messageManager.selectedTimestamps.delete(timestamp);
+                }
+            });
+        });
+        document.getElementById('draw-guess-manager-list').addEventListener('click', (e) => {
+            const item = e.target.closest('.contact-picker-item');
+            if (item) {
+                const timestamp = parseFloat(item.dataset.timestamp);
+                if (drawGuessState.messageManager.mode === 'edit') {
+                    // 编辑模式下是单选
+                    document.querySelectorAll('#draw-guess-manager-list .contact-picker-item.selected').forEach(el => el.classList.remove('selected'));
+                    drawGuessState.messageManager.selectedTimestamps.clear();
+                }
+                item.classList.toggle('selected');
+                if (drawGuessState.messageManager.selectedTimestamps.has(timestamp)) {
+                    drawGuessState.messageManager.selectedTimestamps.delete(timestamp);
+                } else {
+                    drawGuessState.messageManager.selectedTimestamps.add(timestamp);
+                }
+            }
+        });
+
+        // ▲▲▲ 新增事件绑定结束 ▲▲▲
+
+
+        // ▼▼▼ 【全新】聊天头像形状设置事件绑定 ▼▼▼
+        const shapeSettingsGroup = document.getElementById('avatar-shape-settings-group');
+        const shapeCssInput = document.getElementById('avatar-shape-css-input');
+        
+        // 1. 为预设按钮绑定事件委托
+        shapeSettingsGroup.addEventListener('click', (e) => {
+            const btn = e.target.closest('.shape-preset-btn');
+            if (btn && btn.dataset.shapeCss) {
+                shapeCssInput.value = btn.dataset.shapeCss;
+            }
+        });
+        
+        // 2. 为“应用形状”按钮绑定事件
+        document.getElementById('apply-avatar-shape-btn').addEventListener('click', handleApplyAvatarShape);
+        
+        // 3. 为已保存列表的删除按钮绑定事件委托
+        document.getElementById('saved-avatar-shapes-list').addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('.delete-shape-btn');
+            if (deleteBtn && deleteBtn.dataset.shapeId) {
+                deleteAvatarShapeRule(deleteBtn.dataset.shapeId);
+            }
+        });
+        // ▲▲▲ 新增事件绑定结束 ▲▲▲
+
+        // ▼▼▼ 【全新】聊天记录搜索功能事件绑定 ▼▼▼
+        
+        // 打开搜索页面按钮
+        document.getElementById('search-chat-history-btn').addEventListener('click', openChatHistorySearch);
+
+        // 搜索页面返回按钮
+        document.getElementById('search-back-btn').addEventListener('click', () => {
+            showScreen('chat-settings-screen'); // 返回到聊天设置页面
+        });
+
+        // 搜索输入框的事件
+        const chatSearchInput = document.getElementById('chat-search-input');
+        const chatSearchClearBtn = document.getElementById('chat-search-clear-btn');
+        let searchDebounceTimer;
+
+        chatSearchInput.addEventListener('input', () => {
+            clearTimeout(searchDebounceTimer);
+            chatSearchClearBtn.style.display = chatSearchInput.value ? 'block' : 'none';
+            // 使用防抖技术，停止输入500毫秒后才执行搜索，避免频繁API调用
+            searchDebounceTimer = setTimeout(executeChatSearch, 500);
+        });
+
+        // 搜索框的清除按钮
+        chatSearchClearBtn.addEventListener('click', () => {
+            chatSearchInput.value = '';
+            chatSearchClearBtn.style.display = 'none';
+            document.getElementById('chat-search-results').innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">输入关键词搜索聊天记录</p>';
+            chatSearchInput.focus();
+        });
+
+        // 搜索结果列表的点击跳转事件 (使用事件委托)
+        document.getElementById('chat-search-results').addEventListener('click', (e) => {
+            const item = e.target.closest('.search-result-item');
+            if (item && item.dataset.timestamp) {
+                const timestamp = parseInt(item.dataset.timestamp);
+                if (!isNaN(timestamp)) {
+                    jumpToMessage(timestamp);
+                }
+            }
+        });
+
+        // ▲▲▲ 新增事件绑定结束 ▲▲▲
+
 // ▼▼▼ 【全新】“名人开关”交互事件绑定 ▼▼▼
 document.getElementById('forum-user-celebrity-toggle').addEventListener('change', (e) => {
     const personaWrapper = document.getElementById('forum-user-persona-wrapper');
@@ -41535,7 +43572,10 @@ document.getElementById('delete-database-btn').addEventListener('click', deleteC
                     document.getElementById('import-data-input').addEventListener('change', e => importBackup(e.target.files[0]));
                     document.getElementById('import-card-input').addEventListener('change', handleCardImport);
                     document.getElementById('back-to-list-btn').addEventListener('click', () => { 
-
+            // ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼
+            const shapeStyleTag = document.getElementById('chat-avatar-shapes-style');
+            if (shapeStyleTag) shapeStyleTag.innerHTML = ''; // 清除头像形状样式
+            // ▲▲▲ 新增代码结束 ▲▲▲
             // ▼▼▼ 修改这两行 ▼▼▼
             applyScopedCss('', '#chat-messages', 'custom-bubble-style'); // 清除真实聊天界面的自定义样式
             applyScopedCss('', '#settings-preview-area', 'preview-bubble-style'); // 清除预览区的自定义样式
@@ -42210,10 +44250,16 @@ renderCustomBubbleColorSettings(chat); // 【核心新增】渲染自定义颜�
 // ▲▲▲ 粘贴结束 ▲▲▲
             document.getElementById('auto-memory-toggle').checked = chat.settings.enableAutoMemory || false;
             document.getElementById('couple-avatar-awareness-toggle').checked = chat.settings.coupleAvatarAwareness || false;
-
+            // ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼
+            document.getElementById('ai-image-gen-toggle').checked = chat.settings.enableAiImageGen || false;
+            // ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼
+            document.getElementById('video-memory-mount-toggle').checked = chat.settings.mountVideoMemory || false;
+            // ▲▲▲ 新增代码结束 ▲▲▲
+            // ▲▲▲ 新增代码结束 ▲▲▲
             document.getElementById('auto-memory-interval').value = chat.settings.autoMemoryInterval || 20;
             document.getElementById('show-timestamp-toggle').checked = chat.settings.showTimestamps;
-
+            renderSavedAvatarShapes(); // 渲染已保存的形状列表
+            applyAvatarShapes(); // 确保预览区能看到效果
             showScreen('chat-settings-screen');
         });
         // ▲▲▲ 替换结束 ▲▲▲
@@ -42373,7 +44419,10 @@ renderCustomBubbleColorSettings(chat); // 【核心新增】渲染自定义颜�
             }
             chat.settings.enableAutoMemory = document.getElementById('auto-memory-toggle').checked;
             chat.settings.coupleAvatarAwareness = document.getElementById('couple-avatar-awareness-toggle').checked;
-
+        // ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼
+        chat.settings.enableAiImageGen = document.getElementById('ai-image-gen-toggle').checked;
+        // ▲▲▲ 新增代码结束 ▲▲▲
+chat.settings.mountVideoMemory = document.getElementById('video-memory-mount-toggle').checked;
             chat.settings.autoMemoryInterval = parseInt(document.getElementById('auto-memory-interval').value) || 20;
             chat.settings.showTimestamps = document.getElementById('show-timestamp-toggle').checked;
 // ▼▼▼ 在这里粘贴新代码 ▼▼▼
@@ -42384,6 +44433,10 @@ chat.settings.customBubbleColors = {
     user: document.getElementById('user-bubble-color-picker').value
 };
 // ▲▲▲ 粘贴结束 ▲▲▲
+            // ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼
+            chat.settings.enableAiImageGen = document.getElementById('ai-image-gen-toggle').checked;
+            // ▲▲▲ 新增代码结束 ▲▲▲
+
             await db.chats.put(chat);
             if (!chat.isGroup) {
                 await syncCharacterNameInGroups(chat);
@@ -45773,6 +47826,157 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
             <textarea id="reader-book-editor"></textarea>
         </div>
     </div>
+<!-- ▼▼▼ 【全新】聊天记录搜索页面 ▼▼▼ -->
+<div id="chat-search-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" id="search-back-btn">取消</span>
+        <div class="search-input-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+            <input type="search" id="chat-search-input" placeholder="搜索聊天记录...">
+            <button id="chat-search-clear-btn" class="search-clear-btn" style="display: none;">×</button>
+        </div>
+    </div>
+    <div id="chat-search-results" class="list-container">
+        <!-- 搜索结果将由JS动态生成在这里 -->
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新V2.0】你画我猜App屏幕 (带交互UI) ▼▼▼ -->
+<div id="draw-guess-screen" class="screen">
+    <!-- 1. 顶部导航栏，新增“选择”按钮 -->
+    <div class="header">
+        <span class="back-btn" onclick="showScreen('home-screen')">‹</span>
+        <span>你画我猜</span>
+        <span class="action-btn" id="draw-guess-select-char-btn">选择</span>
+    </div>
+
+    <!-- 2. 主内容容器 -->
+    <div class="list-container" id="draw-guess-content">
+
+        <!-- 3. 【新增】游戏交互区域，默认隐藏 -->
+        <div id="draw-guess-interactive-area" style="display: none;">
+            <!-- a. 头像容器 -->
+            <div class="player-avatars-container">
+                <div class="player-info">
+                    <img id="draw-guess-user-avatar" src="" class="player-avatar">
+                    <span id="draw-guess-user-name" class="player-name"></span>
+                </div>
+                <div class="player-info">
+                    <img id="draw-guess-char-avatar" src="" class="player-avatar">
+                    <span id="draw-guess-char-name" class="player-name"></span>
+                </div>
+            </div>
+            <!-- b. 对话框 -->
+            <div id="draw-guess-dialogue-box">
+                <!-- 对话内容将由JS动态生成 -->
+            </div>
+            <!-- c. 输入区域 -->
+            <div class="draw-guess-input-area">
+                <div id="draw-guess-action-bar" style="display:none;">
+                    <button class="action-bar-btn" data-action="reply">回复</button>
+                    <button class="action-bar-btn" data-action="delete">删除</button>
+                    <button class="action-bar-btn" data-action="edit">编辑</button>
+                    <button class="action-bar-btn" data-action="resay">重说</button>
+                </div>
+                <div class="draw-guess-input-row">
+                    <input type="text" id="draw-guess-input" placeholder="输入你的猜测或对话...">
+                    <button id="draw-guess-send-btn">发送</button>
+                </div>
+            </div>
+        </div>
+
+          <!-- ▼▼▼ 【V3.0 全新绘画界面】 ▼▼▼ -->
+        <div id="draw-guess-main-area">
+            <!-- 欢迎提示语 (逻辑不变) -->
+            <p id="draw-guess-welcome-text">请先点击右上角“选择”按钮<br>邀请一位伙伴来玩吧！</p>
+
+            <!-- 绘画工具和画板的容器，默认隐藏 -->
+            <div id="draw-guess-studio" style="display: none;">
+                <!-- 左侧工具栏：调色盘和画笔工具 -->
+                <div class="drawing-tools left">
+                    <div class="color-palette">
+                        <div class="color-dot active" style="background-color: #000000;" data-color="#000000"></div>
+                        <div class="color-dot" style="background-color: #ff3b30;" data-color="#ff3b30"></div>
+                        <div class="color-dot" style="background-color: #ff9500;" data-color="#ff9500"></div>
+                        <div class="color-dot" style="background-color: #ffcc00;" data-color="#ffcc00"></div>
+                        <div class="color-dot" style="background-color: #4cd964;" data-color="#4cd964"></div>
+                        <div class="color-dot" style="background-color: #007aff;" data-color="#007aff"></div>
+                        <div class="color-dot" style="background-color: #5856d6;" data-color="#5856d6"></div>
+                        <div class="color-dot" style="background-color: #af52de;" data-color="#af52de"></div>
+                        <div class="color-dot" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="#ffffff"></div>
+                    </div>
+                    <div class="tool-buttons">
+                        <button class="tool-btn active" data-tool="pen">笔</button>
+                        <button class="tool-btn" data-tool="eraser">橡皮</button>
+                        <button class="tool-btn" data-tool="undo">撤回</button>
+                    </div>
+                    <!-- ▼▼▼ 【全新】笔刷设置区域，默认隐藏 ▼▼▼ -->
+                    <div id="brush-settings" style="display: none; width: 100%;">
+                        <div id="pen-settings">
+                            <label for="pen-type-select">类型</label>
+                            <select id="pen-type-select">
+                                <option value="pen">钢笔</option>
+                                <option value="pencil">铅笔</option>
+                                <option value="watercolor">水笔</option>
+                                <option value="brush">画笔</option>
+                                <option value="calligraphy">毛笔</option>
+                            </select>
+                        </div>
+                        <div class="size-control">
+                            <label for="brush-size-slider">大小</label>
+                            <input type="range" id="brush-size-slider" min="1" max="50" value="5">
+                            <input type="number" id="brush-size-input" min="1" value="5">
+                        </div>
+                    </div>
+                    <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
+                </div>
+
+                <!-- 中间画板 -->
+                <canvas id="drawing-canvas"></canvas>
+
+                <!-- ▼▼▼ 【全新】AI绘画动画专用画板，绝对定位覆盖在上方 ▼▼▼ -->
+                <canvas id="ai-drawing-animation-canvas"></canvas>
+                <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
+
+                <!-- 右侧游戏控制按钮 -->
+                <div class="drawing-tools right">
+                    <button class="game-control-btn" id="draw-guess-get-topic-btn">AI出题</button>
+                    <button class="game-control-btn" id="draw-guess-ai-turn-btn">轮到他了</button>
+                </div>
+            </div>
+        </div>
+        <!-- ▲▲▲ 替换结束 ▲▲▲ -->
+
+        <!-- 5. 【新增】底部操作按钮 -->
+        <div id="draw-guess-bottom-bar" style="display: none;">
+            <button id="start-draw-guess-game-btn" class="form-button">开始游戏</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ V2.0 替换结束 ▲▲▲ -->
+
+<!-- ▼▼▼ 【全新】你画我猜 - 消息管理弹窗 ▼▼▼ -->
+<div id="draw-guess-message-manager-modal" class="modal">
+    <div class="modal-content" style="height: 70%;">
+        <div class="modal-header">
+            <span id="draw-guess-manager-title">管理消息</span>
+            <label style="font-size: 14px; font-weight: normal; display: flex; align-items: center; gap: 5px;">
+                <input type="checkbox" id="draw-guess-manager-select-all"> 全选
+            </label>
+        </div>
+        <div class="modal-body" id="draw-guess-manager-list" style="padding: 0;">
+            <!-- 消息列表将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="draw-guess-manager-cancel-btn">取消</button>
+            <button class="save" id="draw-guess-manager-confirm-btn">确认</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
 <!-- ▼▼▼ 请将这整块【全新的HTML代码】粘贴到 </body> 的前面 ▼▼▼ -->
 
 <!-- 1. 共读聊天窗口 -->
