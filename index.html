@@ -10832,27 +10832,52 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 /* ▲▲▲ 新增CSS结束 ▲▲▲ */
-/* ▼▼▼ 【全新V5.0】你画我猜 - AI绘画动画样式 ▼▼▼ */
 
-/* 1. 让画板容器成为定位的“锚点” */
-#draw-guess-studio {
-    position: relative;
+/* ▼▼▼ 【BUG修复】角色手机App头部标题与按钮重叠问题 ▼▼▼ */
+
+/* 1. 选中所有出问题的头部容器 */
+#char-qq-screen .header,
+#char-album-screen .header,
+#char-browser-screen .header,
+#char-taobao-screen .header {
+    /* 使用Flex布局，并强制两端对齐 */
+    display: flex;
+    justify-content: space-between;
 }
 
-/* 2. AI绘画动画专用画板的样式 */
-#ai-drawing-animation-canvas {
-    position: absolute; /* 绝对定位，脱离文档流 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* 让它覆盖在所有工具和画板之上，但在弹窗之下 */
-    z-index: 10;
-    /* 默认隐藏，且不响应任何点击事件 */
-    display: none;
-    pointer-events: none; 
+/* 2. 【核心】为这些头部的标题（第二个子元素）设置新样式 */
+#char-qq-screen .header > span:nth-of-type(2),
+#char-album-screen .header > span:nth-of-type(2),
+#char-browser-screen .header > span:nth-of-type(2),
+#char-taobao-screen .header > span:nth-of-type(2) {
+    /* 移除绝对定位和居中变换，让它回归正常的文档流 */
+    position: static;
+    transform: none;
+
+    /* 让标题占据所有可用的剩余空间 */
+    flex-grow: 1;
+    
+    /* 强制文字左对齐 */
+    text-align: left;
+    
+    /* 为了美观，在返回按钮和标题之间增加一点间距 */
+    margin-left: 15px;
+
+    /* 防止长标题换行或溢出，使用省略号代替 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+
+/* 3. 确保右侧的按钮组不会被压缩 */
+#char-qq-screen .header .header-actions,
+#char-album-screen .header .header-actions,
+#char-browser-screen .header .header-actions,
+#char-taobao-screen .header .header-actions {
+    flex-shrink: 0;
+}
+
+/* ▲▲▲ 修复结束 ▲▲▲ */
 
     </style>
 </head>
@@ -40645,13 +40670,20 @@ function openDrawAndGuess() {
 
 
 /**
- * 【AI决策模块 V2.0 | 强化指令】请求AI决定要画什么，并返回绘画路径
+ * 【AI决策模块 V3.0 | 容错重试版】请求AI决定要画什么，并返回绘画路径
+ * @param {number} retryCount - 当前重试次数
  * @returns {Promise<object|null>} - 返回包含主题和绘画路径的对象，或在失败时返回null
  */
-async function decideAiDrawing() {
+async function decideAiDrawing(retryCount = 0) {
+    // 【核心新增】如果重试超过2次，就放弃，防止无限循环和API滥用
+    if (retryCount > 2) {
+        throw new Error("AI连续多次未能生成有效的绘画数据，请检查Prompt或API模型。");
+    }
+
     const chat = state.chats[drawGuessState.partnerId];
     const { proxyUrl, apiKey, model } = state.apiConfig;
     
+    // (这部分上下文准备逻辑保持不变)
     const mainChatHistory = chat.history.slice(-5).map(msg => `${msg.role === 'user' ? (chat.settings.myNickname || '我') : chat.name}: ${String(msg.content)}`).join('\n');
     const drawGuessHistory = drawGuessState.history.map(msg => `${msg.sender}: ${msg.content}`).join('\n');
 
@@ -40664,7 +40696,7 @@ async function decideAiDrawing() {
 # 核心规则
 1.  **主题简单**: 必须选择非常简单的、能用几笔线条就勾勒出轮廓的物体。例如：苹果、太阳、爱心、鱼、猫的简笔画轮廓、房子。
 2.  **绘画简洁**: 整个绘画过程的【总笔画数（paths数组的长度）不能超过15笔】。
-3.  **格式铁律 (最高优先级)**: 你的回复【必须且只能】是一个JSON对象，格式如下：
+3.  **格式铁律 (最高优先级)**: 你的回复【必须且只能】是一个JSON对象。绝对禁止在JSON对象前后添加任何多余的文字、解释或markdown标记。你的回复必须以 \`{\` 开始，并以 \`}\` 结束。格式如下:
     \`\`\`json
     {
       "topic": "你画的这个东西的中文名，例如：一只猫",
@@ -40689,7 +40721,14 @@ ${drawGuessHistory || '无'}
 
 现在，请构思一个简单的物体，并生成它的绘画路径JSON。`;
 
-    const messagesForApi = [{ role: 'user', content: "轮到你画了，请决定要画什么并给出绘画数据。" }];
+    let messagesForApi;
+    // 【核心新增】如果是重试，就加入错误信息，引导AI修正
+    if (retryCount > 0) {
+        messagesForApi = [{ role: 'user', content: `你上次的回复格式不正确，请严格遵守“格式铁律”，只返回一个纯粹的JSON对象，不要添加任何额外的文字。现在请重新生成。` }];
+    } else {
+        messagesForApi = [{ role: 'user', content: "轮到你画了，请决定要画什么并给出绘画数据。" }];
+    }
+
     let isGemini = proxyUrl.includes('generativelanguage');
     let geminiConfig = toGeminiRequestData(model, apiKey, systemPrompt, messagesForApi);
     
@@ -40703,37 +40742,36 @@ ${drawGuessHistory || '无'}
     if (!response.ok) throw new Error(`API 错误: ${response.statusText}`);
     const data = await response.json();
     const aiResponseContent = getGeminiResponseText(data);
-    const cleanedJson = aiResponseContent.replace(/^```json\s*/, '').replace(/```$/, '');
-    return JSON.parse(cleanedJson);
+    
+    try {
+        // 【核心新增】使用更强大的容错解析函数
+        const parsedJson = robustJsonParse(aiResponseContent);
+        if (!parsedJson || !parsedJson.topic || !Array.isArray(parsedJson.paths)) {
+            // 如果解析出来的内容不符合我们的最低要求，也视为失败
+            throw new Error('解析出的JSON缺少必要的topic或paths字段。');
+        }
+        return parsedJson;
+    } catch (e) {
+        console.error(`AI绘画数据解析失败 (第 ${retryCount + 1} 次尝试):`, e);
+        console.error("AI原始返回内容:", aiResponseContent);
+        // 【核心新增】如果解析失败，就增加重试次数并再次调用自己
+        return decideAiDrawing(retryCount + 1);
+    }
 }
 
+
         /**
-         * 【动画引擎 V3.0 | 修复出界BUG】在专用画板上一笔一划地播放绘画动画
+         * 【动画引擎 V4.0 | 最终无缝版】直接在主画板上一笔一划地播放绘画动画
          * @param {Array} paths - 从AI获取的绘画路径数据
          */
         async function playAiDrawingAnimation(paths) {
-            const canvas = document.getElementById('ai-drawing-animation-canvas');
-            const userCanvas = document.getElementById('drawing-canvas');
-            const ctx = canvas.getContext('2d');
-            
-            canvas.width = userCanvas.width;
-            canvas.height = userCanvas.height;
-            
-            canvas.style.display = 'block';
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // 【核心修改1】直接获取主画板的上下文，不再需要动画层
+            const ctx = drawingBoard.ctx;
+            if (!ctx) return;
 
-            // --- 【【【这就是本次修复的核心！】】】 ---
-            // 1. 保存当前的绘图上下文状态
-            ctx.save();
-            
-            // 2. 创建一个和画板一样大小的矩形路径
-            ctx.beginPath();
-            ctx.rect(0, 0, canvas.width, canvas.height);
-            
-            // 3. 将这个矩形路径设置为“剪切区域”
-            //    这之后的所有绘制操作，都只会在这个矩形内部显示出来！
-            ctx.clip();
-            // --- 【【【修复代码结束】】】 ---
+            // 禁用用户交互，防止在AI绘画时用户乱画
+            drawingBoard.canvas.classList.remove('active');
+            drawingBoard.canvas.style.pointerEvents = 'none';
 
             for (const path of paths) {
                 const points = path.points;
@@ -40750,21 +40788,21 @@ ${drawGuessHistory || '无'}
                 for (let i = 1; i < points.length; i++) {
                     ctx.lineTo(points[i][0], points[i][1]);
                     ctx.stroke();
+                    // 每一小段之间的延迟保持不变，营造绘画感
                     await new Promise(resolve => setTimeout(resolve, 50)); 
                 }
                 
+                // 【核心修改2】每画完一笔，就保存一次状态，这会让撤回功能更自然
+                drawingBoard.saveState();
+                
+                // 每一笔画完后的停顿保持不变
                 await new Promise(resolve => setTimeout(resolve, Math.random() * 500 + 200));
             }
-            
-            // 在所有绘制结束后，恢复绘图上下文状态，移除剪切区域
-            ctx.restore();
 
-            // 将最终的画作复制到用户画板上，并隐藏动画层
-            drawingBoard.ctx.drawImage(canvas, 0, 0);
-            drawingBoard.saveState();
-            canvas.style.display = 'none';
+            // AI全部画完后，恢复用户交互
+            drawingBoard.canvas.classList.add('active');
+            drawingBoard.canvas.style.pointerEvents = 'auto';
         }
-
 
 
 // ▼▼▼ 【全新V4.0】你画我猜 - 绘画引擎核心代码 ▼▼▼
@@ -47935,9 +47973,7 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
                 <!-- 中间画板 -->
                 <canvas id="drawing-canvas"></canvas>
 
-                <!-- ▼▼▼ 【全新】AI绘画动画专用画板，绝对定位覆盖在上方 ▼▼▼ -->
-                <canvas id="ai-drawing-animation-canvas"></canvas>
-                <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
 
 
                 <!-- 右侧游戏控制按钮 -->
