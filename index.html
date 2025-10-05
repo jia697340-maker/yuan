@@ -10277,38 +10277,57 @@
 }
 
 /* ▲▲▲ 修复结束 ▲▲▲ */
-/* ▼▼▼ 【阅读器头部重叠BUG终极解决方案 V5】 ▼▼▼ */
+/* ▼▼▼ 【阅读器顶栏重叠BUG终极修复V6】 ▼▼▼ */
 
-/* 1. 强制为右侧的按钮组设置一个最小宽度，确保它绝对不会被标题挤压 */
+/* 1. 将阅读器头部容器变为垂直排列的Flex盒子，并设置合理的内边距 */
+#reader-reading-screen .header {
+    display: flex;
+    flex-direction: column; /* 核心：让子元素垂直排列 */
+    justify-content: center;
+    gap: 8px; /* 在标题和按钮行之间增加8px的间距 */
+    padding: 10px 15px; /* 调整内边距，确保不会太高 */
+    padding-top: calc(10px + env(safe-area-inset-top)); /* 适配刘海屏 */
+    height: auto; /* 高度自适应内容 */
+}
+
+/* 2. 重置书名标题的样式，移除绝对定位，使其在第一行安全地居中 */
+#reader-reading-screen #reader-book-title {
+    position: static; /* 关键：移除绝对定位 */
+    transform: none; /* 关键：移除位移 */
+    width: 100%;
+    text-align: center;
+    font-size: 14px; /* 稍微小一点的字体，避免过长 */
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    order: 1; /* 确保标题在第一行 */
+}
+
+/* 3. 为新的按钮行容器设置Flex布局，实现“返回键在左，操作组在右” */
+#reader-reading-screen .reader-button-bar {
+    order: 2; /* 确保按钮行在第二行 */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 4. 确保右侧的操作按钮组保持水平排列 */
 #reader-reading-screen .header .header-actions {
-    flex-shrink: 0 !important; /* 禁止收缩 */
-    min-width: 220px !important; /* 根据您按钮的数量，给予一个充足的最小宽度 */
-    justify-content: flex-end; /* 确保内部按钮靠右对齐 */
+    display: flex;
+    align-items: center;
+    gap: 15px; /* 按钮之间的间距 */
 }
 
-/* 2. 强制标题在有按钮时，不能无限变宽，从而避免重叠 */
-#reader-reading-screen .header #reader-book-title {
-    /* 在默认状态下，给一个最大宽度限制，预留出右侧按钮的空间 */
-    max-width: calc(100% - 280px) !important; 
-    /* 保持单行省略号效果 */
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    /* 确保标题不会因为flex布局而错误居中 */
-    text-align: center !important;
-    /* 取消绝对定位，回归正常的文档流 */
-    position: static !important;
-    transform: none !important;
+/* 5. 确保在沉浸模式下，只隐藏按钮行，不隐藏标题 */
+#reader-reading-screen.immersive-mode .reader-button-bar {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-
-/* 3. 【核心】当进入沉浸模式时，才允许标题占据全部宽度 */
-#reader-reading-screen.immersive-mode .header #reader-book-title {
-    max-width: 100% !important; /* 允许标题使用100%宽度 */
-    white-space: normal !important; /* 允许长标题换行 */
-}
-
 /* ▲▲▲ 修复结束 ▲▲▲ */
-
 
 
     </style>
@@ -18908,7 +18927,7 @@ systemPrompt = `
 - 数组中的【每一个元素都必须是一个带有 "type" 字段的JSON对象】。
 
 # 角色扮演核心规则
-1.  **对话节奏**: 模拟真人的聊天习惯，将你想说的话拆分成【多条、简短的】消息。每次回复至少3-8条，且条数不要总是一样。严禁发展线下剧情。
+1.  **对话节奏**: 模拟真人的聊天习惯，将你想说的话拆分成【多条、简短的】消息。每次回复至少3-20条，且条数不要总是一样。但可以根据对话的需要灵活调整，以保持对话的流畅和自然，严禁发展线下剧情。
 2.  **情景感知**:
     - **时间**: 你必须感知到当前是 ${currentTime} (${timeOfDayGreeting})，并在对话中自然地体现出来。
     - **音乐**: ${musicContext ? '你们正在一起听歌，' + musicContext : '你们没有在听歌。'}
@@ -45722,31 +45741,26 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
 
     <!-- ▼▼▼ 【全新 | V3.0 支持编辑版】阅读器App - 阅读屏幕 ▼▼▼ -->
     <div id="reader-reading-screen" class="screen">
-        <div class="header">
-            <span class="back-btn" onclick="showScreen('reader-bookshelf-screen')">‹</span>
-            <span id="reader-book-title"></span>
-            <!-- 【核心修改】将进度显示和操作按钮都放到 header-actions 中 -->
-<!-- ▼▼▼ 请用这整块新代码替换旧的 header-actions ▼▼▼ -->
-<div class="header-actions" style="display: flex; align-items: center; gap: 15px;">
-    <span id="reader-progress-display" style="font-size: 14px; color: var(--text-secondary);">0%</span>
-    <span id="reader-decode-btn" class="action-btn" style="font-size: 16px;">解码</span>
-<!-- ▼▼▼ 在 id="reader-toc-btn" 的 span 旁边添加 ▼▼▼ -->
-<span id="reader-immersive-btn" class="action-btn" style="font-size: 16px;">隐藏</span>
-<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+            <!-- ▼▼▼ 请用这整块代码，完整替换旧的 <div class="header"> ▼▼▼ -->
+            <div class="header">
+                <!-- 第一行：书名标题 -->
+                <span id="reader-book-title"></span>
+                <!-- 第二行：所有按钮的容器 -->
+                <div class="reader-button-bar">
+                    <span class="back-btn" onclick="showScreen('reader-bookshelf-screen')">‹</span>
+                    <div class="header-actions">
+                        <span id="reader-progress-display" style="font-size: 14px; color: var(--text-secondary);">0%</span>
+                        <span id="reader-decode-btn" class="action-btn" style="font-size: 16px;">解码</span>
+                       
+                        <span id="reader-immersive-btn" class="action-btn" style="font-size: 16px;">隐藏</span>
+                        <span id="reader-toc-btn" class="action-btn" style="font-size: 16px;">目录</span>
+                        <span id="reader-edit-book-btn" class="action-btn" style="font-size: 16px;">编辑</span>
+                        <span id="reader-customize-btn" class="action-btn" style="font-size: 16px;">自定义</span>
+                    </div>
+                </div>
+            </div>
+            <!-- ▲▲▲ 替换结束 ▲▲▲ -->
 
-<!-- ▼▼▼ 在 id="reader-decode-btn" 的 span 旁边添加 ▼▼▼ -->
-    <span id="reader-toc-btn" class="action-btn" style="font-size: 16px;">目录</span>
-<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
-
-    <span id="reader-edit-book-btn" class="action-btn" style="font-size: 16px;">编辑</span>
-<!-- ▼▼▼ 在 id="reader-decode-btn" 的 span 之后添加 ▼▼▼ -->
-    <span id="reader-customize-btn" class="action-btn" style="font-size: 16px;">自定义</span>
-<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
-</div>
-<!-- ▲▲▲ 替换结束 ▲▲▲ -->
-
-
-        </div>
         <!-- 阅读模式下的虚拟滚动容器 -->
         <div id="reader-book-content-wrapper" class="list-container">
             <div id="reader-book-content" style="position: relative; overflow-y: auto;">
@@ -45759,7 +45773,45 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
             <textarea id="reader-book-editor"></textarea>
         </div>
     </div>
+<!-- ▼▼▼ 请将这整块【全新的HTML代码】粘贴到 </body> 的前面 ▼▼▼ -->
 
+<!-- 1. 共读聊天窗口 -->
+<div id="co-reading-window" style="display: none;">
+    <div class="co-reading-header">
+        <span id="co-reading-char-name"></span>
+        <div class="co-reading-controls">
+            <span id="co-reading-settings-btn" class="co-reading-header-btn">设置</span>
+            <span id="co-reading-minimize-btn" class="co-reading-header-btn">最小化</span>
+            <span id="co-reading-clear-btn" class="co-reading-header-btn">清空</span>
+            <span id="co-reading-close-btn" class="co-reading-header-btn">×</span>
+        </div>
+    </div>
+    <div id="co-reading-messages">
+        <!-- 共读消息将在这里生成 -->
+    </div>
+<!-- ▼▼▼ 请将这块【全新的HTML】粘贴到 id="co-reading-messages" 的 div 下方 ▼▼▼ -->
+<div id="co-reading-bottom-actions" style="display: none;">
+    <button class="co-reading-action-btn" data-action="resay">重说</button>
+    <button class="co-reading-action-btn" data-action="edit">编辑</button>
+    <button class="co-reading-action-btn" data-action="delete">删除</button>
+    <button class="co-reading-action-btn" data-action="manual_read">手动阅读</button>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<div class="co-reading-input-area">
+    <textarea id="co-reading-input" rows="1" placeholder="和TA聊聊这本书..."></textarea>
+    <!-- 【核心修改】新增了“回复”按钮 -->
+    <button id="co-reading-reply-btn" class="co-reading-send-btn">回复</button>
+    <button id="co-reading-send-btn" class="co-reading-send-btn">发送</button>
+</div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
+</div>
+
+<!-- 2. 用于最小化的悬浮球 -->
+<div id="co-reading-float-ball" style="display: none;">
+    <img id="co-reading-ball-avatar" src="">
+</div>
+
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 
 
 <!-- ▼▼▼ 【全新V2版】BGM搜索结果弹窗 (支持多选) ▼▼▼ -->
@@ -46202,45 +46254,7 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
 
 
 
-<!-- ▼▼▼ 请将这整块【全新的HTML代码】粘贴到 </body> 的前面 ▼▼▼ -->
 
-<!-- 1. 共读聊天窗口 -->
-<div id="co-reading-window" style="display: none;">
-    <div class="co-reading-header">
-        <span id="co-reading-char-name"></span>
-        <div class="co-reading-controls">
-            <span id="co-reading-settings-btn" class="co-reading-header-btn">设置</span>
-            <span id="co-reading-minimize-btn" class="co-reading-header-btn">最小化</span>
-            <span id="co-reading-clear-btn" class="co-reading-header-btn">清空</span>
-            <span id="co-reading-close-btn" class="co-reading-header-btn">×</span>
-        </div>
-    </div>
-    <div id="co-reading-messages">
-        <!-- 共读消息将在这里生成 -->
-    </div>
-<!-- ▼▼▼ 请将这块【全新的HTML】粘贴到 id="co-reading-messages" 的 div 下方 ▼▼▼ -->
-<div id="co-reading-bottom-actions" style="display: none;">
-    <button class="co-reading-action-btn" data-action="resay">重说</button>
-    <button class="co-reading-action-btn" data-action="edit">编辑</button>
-    <button class="co-reading-action-btn" data-action="delete">删除</button>
-    <button class="co-reading-action-btn" data-action="manual_read">手动阅读</button>
-</div>
-<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
-<div class="co-reading-input-area">
-    <textarea id="co-reading-input" rows="1" placeholder="和TA聊聊这本书..."></textarea>
-    <!-- 【核心修改】新增了“回复”按钮 -->
-    <button id="co-reading-reply-btn" class="co-reading-send-btn">回复</button>
-    <button id="co-reading-send-btn" class="co-reading-send-btn">发送</button>
-</div>
-<!-- ▲▲▲ 替换结束 ▲▲▲ -->
-</div>
-
-<!-- 2. 用于最小化的悬浮球 -->
-<div id="co-reading-float-ball" style="display: none;">
-    <img id="co-reading-ball-avatar" src="">
-</div>
-
-<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 <!-- ▼▼▼ 【全新 | V2.0 论坛头像设置版】论坛设置模态框 ▼▼▼ -->
 <div id="forum-settings-modal" class="modal">
     <div class="modal-content" style="height: auto; max-height: 80%;">
@@ -46356,6 +46370,7 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
 
 
 <audio id="char-audio-player" preload="auto"></audio>
+
 </body>
 </html>
 
