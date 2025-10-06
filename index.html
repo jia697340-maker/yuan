@@ -28,7 +28,7 @@
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/gh/phoebeboo/mewoooo@main/pp.js" defer></script>
     <style>
 
         @font-face { font-family: 'bulangni'; src: url('') format('truetype'); font-weight: normal; font-style: normal; font-display: swap; }
@@ -8947,7 +8947,8 @@
     flex-shrink: 0;
     padding: 10px 15px;
     border-top: 1px solid var(--border-color);
-    display: flex;
+    display: none; /* 核心修改：让它默认隐藏 */
+
     justify-content: space-around; /* 让按钮均匀分布 */
     gap: 10px;
     background-color: rgba(230, 230, 230, 0.5);
@@ -10665,105 +10666,97 @@
 }
 
 /* ▲▲▲ 新增CSS结束 ▲▲▲ */
-/* ▼▼▼ 【全新V3.0】你画我猜 - 绘画工作室UI样式 ▼▼▼ */
+/* ▼▼▼ 【全新V5.0 | 竖版布局重构】 ▼▼▼ */
 
-/* 1. 让 #draw-guess-main-area 成为一个Flex容器，以容纳工作室 */
-#draw-guess-main-area {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    flex-grow: 1;
+/* 1. 调整主内容容器，让元素从上到下排列并增加间距 */
+#draw-guess-content {
+    flex-direction: column;
+    justify-content: flex-start; /* 从 space-between 改为 flex-start，让内容从顶部开始堆叠 */
+    padding: 15px;
+    gap: 15px; /* 在“交互区”、“主区域”、“底部栏”之间增加间距 */
 }
 
-/* 2. “工作室”总容器，采用三列Flex布局 */
+/* 2. 【核心】重构“工作室”容器，使其内部元素垂直排列 */
 #draw-guess-studio {
     width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px; /* 工具栏和画板的间距 */
+    flex-direction: column;   /* 核心：改为垂直布局 */
+    align-items: center;      /* 水平居中对齐 */
+    gap: 15px;                /* 在画板和工具栏之间增加间距 */
 }
 
-/* 3. 左右工具栏的通用样式 */
-.drawing-tools {
+/* 3. 为画板本身设置样式 (与之前相同) */
+#draw-guess-studio #drawing-canvas {
+    display: block;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%; /* 宽度占满父容器 */
+    height: auto;
+    aspect-ratio: 4 / 3;
+    max-width: 400px; /* 保持最大宽度限制 */
+}
+
+/* 4. 【全新】为新的“总工具栏”设置样式，使其内部水平排列 */
+#draw-guess-tool-bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-around; /* 让工具组均匀分布 */
+    align-items: center;
+    flex-wrap: wrap; /* 在小屏幕上允许换行 */
+    gap: 15px; /* 工具组之间的间距 */
+    padding: 10px 0;
+}
+
+/* 5. 左侧工具组（调色盘和画笔）的容器样式 */
+.drawing-tools.left {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px; /* 调色盘和工具按钮的垂直间距 */
     align-items: center;
 }
 
-/* 4. 左侧工具栏独有样式 */
-.drawing-tools.left {
-    flex-shrink: 0;
+/* 6. 右侧游戏控制按钮组的容器样式 */
+.game-controls-group {
+    display: flex;
+    flex-direction: column; /* 让“AI出题”和“轮到他了”垂直排列 */
+    gap: 10px;
 }
+
+/* 7. 其他样式保持不变 (调色盘、按钮等) */
 .color-palette {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
 }
 .color-dot {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+    transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 .color-dot.active {
-    transform: scale(1.2);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transform: scale(1.2); box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 .tool-buttons {
-    display: flex;
-    gap: 8px;
+    display: flex; gap: 8px;
 }
 .tool-btn {
-    background-color: #f0f2f5;
-    border: 1px solid #dcdcdc;
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-size: 13px;
-    cursor: pointer;
+    background-color: #f0f2f5; border: 1px solid #dcdcdc; border-radius: 6px;
+    padding: 6px 12px; font-size: 13px; cursor: pointer;
 }
 .tool-btn.active {
-    background-color: var(--accent-color);
-    color: white;
-    border-color: var(--accent-color);
+    background-color: var(--accent-color); color: white; border-color: var(--accent-color);
 }
-
-/* 5. 画板样式 (现在从 #drawing-canvas 移到这里统一控制) */
-#draw-guess-studio #drawing-canvas {
-    display: block; /* 确保它显示出来 */
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    flex-grow: 1; /* 占据所有剩余空间 */
-    height: auto; /* 高度由宽度和高宽比决定 */
-    aspect-ratio: 4 / 3;
-    max-width: 400px;
-}
-
-/* 6. 右侧游戏控制按钮样式 */
 .game-control-btn {
-    background-color: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 8px 15px;
-    font-size: 14px;
-    color: var(--text-primary);
-    cursor: pointer;
+    background-color: #fff; border: 1px solid var(--border-color); border-radius: 8px;
+    padding: 8px 15px; font-size: 14px; color: var(--text-primary); cursor: pointer;
 }
-
-/* 7. 底部操作栏的按钮样式，使用蓝色主题 */
 #draw-guess-bottom-bar .form-button {
-    background-color: var(--accent-color);
-    border-radius: 22px; /* 更大的圆角 */
-    height: 44px;
-    font-size: 16px;
+    background-color: var(--accent-color); border-radius: 22px;
+    height: 44px; font-size: 16px;
 }
 
-/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▲▲▲ CSS 替换结束 ▲▲▲ */
+
 /* ▼▼▼ 【全新】为你画我猜对话框添加占位符样式 ▼▼▼ */
 #draw-guess-dialogue-box:empty::before {
     content: attr(data-placeholder);
@@ -10878,6 +10871,277 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 /* ▲▲▲ 修复结束 ▲▲▲ */
+/* ▼▼▼ 【全新】你画我猜 - 自定义颜色按钮样式 ▼▼▼ */
+.color-palette-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 调色盘和自定义按钮的间距 */
+}
+
+.custom-color-picker {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red); /* 彩虹背景，提示用户这是自定义颜色 */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 2px solid white;
+    outline: 1px solid #ccc;
+}
+
+.custom-color-picker input[type="color"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* 完全隐藏原生UI */
+    cursor: pointer;
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】用户钱包App样式 ▼▼▼ */
+#wallet-screen {
+    background-color: #f0f2f5;
+}
+#phone-screen.dark-mode #wallet-screen {
+    background-color: #000000;
+}
+
+.wallet-balance-card {
+    margin: 20px 15px;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    border-radius: 20px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(253, 160, 133, 0.4);
+}
+
+.wallet-balance-label {
+    font-size: 16px;
+    font-weight: 500;
+    opacity: 0.8;
+    margin: 0 0 10px 0;
+}
+
+.wallet-balance-amount {
+    font-size: 48px;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】用户钱包App交易记录样式 ▼▼▼ */
+#wallet-transaction-list {
+    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.wallet-transaction-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.transaction-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: white;
+    font-size: 20px;
+}
+.transaction-icon.income { background-color: #28a745; } /* 收入用绿色 */
+.transaction-icon.expense { background-color: #dc3545; } /* 支出用红色 */
+.transaction-icon.refund { background-color: #007bff; } /* 退款用蓝色 */
+.transaction-icon.info { background-color: #6c757d; }   /* 其他信息用灰色 */
+
+.transaction-details {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.transaction-description {
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.transaction-note, .transaction-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.transaction-amount {
+    font-weight: 600;
+    font-size: 16px;
+    white-space: nowrap;
+}
+.transaction-amount.income { color: #28a745; }
+.transaction-amount.expense { color: #dc3545; }
+.transaction-amount.refund { color: #007bff; }
+.transaction-amount.info { color: #6c757d; }
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】用户钱包App底部操作栏样式 ▼▼▼ */
+#wallet-footer {
+    flex-shrink: 0; /* 防止此区域被压缩 */
+    padding: 15px;
+    /* 适配 iPhone 底部的安全区域 (小黑条) */
+    padding-bottom: calc(15px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border-color);
+    background-color: var(--secondary-bg);
+}
+#phone-screen.dark-mode #wallet-footer {
+    background-color: #1c1c1e;
+}
+
+#wallet-footer .form-button {
+    width: 100%; /* 让按钮撑满宽度 */
+    margin-top: 0; /* 覆盖 form-button 的默认上边距 */
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】电视机App样式 ▼▼▼ */
+#tv-screen {
+    background-color: #f0f2f5;
+}
+#phone-screen.dark-mode #tv-screen {
+    background-color: #000000;
+}
+
+#tv-bookshelf-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 15px;
+    padding: 20px;
+}
+
+.tv-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.video-cover {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    background-color: #333;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: #777;
+    overflow: hidden; /* 确保封面图不溢出 */
+}
+.video-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 保证封面图比例正确 */
+}
+
+.video-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    width: 100%;
+    text-align: center;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 管理模式下的勾选框 (复用阅读器样式) */
+.video-select-checkbox {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #ccc;
+    background-color: white;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    z-index: 10;
+}
+#tv-screen.management-mode .video-select-checkbox {
+    display: flex;
+}
+.tv-item.selected .video-select-checkbox {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+.tv-item.selected .video-select-checkbox::after {
+    content: '✔';
+    font-size: 14px;
+}
+
+/* 置顶图标 (复用阅读器样式) */
+.video-pin-icon {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-size: 18px;
+    color: #ffc107;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    display: none;
+    z-index: 5;
+}
+.tv-item.pinned .video-pin-icon {
+    display: block;
+}
+
+/* 底部批量操作栏 (复用阅读器样式) */
+#tv-action-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(247, 247, 247, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-color);
+    padding: 10px 15px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#phone-screen.dark-mode #tv-action-bar {
+    background-color: rgba(25, 25, 25, 0.9);
+}
+#tv-action-bar .action-bar-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 18px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+#tv-action-bar .action-bar-btn.delete { background-color: #ff3b30; color: white; }
+#tv-action-bar .action-bar-btn.export { background-color: var(--accent-color); color: white; }
+#tv-action-bar #tv-pin-selected-btn { background-color: #ffc107; color: white; }
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
 
     </style>
 </head>
@@ -10959,29 +11223,144 @@ input[type=number]::-webkit-outer-spin-button {
                 </div>
             </div>
             <!-- 页面2: 新增阅读器App和你画我猜App -->
+            <!-- 页面2: 新增阅读器App、你画我猜App等 -->
             <div class="home-screen-page">
-                <div id="desktop-app-container" style="align-self: flex-start; margin-top: 20px;">
+                <div id="desktop-app-container" style="margin-top: 20px;">
                     <!-- 阅读器图标 (保持不变) -->
                     <div class="desktop-app-icon" onclick="openReaderBookshelf()">
                         <div class="icon-bg-desktop"><img id="icon-img-reader" src="https://i.postimg.cc/VLZpPj1h/reader-icon.png" alt="阅读器"></div>
                         <span class="label">阅读器</span>
                     </div>
 
-                    <!-- ▼▼▼ 在这里粘贴新图标 ▼▼▼ -->
                     <div class="desktop-app-icon" onclick="openDrawAndGuess()">
                         <div class="icon-bg-desktop"><img id="icon-img-draw-guess" src="https://i.postimg.cc/k5dG3B4p/draw-guess-icon.png" alt="你画我猜"></div>
                         <span class="label">你画我猜</span>
                     </div>
-                    <!-- ▲▲▲ 新增图标结束 ▲▲▲ -->
+                    
+                    <div class="desktop-app-icon" onclick="openWalletScreen()">
+                        <div class="icon-bg-desktop"><img id="icon-img-wallet" src="https://i.postimg.cc/d1mH2z5J/IMG-7301.jpg" alt="钱包"></div>
+                        <span class="label">钱包</span>
+                    </div>
+
+                    <div class="desktop-app-icon" onclick="openTimeSettingsScreen()">
+                        <div class="icon-bg-desktop"><img id="icon-img-time" src="https://i.postimg.cc/zX8b5wM4/IMG-7302.jpg" alt="自定义时间"></div>
+                        <span class="label">自定义时间</span>
+                    </div>
+                    
+                    <div class="desktop-app-icon" onclick="openTvScreen()">
+                        <div class="icon-bg-desktop"><img id="icon-img-tv" src="https://i.postimg.cc/8PtnC5Q6/tv-icon.png" alt="电视机"></div>
+                        <span class="label">电视机</span>
+                    </div>
 
                 </div>
             </div>
 
+     <!-- 悬浮X Logo - 只在主页面显示 -->
+      <div id="floating-x-logo" class="floating-x-hidden">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+          <path
+            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+      </div>
+
+      <!-- 悬浮X Logo的样式和脚本 -->
+      <style>
+        /* 悬浮X Logo样式 */
+        #floating-x-logo {
+          position: fixed;
+          right: 20px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 50px;
+          height: 50px;
+          background: linear-gradient(135deg, #1d9bf0 0%, #0ea5ff 100%);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          cursor: pointer;
+          box-shadow: 0 4px 20px rgba(29, 155, 240, 0.3);
+          z-index: 999;
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .floating-x-hidden {
+          transform: translateY(-50%) translateX(100px);
+          opacity: 0;
+        }
+
+        .floating-x-visible {
+          transform: translateY(-50%) translateX(0);
+          opacity: 1;
+        }
+
+        #floating-x-logo:hover {
+          transform: translateY(-50%) scale(1.1);
+          box-shadow: 0 6px 25px rgba(29, 155, 240, 0.4);
+        }
+
+        #floating-x-logo:active {
+          transform: translateY(-50%) scale(0.95);
+        }
+      </style>
+
+      <script>
+        // 双击检测变量
+        let homeScreenTapCount = 0;
+        let homeScreenTapTimer = null;
+
+        // 为home-screen添加双击事件监听
+        document.addEventListener('DOMContentLoaded', function () {
+          const homeScreen = document.getElementById('home-screen');
+          const floatingXLogo = document.getElementById('floating-x-logo');
+
+          if (homeScreen && floatingXLogo) {
+            // 双击事件监听
+            homeScreen.addEventListener('click', function (e) {
+              // 避免与其他元素的点击事件冲突
+              if (e.target.closest('.desktop-app-icon') || e.target.closest('#floating-x-logo')) {
+                return;
+              }
+
+              homeScreenTapCount++;
+
+              if (homeScreenTapCount === 1) {
+                homeScreenTapTimer = setTimeout(function () {
+                  homeScreenTapCount = 0;
+                }, 300);
+              } else if (homeScreenTapCount === 2) {
+                clearTimeout(homeScreenTapTimer);
+                homeScreenTapCount = 0;
+
+                // 显示悬浮X Logo
+                floatingXLogo.classList.remove('floating-x-hidden');
+                floatingXLogo.classList.add('floating-x-visible');
+
+                // 3秒后自动隐藏
+                setTimeout(function () {
+                  floatingXLogo.classList.remove('floating-x-visible');
+                  floatingXLogo.classList.add('floating-x-hidden');
+                }, 3000);
+              }
+            });
+
+            // X Logo点击事件
+            floatingXLogo.addEventListener('click', function (e) {
+              e.stopPropagation();
+              showScreen('x-social-screen');
+              // 点击后隐藏logo
+              floatingXLogo.classList.remove('floating-x-visible');
+              floatingXLogo.classList.add('floating-x-hidden');
+            });
+          }
+        });
+      </script>
 
 
             <!-- 页面3: 放置新App -->
             <div class="home-screen-page">
-                 <div id="desktop-app-container" style="align-self: flex-start; margin-top: 20px;">
+                 <div id="desktop-app-container" style="margin-top: 20px;">
                     <div class="desktop-app-icon" onclick="openTutorialScreen()">
                         <!-- 【核心修改】为教程图标的<img>标签添加ID -->
                         <div class="icon-bg-desktop"><img id="icon-img-tutorial" src="https://i.postimg.cc/xT2C1M4p/tutorial-icon.png" alt="教程"></div>
@@ -11837,6 +12216,27 @@ input[type=number]::-webkit-outer-spin-button {
                     <select id="secondary-model-select"></select>
                 </div>
                 <button class="form-button form-button-secondary" id="fetch-secondary-models-btn">拉取副模型</button>
+<!-- ▼▼▼ 【全新】语音模型设置区域 ▼▼▼ -->
+<hr style="margin: 30px 0; opacity: 0.3;">
+<h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px;">语音模型设置 (用于语音转文字)</h3>
+<p style="font-size: 14px; color: #666; background-color: #f0f0f0; padding: 10px; border-radius: 8px;">
+    您可以在此配置一个独立的语音模型API (例如 OpenAI 的 Whisper)。如果留空，语音转文字功能将不可用。
+</p>
+<div class="form-group">
+    <label for="voice-proxy-url">语音模型反代地址</label>
+    <input type="text" id="voice-proxy-url" placeholder="例如: https://api.openai.com">
+</div>
+<div class="form-group">
+    <label for="voice-api-key">语音模型密钥 (API Key)</label>
+    <input type="password" id="voice-api-key" placeholder="sk-...">
+</div>
+<div class="form-group">
+    <label for="voice-model-select">语音模型</label>
+    <select id="voice-model-select"></select>
+</div>
+<button class="form-button" id="fetch-voice-models-btn">拉取语音模型</button>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
                 <!-- 后台活动设置 -->
                 <hr style="margin: 30px 0; opacity: 0.3;">
                 <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px;">后台活动设置</h3>
@@ -11907,6 +12307,14 @@ input[type=number]::-webkit-outer-spin-button {
                     <span class="back-btn" id="qzone-back-btn">‹</span> <!-- 这个按钮现在只负责从动态返回 -->
                     <span>好友动态</span>
     <div class="header-actions">
+                     <!-- ▼▼▼ 【核心新增】全新的“设置”按钮 ▼▼▼ -->
+                        <span class="action-btn" id="qzone-settings-btn" title="动态设置">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                            </svg>
+                        </span>
+                        <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
         <span class="action-btn" id="qzone-more-actions-btn" title="更多操作">…</span>
     </div>
                 </div>
@@ -12581,6 +12989,60 @@ input[type=number]::-webkit-outer-spin-button {
                 <div id="main-icon-management-actions" style="display: none; margin-top: 15px;">
                      <button id="main-icon-reset-btn" class="form-button-secondary" style="margin:0; background-color: #ffebee; color: #c62828;">重置选中项为默认</button>
                 </div>
+<!-- ▼▼▼ 【全新】主屏幕卡片设置区域 ▼▼▼ -->
+<hr style="width: 80%; opacity: 0.3; margin: 30px 0;">
+<div id="widget-settings-area" style="width: 100%;">
+    <!-- 区域标题 -->
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px;">
+        <label style="font-weight: 500; color: var(--text-secondary);">主屏幕卡片设置</label>
+    </div>
+
+    <!-- 1. 颜色设置 -->
+    <div class="form-group custom-color-picker-wrapper">
+        <label style="margin-bottom: 0; flex-shrink: 0;">背景颜色</label>
+        <div class="color-picker-bar">
+            <div id="widget-color-preview" class="color-preview"></div>
+            <input type="color" id="widget-color-picker">
+        </div>
+    </div>
+
+    <!-- 2. 大小(高度)设置 -->
+    <div class="form-group">
+        <label for="widget-height-slider">卡片高度 (px)</label>
+        <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+            <input type="range" id="widget-height-slider" min="30" max="250" step="1" value="120" style="flex-grow: 1;">
+            <input type="number" id="widget-height-input" min="1" value="120" style="width: 70px; text-align: center;">
+        </div>
+    </div>
+
+    <!-- 3. 形状(CSS)设置 -->
+    <div class="form-group">
+        <label for="widget-shape-css-input">自定义形状 (CSS)</label>
+        <textarea id="widget-shape-css-input" rows="3" style="width: 100%; margin-top: 8px; font-family: monospace; font-size: 14px; resize: vertical;" placeholder="例如: border-radius: 8px;"></textarea>
+    </div>
+
+    <!-- 4. 应用目标选择 -->
+    <div class="form-group">
+        <label>应用到:</label>
+        <div id="widget-target-list" style="max-height: 150px; overflow-y: auto; background: #f9f9f9; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px;">
+            <label style="display: block;"><input type="checkbox" class="widget-target-checkbox" value="profile-info"> 个人资料卡片</label>
+            <label style="display: block;"><input type="checkbox" class="widget-target-checkbox" value="widget-2"> 左侧小组件</label>
+            <label style="display: block;"><input type="checkbox" class="widget-target-checkbox" value="widget-3"> 右侧小组件</label>
+        </div>
+        <div style="margin-top: 10px;">
+            <label style="font-size: 14px; cursor: pointer;">
+                <input type="checkbox" id="widget-select-all-toggle"> 全选/取消全选
+            </label>
+        </div>
+    </div>
+
+    <!-- 5. 操作按钮 -->
+    <div class="form-group" style="display: flex; gap: 10px; margin-top: 20px;">
+        <button id="reset-widget-style-btn" class="form-button form-button-secondary" style="flex: 1;">重置选中项</button>
+        <button id="apply-widget-style-btn" class="form-button" style="flex: 1;">应用到选中项</button>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 
                 <!-- 【【【这就是补上的、缺失的全局CSS输入框！】】】 -->
 <!-- ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼ -->
@@ -13070,13 +13532,13 @@ input[type=number]::-webkit-outer-spin-button {
             </div>
         </div>
         <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
-        <!-- ▼▼▼ 【全新】视频记录挂载开关 ▼▼▼ -->
+        <!-- ▼▼▼ 【全新V2.0 | 支持自定义次数】视频记录挂载开关 ▼▼▼ -->
         <div class="form-group" id="video-memory-mount-group">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <label for="video-memory-mount-toggle" style="margin-bottom: 0;">
                     视频记录挂载到主聊天
                     <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px;">
-                        开启后，最近一次视频通话的对话内容将被注入到AI的记忆中。
+                        开启后，最近的视频通话内容将被注入到AI的记忆中。
                     </p>
                 </label>
                 <label class="toggle-switch">
@@ -13084,8 +13546,14 @@ input[type=number]::-webkit-outer-spin-button {
                     <span class="slider"></span>
                 </label>
             </div>
+            <!-- 【核心新增】挂载次数输入框，默认隐藏 -->
+            <div id="video-memory-count-wrapper" style="display: none; margin-top: 15px;">
+                <label for="video-memory-count-input" style="font-size: 0.9em;">挂载最近几次通话记录</label>
+                <input type="number" id="video-memory-count-input" value="1" min="1" style="width: 100%; text-align: center; margin-top: 5px;">
+            </div>
         </div>
-        <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+        <!-- ▲▲▲ 替换结束 ▲▲▲ -->
+
 
         <div class="form-group" id="linked-memory-group">
             <label for="link-memory-toggle">挂载其他聊天记忆</label>
@@ -15149,9 +15617,10 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
                 // ===================================================================
         
         // ▼▼▼ 【请用这个 V30 版本】完整替换旧的 db.version(...) 代码块 ▼▼▼
-        db.version(32).stores({ 
+        db.version(33).stores({ 
             chats: '&id, isGroup, groupId, isPinned, memos, diary, appUsageLog',
-            apiConfig: '&id', 
+            apiConfig: '&id, voiceProxyUrl, voiceApiKey, voiceModel',
+ 
             globalSettings: '&id', 
             userStickers: '&id, url, name, categoryId',
             worldBooks: '&id, name, categoryId',
@@ -15178,6 +15647,9 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
     // ▼▼▼ 在这里粘贴新代码 ▼▼▼
             avatarFrames: '++id, &url', // id自增, url是唯一索引，防止重复导入
     // ▲▲▲ 粘贴结束 ▲▲▲
+        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+        tvLibrary: '++id, title, isPinned' // 用于存储视频文件和元数据
+        // ▲▲▲ 新增代码结束 ▲▲▲
 // ▲▲▲ 替换结束 ▲▲▲
 
         }).upgrade(tx => {
@@ -15203,7 +15675,7 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
             });
         });
         // ▲▲▲ 替换结束 ▲▲▲
-        
+        window.db = db;
                 // ===================================================================
                 // 3. 所有功能函数定义
                 // ===================================================================
@@ -15216,6 +15688,7 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
                     if (screenId === 'api-settings-screen') window.renderApiSettingsProxy();
                     if (screenId === 'wallpaper-screen') window.renderWallpaperScreenProxy();
                     if (screenId === 'world-book-screen') window.renderWorldBookScreenProxy();
+                    if (screenId === 'x-social-screen') window.renderXSocialScreenProxy();
                     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
                     const screenToShow = document.getElementById(screenId);
                     if (screenToShow) screenToShow.classList.add('active');
@@ -15287,7 +15760,12 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
                             break;
                     }
                 }
-                
+                    // X社交页面渲染函数
+      function renderXSocialScreen() {
+        // 暂时为空，后续添加X社交页面的渲染逻辑
+        console.log("渲染X社交页面");
+      }
+      window.renderXSocialScreenProxy = renderXSocialScreen;
                 function renderQzoneScreen() {
                     if (state && state.qzoneSettings) {
                         const settings = state.qzoneSettings;
@@ -16089,12 +16567,43 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
                     const publicTextHtml = post.publicText ? `<div class="post-content">${post.publicText.replace(/\n/g, '<br>')}</div>` : '';
                     if (post.type === 'shuoshuo') {
                         contentHtml = `<div class="post-content">${post.content.replace(/\n/g, '<br>')}</div>`;
-                    } else if (post.type === 'image_post' && post.imageUrl) {
-    const postImageUrl = post.image_prompt ? `https://image.pollinations.ai/prompt/${post.image_prompt}` : (post.imageUrl || 'https://i.postimg.cc/KYr2qRCK/1.jpg');
-    contentHtml = publicTextHtml ? `${publicTextHtml}<div style="margin-top:10px;"><img src="${postImageUrl}" class="chat-image"></div>` : `<img src="${postImageUrl}" class="chat-image">`;
-} else if (post.type === 'text_image') {
-    const postImageUrl = post.image_prompt ? `https://image.pollinations.ai/prompt/${post.image_prompt}` : 'https://i.postimg.cc/KYr2qRCK/1.jpg';
-    contentHtml = publicTextHtml ? `${publicTextHtml}<div style="margin-top:10px;"><img src="${postImageUrl}" class="chat-image" style="cursor: pointer;" data-hidden-text="${post.hiddenContent}"></div>` : `<img src="${postImageUrl}" class="chat-image" style="cursor: pointer;" data-hidden-text="${post.hiddenContent}">`;
+                } else if (post.type === 'image_post') {
+                    // --- 【【【核心修改1：在这里加入判断逻辑】】】 ---
+                    const enableGen = state.qzoneSettings.enableImageGen === true;
+                    // 漂亮的灰色占位图
+                    const placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
+                    
+                    let imageUrl;
+                    if (enableGen && post.image_prompt) {
+                        imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(post.image_prompt)}`;
+                    } else if (post.imageUrl) {
+                        // 如果有关联的图片URL（例如用户自己上传的），则总是显示它
+                        imageUrl = post.imageUrl;
+                    } else {
+                        imageUrl = placeholderImage;
+                    }
+
+                    // 将图片描述保存在 data-description 中，无论是否显示图片，点击都能查看
+                    innerContentHtml = publicTextHtml 
+                        ? `${publicTextHtml}<div style="margin-top:10px;"><img src="${imageUrl}" class="chat-image" data-description="${post.imageDescription || '无描述'}"></div>` 
+                        : `<img src="${imageUrl}" class="chat-image" data-description="${post.imageDescription || '无描述'}">`;
+                    // --- 修改结束 ---
+
+                } else if (post.type === 'text_image') {
+                    // --- 【【【核心修改2：在这里也加入判断逻辑】】】 ---
+                    const enableGen = state.qzoneSettings.enableImageGen === true;
+                    const placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
+                    
+                    const imageUrl = (enableGen && post.image_prompt) 
+                        ? `https://image.pollinations.ai/prompt/${encodeURIComponent(post.image_prompt)}`
+                        : placeholderImage;
+                    
+                    // 文字图的“详情”是它的隐藏文字
+                    innerContentHtml = publicTextHtml 
+                        ? `${publicTextHtml}<div style="margin-top:10px;"><img src="${imageUrl}" class="chat-image" style="cursor: pointer;" data-description="${post.hiddenContent}"></div>` 
+                        : `<img src="${imageUrl}" class="chat-image" style="cursor: pointer;" data-description="${post.hiddenContent}">`;
+                    // --- 修改结束 ---
+
                     }
         
                     // ▼▼▼ 新增/修改的代码开始 ▼▼▼
@@ -16669,6 +17178,9 @@ async function loadAllDataFromDB() {
         // ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼
         if (typeof chat.settings.mountVideoMemory === 'undefined') chat.settings.mountVideoMemory = false; // 默认关闭
         // ▲▲▲ 新增代码结束 ▲▲▲
+        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+        if (typeof chat.settings.videoMemoryCount === 'undefined') chat.settings.videoMemoryCount = 1; // 默认挂载1次
+        // ▲▲▲ 新增代码结束 ▲▲▲
 if (typeof chat.settings.avatarShapes === 'undefined') chat.settings.avatarShapes = []; // 默认为空数组
 // ▼▼▼ 在这里粘贴新代码 ▼▼▼
 if (typeof chat.settings.enableCustomBubbleColors === 'undefined') chat.settings.enableCustomBubbleColors = false; // 默认关闭
@@ -16723,7 +17235,8 @@ if (!chat.settings.customBubbleColors) chat.settings.customBubbleColors = { ai: 
         await db.memories.bulkPut(memoriesToUpdate);
     }
 
-    state.apiConfig = apiConfig || { id: 'main', proxyUrl: '', apiKey: '', model: '', secondaryProxyUrl: '', secondaryApiKey: '', secondaryModel: '' };
+    state.apiConfig = apiConfig || { id: 'main', proxyUrl: '', apiKey: '', model: '', secondaryProxyUrl: '', secondaryApiKey: '', secondaryModel: '', voiceProxyUrl: '', voiceApiKey: '', voiceModel: '' };
+
 // ▼▼▼ 【请用这个 V2 版本】替换旧的 state.globalSettings 初始化代码 ▼▼▼
 state.globalSettings = globalSettings || { 
     id: 'main', 
@@ -16753,6 +17266,13 @@ state.globalSettings = globalSettings || {
     // ▼▼▼ 在这里粘贴新代码 ▼▼▼
     pendantSettings: {} ,// 【核心新增】初始化挂坠设置
     // ▲▲▲ 粘贴结束 ▲▲▲
+    // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+    enableCustomTime: false, // 是否启用自定义时间
+    customTime: '' ,          // 存储自定义时间的ISO字符串
+    // ▲▲▲ 新增代码结束 ▲▲▲
+    // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+    widgetStyles: {},         // 【核心新增】用于存储主屏幕卡片的自定义样式
+    // ▲▲▲ 新增代码结束 ▲▲▲
     // ▼▼▼ 在这里粘贴新代码 ▼▼▼
     backgroundActivityChatIds: [], // 【核心新增】初始化后台活动的角色白名单
     // ▲▲▲ 粘贴结束 ▲▲▲
@@ -16786,10 +17306,28 @@ if (!state.globalSettings.widgetData) {
         isCelebrity: false,   // 名人开关状态
         publicPersona: '',     // 网络人设
         forceMention: false,         // 强制提及开关状态
-        mentionIntensity: 'light'    // 提及强度
-
+        mentionIntensity: 'light',    // 提及强度
+        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+        walletBalance: 520, // 用户的钱包余额
+        // ▲▲▲ 新增代码结束 ▲▲▲
+        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+        walletTransactions: [], // 用户的钱包交易记录
+        // ▲▲▲ 新增代码结束 ▲▲▲
+        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+        enableImageGen: false // 动态页面的AI生图开关，默认关闭
+        // ▲▲▲ 新增代码结束 ▲▲▲
     };
     state.qzoneSettings = { ...defaultQzoneSettings, ...(qzoneSettings || {}) };
+    // 【核心新增】为旧数据兼容钱包余额字段
+    if (typeof state.qzoneSettings.walletBalance === 'undefined') {
+        state.qzoneSettings.walletBalance = 520;
+    }
+    // ▲▲▲ 新增代码结束 ▲▲▲
+    // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+    if (!state.qzoneSettings.walletTransactions) {
+        state.qzoneSettings.walletTransactions = [];
+    }
+    // ▲▲▲ 新增代码结束 ▲▲▲
     // 确保从旧数据加载时，forumProfile和followersList也存在
     if (!state.qzoneSettings.forumProfile) {
         state.qzoneSettings.forumProfile = { followersList: [] };
@@ -16965,6 +17503,12 @@ if (!state.globalSettings.widgetData) {
                     preset.secondaryProxyUrl === currentConfig.secondaryProxyUrl &&
                     preset.secondaryApiKey === currentConfig.secondaryApiKey &&
                     preset.secondaryModel === currentConfig.secondaryModel
+                // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+                &&
+                preset.voiceProxyUrl === currentConfig.voiceProxyUrl &&
+                preset.voiceApiKey === currentConfig.voiceApiKey &&
+                preset.voiceModel === currentConfig.voiceModel
+                // ▲▲▲ 新增代码结束 ▲▲▲
                 ) {
                     matchingPresetId = preset.id;
                     break;
@@ -17000,7 +17544,12 @@ if (!state.globalSettings.widgetData) {
                     model: preset.model,
                     secondaryProxyUrl: preset.secondaryProxyUrl,
                     secondaryApiKey: preset.secondaryApiKey,
-                    secondaryModel: preset.secondaryModel
+                    secondaryModel: preset.secondaryModel,
+                // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+                voiceProxyUrl: preset.voiceProxyUrl,
+                voiceApiKey: preset.voiceApiKey,
+                voiceModel: preset.voiceModel
+                // ▲▲▲ 新增代码结束 ▲▲▲
                 };
                 // 将加载的配置保存为当前正在使用的配置
                 await db.apiConfig.put(state.apiConfig);
@@ -17030,7 +17579,12 @@ if (!state.globalSettings.widgetData) {
                 model: document.getElementById('model-select').value,
                 secondaryProxyUrl: document.getElementById('secondary-proxy-url').value.trim(),
                 secondaryApiKey: document.getElementById('secondary-api-key').value.trim(),
-                secondaryModel: document.getElementById('secondary-model-select').value
+                secondaryModel: document.getElementById('secondary-model-select').value,
+            // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+            voiceProxyUrl: document.getElementById('voice-proxy-url').value.trim(),
+            voiceApiKey: document.getElementById('voice-api-key').value.trim(),
+            voiceModel: document.getElementById('voice-model-select').value
+            // ▲▲▲ 新增代码结束 ▲▲▲
             };
         
             // 检查是否已存在同名预设
@@ -17083,6 +17637,11 @@ function renderApiSettings() {
     
     document.getElementById('background-interval-input').value = state.globalSettings.backgroundActivityInterval || 60;
     document.getElementById('block-cooldown-input').value = state.globalSettings.blockCooldownHours || 1;
+    // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+    // 【核心新增】渲染语音模型设置
+    document.getElementById('voice-proxy-url').value = state.apiConfig.voiceProxyUrl || '';
+    document.getElementById('voice-api-key').value = state.apiConfig.voiceApiKey || '';
+    // ▲▲▲ 新增代码结束 ▲▲▲
 
     // --- 【【【这是本次的核心修改】】】 ---
     const chatsGroup = document.getElementById('background-activity-chats-group');
@@ -18805,8 +19364,9 @@ applyCustomBubbleColors(chat); // 应用自定义颜色
                 //                  ★★★ 核心修复代码到此结束 ★★★
                 // =========================================================================
         
-                const now = new Date();
-                const chinaTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3600000 * 8));
+                            const now = getCurrentEffectiveTime(); // <--- 核心修改
+            const chinaTime = now; // <--- 核心修改 (新函数已处理好时区，无需转换)
+
                 const currentTime = chinaTime.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', dateStyle: 'full', timeStyle: 'short' });
                 const timeOfDayGreeting = getTimeOfDayGreeting(chinaTime);
                 const userXhsId = state.qzoneSettings.xhsId || '未知ID'; // 【核心修复】定义缺失的变量
@@ -18845,32 +19405,50 @@ if (lastBookId && chat.coReading?.[lastBookId]?.mountToMainChat) {
     }
 }
 // ▲▲▲ 新增代码结束 ▲▲▲
-        // ▼▼▼ 【全新】视频通话记录挂载逻辑 ▼▼▼
+        // ▼▼▼ 【全新V2.0 | 支持自定义次数】视频通话记录挂载逻辑 ▼▼▼
         let videoCallContext = '';
         // 1. 检查开关是否开启
         if (chat.settings.mountVideoMemory === true) {
-            // 2. 从数据库中获取这个聊天ID的【最新一条】通话记录
-            const lastCallRecord = await db.callRecords.where('chatId').equals(chatId).last();
+            const countToMount = chat.settings.videoMemoryCount || 1;
             
-            // 3. 如果找到了记录，并且里面有文字稿
-            if (lastCallRecord && lastCallRecord.transcript && lastCallRecord.transcript.length > 0) {
-                // 4. 将文字稿格式化为AI易于理解的对话格式
-                const transcriptText = lastCallRecord.transcript.map(entry => {
-                    const sender = entry.role === 'user' ? (chat.settings.myNickname || '我') : (entry.senderName || chat.name);
-                    return `${sender}: ${entry.content}`;
-                }).join('\n');
+            // 2. 从数据库中获取这个聊天ID的【最近N条】通话记录
+            const recentCallRecords = await db.callRecords
+                .where('chatId').equals(chatId)
+                .reverse() // 按时间倒序
+                .limit(countToMount) // 获取指定的数量
+                .toArray();
+            
+            // 3. 如果找到了任何记录
+            if (recentCallRecords && recentCallRecords.length > 0) {
+                let allTranscriptsText = '';
                 
-                // 5. 构建注入到Prompt的上下文文本
-                videoCallContext = `
-# 附加上下文：最近一次的视频通话记录
--   你和用户最近进行了一次视频通话，以下是通话的文字记录。
--   你【必须】记住这次通话中发生的事情，并在接下来的对话中自然地提及或表现出你记得这些内容。
+                // 4. 遍历每一条记录，并将它们拼接成一个完整的上下文
+                recentCallRecords.forEach((record, index) => {
+                    if (record.transcript && record.transcript.length > 0) {
+                        const transcriptText = record.transcript.map(entry => {
+                            const sender = entry.role === 'user' ? (chat.settings.myNickname || '我') : (entry.senderName || chat.name);
+                            return `${sender}: ${entry.content}`;
+                        }).join('\n');
+
+                        // 为每一段通话记录添加标题和时间
+                        allTranscriptsText += `
 ---
-[视频通话记录开始]
+[ 第 ${index + 1} 段通话记录 (发生于: ${new Date(record.timestamp).toLocaleString()}) ]
 ${transcriptText}
-[视频通话记录结束]
 ---
 `;
+                    }
+                });
+
+                // 5. 如果拼接后有内容，则构建最终注入到Prompt的上下文文本
+                if (allTranscriptsText.trim()) {
+                    videoCallContext = `
+# 附加上下文：最近 ${recentCallRecords.length} 次的视频通话记录
+-   你和用户最近进行了视频通话，以下是通话的文字记录。
+-   你【必须】记住这些通话中发生的事情，并在接下来的对话中自然地提及或表现出你记得这些内容。
+${allTranscriptsText}
+`;
+                }
             }
         }
         // ▲▲▲ 新增代码结束 ▲▲▲
@@ -20952,7 +21530,59 @@ if (qzoneActionTaken) {
         
                 async function sendSticker(sticker) { if (!state.activeChatId) return; const chat = state.chats[state.activeChatId]; const msg = { role: 'user', content: sticker.url, meaning: sticker.name, timestamp: Date.now() }; chat.history.push(msg); await db.chats.put(chat); appendMessage(msg, chat); renderChatList(); document.getElementById('sticker-panel').classList.remove('visible'); }
         
-                async function sendUserTransfer() { if (!state.activeChatId) return; const amountInput = document.getElementById('transfer-amount'); const noteInput = document.getElementById('transfer-note'); const amount = parseFloat(amountInput.value); const note = noteInput.value.trim(); if (isNaN(amount) || amount < 0 || amount > 999999) { alert('请输入有效的金额 (0 到 999999 之间)！'); return; } const chat = state.chats[state.activeChatId]; const senderName = chat.isGroup ? (chat.settings.myNickname || '我') : '我'; const receiverName = chat.isGroup ? '群聊' : chat.name; const msg = { role: 'user', type: 'transfer', amount: amount, note: note, senderName, receiverName, timestamp: Date.now() }; chat.history.push(msg); await db.chats.put(chat); appendMessage(msg, chat); renderChatList(); document.getElementById('transfer-modal').classList.remove('visible'); amountInput.value = ''; noteInput.value = ''; }
+// ▼▼▼ 【全新V2.0 | 钱包联动版】请用此函数替换旧的 sendUserTransfer 函数 ▼▼▼
+async function sendUserTransfer() { 
+    if (!state.activeChatId) return; 
+
+    const amountInput = document.getElementById('transfer-amount'); 
+    const noteInput = document.getElementById('transfer-note'); 
+    const amount = parseFloat(amountInput.value); 
+    const note = noteInput.value.trim(); 
+
+    if (isNaN(amount) || amount <= 0 || amount > 999999999999999999999999999999) { 
+        alert('请输入有效的金额 (0.01 到 99999999999999999999999999999 之间)！'); 
+        return; 
+    }
+    
+    // --- 【【【核心修改1：余额检查】】】 ---
+    const currentBalance = state.qzoneSettings.walletBalance || 0;
+    if (amount > currentBalance) {
+        await showCustomAlert("操作失败", `余额不足！您的当前余额为 ¥${currentBalance.toFixed(2)}，不足以支付 ¥${amount.toFixed(2)}。`);
+        return;
+    }
+
+    const chat = state.chats[state.activeChatId]; 
+    const senderName = chat.isGroup ? (chat.settings.myNickname || '我') : '我'; 
+    const receiverName = chat.isGroup ? '群聊' : chat.name; 
+    const msg = { role: 'user', type: 'transfer', amount: amount, note: note, senderName, receiverName, timestamp: Date.now() }; 
+
+    // --- 【【【核心修改2：扣款与记录】】】 ---
+    // 1. 扣除余额
+    state.qzoneSettings.walletBalance -= amount;
+    // 2. 创建交易记录
+    const transaction = {
+        type: 'expense',
+        amount: amount,
+        description: `转账给 ${receiverName}`,
+        note: note,
+        timestamp: msg.timestamp
+    };
+    // 3. 将新记录添加到列表开头
+    state.qzoneSettings.walletTransactions.unshift(transaction);
+    // 4. 保存更新后的用户设置
+    await db.qzoneSettings.put(state.qzoneSettings);
+
+    // --- （后续逻辑保持不变） ---
+    chat.history.push(msg); 
+    await db.chats.put(chat); 
+    appendMessage(msg, chat); 
+    renderChatList(); 
+    document.getElementById('transfer-modal').classList.remove('visible'); 
+    amountInput.value = ''; 
+    noteInput.value = ''; 
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
         /**
          * 【全新 V3.0】发送一个位置共享卡片 (背景图已内置)
          */
@@ -21624,7 +22254,8 @@ function runBackgroundSimulationTick() {
             if (!proxyUrl || !apiKey || !model) return;
         
             const userNickname = state.qzoneSettings.nickname;
-            const now = new Date();
+                    const now = getCurrentEffectiveTime(); // <--- 核心修改
+
             let timeContextText;
             let recentContextSummary; 
             let longTimeNoSee = false;
@@ -22215,7 +22846,8 @@ for (const action of responseArray) {
             if (!proxyUrl || !apiKey || !model) return;
         
             const myNickname = chat.settings.myNickname || '我';
-            const now = new Date();
+                    const now = getCurrentEffectiveTime(); // <--- 核心修改
+
             
             // ★★★ 核心修复开始 ★★★
             let systemPrompt;
@@ -24555,57 +25187,74 @@ async function endVideoCall() {
          * 处理用户接受或拒绝转账的逻辑
          * @param {string} choice - 用户的选择, 'accepted' 或 'declined'
          */
-        async function handleUserTransferResponse(choice) {
-            if (!activeTransferTimestamp) return;
-        
-            const timestamp = activeTransferTimestamp;
-            const chat = state.chats[state.activeChatId];
-            const messageIndex = chat.history.findIndex(m => m.timestamp === timestamp);
-            if (messageIndex === -1) return;
-        
-            // 1. 更新原始转账消息的状态
-            const originalMessage = chat.history[messageIndex];
-            originalMessage.status = choice;
-        
-            let systemContent;
-        
-            // 2. 如果用户选择“拒绝”
-            if (choice === 'declined') {
-                // 立刻在前端生成一个“退款”卡片，让用户看到
-                const refundMessage = {
-                    role: 'user',
-                    type: 'transfer',
-                    isRefund: true, // 这是一个关键标记，用于UI显示这是退款
-                    amount: originalMessage.amount,
-                    note: '已拒收对方转账',
-                    timestamp: Date.now()
-                };
-                chat.history.push(refundMessage);
-                
-                // 准备一条对AI可见的隐藏消息，告诉它发生了什么
-                systemContent = `[系统提示：你拒绝并退还了“${originalMessage.senderName}”的转账。]`;
-            } else { // 如果用户选择“接受”
-                // 只需准备隐藏消息通知AI即可
-                systemContent = `[系统提示：你接受了“${originalMessage.senderName}”的转账。]`;
-            }
-        
-            // 3. 创建这条对用户隐藏、但对AI可见的系统消息
-            const hiddenMessage = {
-                role: 'system',
-                content: systemContent,
-                timestamp: Date.now() + 1, // 保证时间戳在退款消息之后
-                isHidden: true // 这个标记会让它不在聊天界面显示
-            };
-            chat.history.push(hiddenMessage);
-        
-            // 4. 保存所有更改到数据库，并刷新界面
-            await db.chats.put(chat);
-            hideTransferActionModal(); 
-            renderChatInterface(state.activeChatId);
-            renderChatList();
-        }
-        
-        // ▲▲▲ 新函数粘贴结束 ▲▲▲
+// ▼▼▼ 【全新V2.0 | 钱包联动版】请用此函数替换旧的 handleUserTransferResponse 函数 ▼▼▼
+async function handleUserTransferResponse(choice) {
+    if (!activeTransferTimestamp) return;
+
+    const timestamp = activeTransferTimestamp;
+    const chat = state.chats[state.activeChatId];
+    const messageIndex = chat.history.findIndex(m => m.timestamp === timestamp);
+    if (messageIndex === -1) return;
+
+    const originalMessage = chat.history[messageIndex];
+    originalMessage.status = choice;
+
+    let systemContent;
+    const myNickname = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
+
+    // --- 【【【核心修改：在这里处理资金和记录】】】 ---
+    if (choice === 'accepted') {
+        // 1. 增加余额
+        state.qzoneSettings.walletBalance += originalMessage.amount;
+        // 2. 创建入账记录
+        const transaction = {
+            type: 'income',
+            amount: originalMessage.amount,
+            description: `收到来自 ${originalMessage.senderName} 的转账`,
+            note: originalMessage.note,
+            timestamp: Date.now()
+        };
+        state.qzoneSettings.walletTransactions.unshift(transaction);
+        systemContent = `[系统提示：你接受了“${originalMessage.senderName}”的转账。]`;
+
+    } else { // 'declined'
+        // 1. 创建“拒收”记录
+        const transaction = {
+            type: 'info', // 使用新的'info'类型
+            amount: originalMessage.amount,
+            description: `拒收了来自 ${originalMessage.senderName} 的转账`,
+            note: originalMessage.note,
+            timestamp: Date.now()
+        };
+        state.qzoneSettings.walletTransactions.unshift(transaction);
+        // 2. 生成退款消息 (这部分逻辑不变)
+        const refundMessage = {
+            role: 'user', type: 'transfer', isRefund: true,
+            amount: originalMessage.amount, note: '已拒收对方转账', timestamp: Date.now() + 1
+        };
+        chat.history.push(refundMessage);
+        systemContent = `[系统提示：你拒绝并退还了“${originalMessage.senderName}”的转账。]`;
+    }
+    
+    // --- （后续逻辑保持不变，但现在会保存 qzoneSettings） ---
+    const hiddenMessage = {
+        role: 'system', content: systemContent,
+        timestamp: Date.now() + 2, isHidden: true
+    };
+    chat.history.push(hiddenMessage);
+
+    // 一次性保存两个数据库的更新
+    await Promise.all([
+        db.chats.put(chat),
+        db.qzoneSettings.put(state.qzoneSettings)
+    ]);
+    
+    hideTransferActionModal(); 
+    renderChatInterface(state.activeChatId);
+    renderChatList();
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
         // ▼▼▼ 【全新】清除动态回复状态并重置输入框 ▼▼▼
         function clearQzoneReplyContext(postContainer) {
             currentQzoneReplyContext = null;
@@ -30299,8 +30948,9 @@ async function handlePropelAction() {
         const maxMemory = parseInt(chat.settings.maxMemory) || 10;
         const historySlice = chat.history.slice(-maxMemory);
 
-        const now = new Date();
-        const chinaTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3600000 * 8));
+                   const now = getCurrentEffectiveTime(); // <--- 核心修改
+            const chinaTime = now; // <--- 核心修改 (新函数已处理好时区，无需转换)
+
         const currentTime = chinaTime.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', dateStyle: 'full', timeStyle: 'short' });
         const timeOfDayGreeting = getTimeOfDayGreeting(chinaTime);
         const userXhsId = state.qzoneSettings.xhsId || '未知ID'; // 【核心修复】定义缺失的变量
@@ -36694,6 +37344,9 @@ async function startCoReadingSession(charId) {
     coReadingMessagesEl.dataset.theme = chat.settings.theme || 'default';
     
     coReadingWindow.style.display = 'flex';
+    // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+    document.getElementById('co-reading-bottom-actions').style.display = 'flex'; // 默认显示操作栏
+    // ▲▲▲ 新增代码结束 ▲▲▲
 
     if (loadedHistory.length === 0) {
         await triggerCoReadingAiResponse(true);
@@ -40981,7 +41634,16 @@ const drawingBoard = {
     // 切换画笔类型
     setPenType(type) {
         this.penType = type;
+    },
+    // ▼▼▼ 【全新】在这里粘贴下面的新方法 ▼▼▼
+    // 清空整个画布
+    clearCanvas() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.history = []; // 彻底清空历史记录
+        this.saveState();  // 保存一个全新的空白状态
     }
+    // ▲▲▲ 新增代码结束 ▲▲▲
+
 };
 
 // ▲▲▲ 新增JS代码结束 ▲▲▲
@@ -41307,6 +41969,626 @@ function openMessageManager(mode) {
             // 操作完成后关闭弹窗
             document.getElementById('draw-guess-message-manager-modal').classList.remove('visible');
         }
+// ▼▼▼ 【全新】用户钱包功能核心代码 ▼▼▼
+
+/**
+ * 【总入口】打开用户钱包屏幕
+ */
+function openWalletScreen() {
+    renderWalletScreen();
+    showScreen('wallet-screen');
+}
+
+// ▼▼▼ 【全新V2.0 | 支持交易记录】请用此函数替换旧的 renderWalletScreen 函数 ▼▼▼
+function renderWalletScreen() {
+    // 1. 渲染余额 (逻辑不变)
+    const balance = state.qzoneSettings.walletBalance || 0;
+    document.getElementById('user-wallet-balance').textContent = balance.toFixed(2);
+
+    // 2. 渲染交易列表
+    const listEl = document.getElementById('wallet-transaction-list');
+    listEl.innerHTML = '';
+    const transactions = state.qzoneSettings.walletTransactions || [];
+
+    if (transactions.length === 0) {
+        listEl.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 30px 0;">还没有任何交易记录。</p>';
+        return;
+    }
+
+    // 按时间从新到旧排序
+    transactions.sort((a, b) => b.timestamp - a.timestamp);
+
+    transactions.forEach(item => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'wallet-transaction-item';
+
+        const date = new Date(item.timestamp);
+        const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        
+        let iconHtml = '', amountHtml = '';
+        switch (item.type) {
+            case 'income':
+                iconHtml = '<div class="transaction-icon income">收</div>';
+                amountHtml = `<div class="transaction-amount income">+${item.amount.toFixed(2)}</div>`;
+                break;
+            case 'expense':
+                iconHtml = '<div class="transaction-icon expense">付</div>';
+                amountHtml = `<div class="transaction-amount expense">-${item.amount.toFixed(2)}</div>`;
+                break;
+            case 'refund':
+                iconHtml = '<div class="transaction-icon refund">退</div>';
+                amountHtml = `<div class="transaction-amount refund">+${item.amount.toFixed(2)}</div>`;
+                break;
+            default: // info
+                iconHtml = '<div class="transaction-icon info">i</div>';
+                amountHtml = `<div class="transaction-amount info">¥${item.amount.toFixed(2)}</div>`;
+                break;
+        }
+
+        itemEl.innerHTML = `
+            ${iconHtml}
+            <div class="transaction-details">
+                <div class="transaction-description">${item.description}</div>
+                <div class="transaction-date">${dateString}</div>
+                ${item.note ? `<div class="transaction-note">备注: ${item.note}</div>` : ''}
+            </div>
+            ${amountHtml}
+        `;
+        listEl.appendChild(itemEl);
+    });
+}
+// ▲▲▲ 替换结束 ▲▲▲
+// ▼▼▼ 【全新】一次性数据迁移函数 ▼▼▼
+/**
+ * 扫描所有聊天记录，将旧的转账消息迁移到钱包交易记录中。
+ * 此函数只在用户首次更新并加载时执行一次。
+ */
+async function migrateOldTransfersToWallet() {
+    // 1. 检查是否需要迁移
+    // 如果已有交易记录，或者根本没有聊天，就直接退出
+    if ((state.qzoneSettings.walletTransactions && state.qzoneSettings.walletTransactions.length > 0) || Object.keys(state.chats).length === 0) {
+        console.log("钱包数据迁移：无需执行。");
+        return;
+    }
+    
+    console.log("钱包数据迁移：检测到旧版本数据，开始迁移...");
+    let newTransactions = [];
+
+    // 2. 遍历所有聊天记录
+    for (const chat of Object.values(state.chats)) {
+        for (const msg of chat.history) {
+            if (msg.type === 'transfer') {
+                let transaction = null;
+                if (msg.role === 'user') { // 用户发出的转账
+                    transaction = {
+                        type: 'expense',
+                        amount: msg.amount,
+                        description: `转账给 ${msg.receiverName || chat.name}`,
+                        note: msg.note,
+                        timestamp: msg.timestamp
+                    };
+                } else { // 用户收到的转账
+                    if (msg.status === 'accepted') {
+                        transaction = {
+                            type: 'income',
+                            amount: msg.amount,
+                            description: `收到来自 ${msg.senderName} 的转账`,
+                            note: msg.note,
+                            timestamp: msg.timestamp 
+                        };
+                    } else if (msg.status === 'declined') {
+                        transaction = {
+                            type: 'info',
+                            amount: msg.amount,
+                            description: `拒收了来自 ${msg.senderName} 的转账`,
+                            note: msg.note,
+                            timestamp: msg.timestamp
+                        };
+                    }
+                }
+                if (transaction) {
+                    newTransactions.push(transaction);
+                }
+            }
+        }
+    }
+
+    // 3. 如果找到了需要迁移的数据
+    if (newTransactions.length > 0) {
+        // 4. 将新生成的交易记录存入 state 和数据库
+        state.qzoneSettings.walletTransactions = newTransactions;
+        await db.qzoneSettings.put(state.qzoneSettings);
+        console.log(`钱包数据迁移：成功迁移了 ${newTransactions.length} 条交易记录。`);
+    } else {
+        console.log("钱包数据迁移：未找到可迁移的转账记录。");
+    }
+}
+// ▲▲▲ 新增代码结束 ▲▲▲
+
+// ▼▼▼ 【全新】修改钱包余额的核心功能函数 ▼▼▼
+/**
+ * 处理用户点击“修改余额”按钮的逻辑
+ */
+async function handleModifyWalletBalance() {
+    // 1. 获取当前余额，用于在弹窗中作为默认值显示
+    const currentBalance = state.qzoneSettings.walletBalance || 0;
+
+    // 2. 弹出输入框，让用户输入新的余额
+    const newBalanceStr = await showCustomPrompt(
+        "修改钱包余额", 
+        "请输入新的余额",
+        currentBalance.toFixed(2), // 将当前余额格式化后作为默认值
+        "number" // 指定输入框类型为数字
+    );
+
+    // 3. 如果用户点击了“取消”，则直接退出
+    if (newBalanceStr === null) return;
+
+    // 4. 将用户输入的字符串转换为数字，并进行合法性验证
+    const newBalance = parseFloat(newBalanceStr);
+    if (isNaN(newBalance) || newBalance < 0) {
+        alert("请输入一个有效的非负数金额！");
+        return;
+    }
+
+    // 5. 更新内存中的余额数据
+    state.qzoneSettings.walletBalance = newBalance;
+
+    // 6. 将包含最新余额的整个设置对象，永久保存到数据库
+    await db.qzoneSettings.put(state.qzoneSettings);
+
+    // 7. 重新渲染钱包页面，让新余额立即显示出来
+    renderWalletScreen();
+
+    // 8. 给出成功的提示
+    await showCustomAlert("成功", `钱包余额已成功修改为 ¥${newBalance.toFixed(2)}`);
+}
+// ▲▲▲ 新增JS代码结束 ▲▲▲
+// ▼▼▼ 【全新】自定义时间功能核心代码 ▼▼▼
+
+/**
+ * 【总入口】打开自定义时间设置屏幕
+ */
+function openTimeSettingsScreen() {
+    renderTimeSettingsScreen();
+    showScreen('time-settings-screen');
+}
+
+/**
+ * 【辅助】渲染自定义时间设置页面的UI
+ */
+function renderTimeSettingsScreen() {
+    const settings = state.globalSettings;
+    const timeInput = document.getElementById('custom-time-input');
+    const toggle = document.getElementById('enable-custom-time-toggle');
+
+    // 1. 设置开关的状态
+    toggle.checked = settings.enableCustomTime || false;
+        // 2. 将保存的时间值（如果存在）填充到输入框中
+        if (settings.customTime) {
+            const date = new Date(settings.customTime);
+
+            // --- 【【【核心修复就在这里！】】】 ---
+            // toISOString() 会将时间转换为UTC零时区，导致显示错误。
+            // 我们需要手动获取本地时间的各个部分，并拼接成输入框需要的格式。
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从0开始，所以+1
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+
+            // 拼接成 <input type="datetime-local"> 需要的 YYYY-MM-DDTHH:mm 格式
+            const localDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+            
+            timeInput.value = localDateTime;
+            // --- 【【【修复结束】】】 ---
+
+        } else {
+            timeInput.value = ''; // 如果没有保存过，则清空
+        }
+
+}
+
+/**
+ * 【核心】保存自定义时间设置
+ */
+async function saveTimeSettings() {
+    const timeInput = document.getElementById('custom-time-input').value;
+    const toggle = document.getElementById('enable-custom-time-toggle').checked;
+
+    // 1. 更新内存中的 state
+    state.globalSettings.enableCustomTime = toggle;
+    state.globalSettings.customTime = timeInput ? new Date(timeInput).toISOString() : '';
+
+    // 2. 将包含最新时间设置的整个 globalSettings 对象保存到数据库
+    await db.globalSettings.put(state.globalSettings);
+
+    // 3. 给出成功提示
+    await showCustomAlert("保存成功", "自定义时间设置已保存！");
+    
+    // 4. 返回主屏幕
+    showScreen('home-screen');
+}
+
+/**
+ * 【辅助】获取当前应该被AI感知到的时间
+ * @returns {Date} - 返回 Date 对象
+ */
+function getCurrentEffectiveTime() {
+    const settings = state.globalSettings;
+    // 如果开关开启，并且设置了有效的时间，则使用自定义时间
+    if (settings.enableCustomTime && settings.customTime) {
+        return new Date(settings.customTime);
+    }
+    // 否则，返回真实的当前时间
+    return new Date();
+}
+
+// ▲▲▲ 新增JS代码结束 ▲▲▲
+// ▼▼▼ 【全新】电视机App功能核心代码 ▼▼▼
+
+let isTvManagementMode = false;
+let selectedVideoIds = new Set();
+let currentVideoUrl = null; // 用于在关闭播放器时释放内存
+
+/**
+ * 【总入口】打开电视机App
+ */
+async function openTvScreen() {
+    isTvManagementMode = false; // 每次进入都重置状态
+    updateTvManagementUI();
+    await renderTvBookshelf();
+    showScreen('tv-screen');
+}
+
+/**
+ * 渲染电视机“片库”的所有视频
+ */
+async function renderTvBookshelf() {
+    const gridEl = document.getElementById('tv-bookshelf-grid');
+    gridEl.innerHTML = '';
+    let videos = await db.tvLibrary.toArray();
+
+    if (videos.length === 0) {
+        gridEl.innerHTML = '<p style="text-align:center; color: var(--text-secondary); grid-column: 1 / -1; padding: 50px 0;">片库是空的，点击右上角菜单导入第一部影片吧！</p>';
+        return;
+    }
+
+    // 置顶的排在最前面
+    videos.sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
+
+    videos.forEach(video => {
+        const item = document.createElement('div');
+        item.className = 'tv-item';
+        item.dataset.videoId = video.id;
+        if (video.isPinned) {
+            item.classList.add('pinned');
+        }
+
+        // 默认显示电影图标
+        let coverHtml = `<div class="video-cover">🎬</div>`;
+
+        item.innerHTML = `
+            <span class="video-pin-icon">📌</span>
+            ${coverHtml}
+            <span class="video-title">${video.title}</span>
+            <div class="video-select-checkbox"></div>
+        `;
+        gridEl.appendChild(item);
+    });
+}
+
+/**
+ * 【核心】播放指定的视频
+ * @param {number} videoId - 视频在数据库中的ID
+ */
+async function playVideo(videoId) {
+    const videoRecord = await db.tvLibrary.get(videoId);
+    if (!videoRecord || !videoRecord.file) {
+        alert("找不到视频文件，可能已被删除或损坏。");
+        return;
+    }
+
+    const player = document.getElementById('main-video-player');
+    const titleEl = document.getElementById('video-player-title');
+    
+    // 如果之前有播放的URL，先释放掉，防止内存泄漏
+    if (currentVideoUrl) {
+        URL.revokeObjectURL(currentVideoUrl);
+    }
+
+    // 【关键】使用 URL.createObjectURL 从 File 对象创建可播放的链接
+    // 这种方式不会将整个大文件读入内存，可以轻松处理几GB的大文件
+    currentVideoUrl = URL.createObjectURL(videoRecord.file);
+    
+    titleEl.textContent = videoRecord.title;
+    player.src = currentVideoUrl;
+    showScreen('video-player-screen');
+    player.play(); // 自动播放
+}
+
+/**
+ * 【核心】处理视频文件导入
+ * @param {Event} event - 文件输入框的 change 事件
+ */
+async function handleVideoImport(event) {
+    const files = event.target.files;
+    if (!files.length) return;
+
+    await showCustomAlert("请稍候...", `正在导入 ${files.length} 个视频文件...`);
+
+    let importedCount = 0;
+    for (const file of files) {
+        try {
+            // 只处理视频文件
+            if (file.type.startsWith('video/')) {
+                const defaultTitle = file.name.replace(/\.[^/.]+$/, "").trim();
+                const title = await showCustomPrompt(`为视频命名`, "请输入影片标题：", defaultTitle);
+                
+                if (title && title.trim()) {
+                    // 【关键】直接将 File 对象存入数据库
+                    await db.tvLibrary.add({
+                        title: title.trim(),
+                        file: file, // 直接存储文件对象
+                        isPinned: false,
+                        createdAt: Date.now()
+                    });
+                    importedCount++;
+                }
+            } else if (file.name.endsWith('.json')) {
+                // (此处为导出功能的对应部分，逻辑与阅读器类似)
+                // 此处省略，因为导出的是元数据，而不是视频文件本身
+            }
+        } catch (error) {
+            console.error(`导入文件 "${file.name}" 失败:`, error);
+        }
+    }
+    
+    await renderTvBookshelf();
+    await showCustomAlert("导入完成", `成功导入 ${importedCount} 部影片！`);
+    event.target.value = null; // 清空输入框
+}
+
+
+/**
+ * 切换电视机App的管理模式UI
+ */
+function updateTvManagementUI() {
+    const screen = document.getElementById('tv-screen');
+    const manageBtn = document.getElementById('tv-manage-btn');
+    const actionBar = document.getElementById('tv-action-bar');
+    
+    screen.classList.toggle('management-mode', isTvManagementMode);
+    manageBtn.textContent = isTvManagementMode ? '完成' : '管理';
+    actionBar.style.display = isTvManagementMode ? 'flex' : 'none';
+
+    if (!isTvManagementMode) {
+        selectedVideoIds.clear();
+        document.querySelectorAll('.tv-item.selected').forEach(el => el.classList.remove('selected'));
+        document.getElementById('tv-select-all-checkbox').checked = false;
+    }
+}
+
+/**
+ * 导出选中的视频元数据
+ */
+async function exportSelectedVideos() {
+    if (selectedVideoIds.size === 0) { alert("请先选择要导出的影片。"); return; }
+    // 注意：我们只导出元数据，不导出视频文件本身
+    const videosToExport = await db.tvLibrary.where('id').anyOf([...selectedVideoIds]).toArray();
+    // 清除文件对象，避免JSON序列化问题
+    const metadataToExport = videosToExport.map(({ file, ...rest }) => rest);
+    exportBooks(metadataToExport, `EPhone-影片列表-${metadataToExport.length}部.json`);
+}
+
+/**
+ * 置顶/取消置顶选中的视频
+ */
+async function handlePinSelectedVideos() {
+    if (selectedVideoIds.size === 0) { alert("请先选择要操作的影片。"); return; }
+    
+    const firstVideoId = [...selectedVideoIds][0];
+    const firstVideo = await db.tvLibrary.get(firstVideoId);
+    const shouldPin = !firstVideo.isPinned;
+
+    await db.tvLibrary.where('id').anyOf([...selectedVideoIds]).modify({ isPinned: shouldPin });
+
+    await renderTvBookshelf();
+    isTvManagementMode = false;
+    updateTvManagementUI();
+    alert(`已成功${shouldPin ? '置顶' : '取消置顶'}选中的影片！`);
+}
+
+/**
+ * 删除选中的视频
+ */
+async function handleDeleteSelectedVideos() {
+    if (selectedVideoIds.size === 0) { alert("请先选择要删除的影片。"); return; }
+    const confirmed = await showCustomConfirm('确认删除', `确定要永久删除这 ${selectedVideoIds.size} 部影片吗？此操作不可恢复。`, { confirmButtonClass: 'btn-danger' });
+    if (confirmed) {
+        await db.tvLibrary.bulkDelete([...selectedVideoIds]);
+        await renderTvBookshelf();
+        isTvManagementMode = false;
+        updateTvManagementUI();
+    }
+}
+
+// ▲▲▲ 新增JS代码结束 ▲▲▲
+// ▼▼▼ 【全新】好友动态设置功能核心代码 ▼▼▼
+
+/**
+ * 【总入口】打开好友动态设置弹窗
+ */
+function openQzoneSettingsModal() {
+    const settings = state.qzoneSettings || {};
+    // 根据保存的状态，初始化开关
+    document.getElementById('qzone-image-gen-toggle').checked = settings.enableImageGen || false;
+    // 显示弹窗
+    document.getElementById('qzone-settings-modal').classList.add('visible');
+}
+
+/**
+ * 【核心】保存好友动态的设置
+ */
+async function saveQzoneSettingsFromModal() {
+    if (!state.qzoneSettings) state.qzoneSettings = {};
+
+    // 1. 获取开关的新状态
+    const newSetting = document.getElementById('qzone-image-gen-toggle').checked;
+    state.qzoneSettings.enableImageGen = newSetting;
+
+    // 2. 将包含最新设置的整个 qzoneSettings 对象保存到数据库
+    await db.qzoneSettings.put(state.qzoneSettings);
+
+    // 3. 关闭弹窗
+    document.getElementById('qzone-settings-modal').classList.remove('visible');
+
+    // 4. 【重要】重新渲染动态列表，以立即应用新的图片显示规则
+    await renderQzonePosts();
+
+    // 5. 给出成功提示
+    await showCustomAlert("设置已保存", `动态AI图片生成已${newSetting ? '开启' : '关闭'}。`);
+}
+
+// ▲▲▲ 新增JS代码结束 ▲▲▲
+// ▼▼▼ 【全新】主屏幕卡片自定义功能核心代码 ▼▼▼
+
+/**
+ * 【核心渲染】根据 state 中的设置，生成并应用所有卡片的自定义CSS规则
+ */
+function applyWidgetStyles() {
+    let styleTag = document.getElementById('widget-custom-styles-style');
+    if (!styleTag) {
+        styleTag = document.createElement('style');
+        styleTag.id = 'widget-custom-styles-style';
+        document.head.appendChild(styleTag);
+    }
+
+    const styles = state.globalSettings.widgetStyles || {};
+    let cssRules = '';
+
+    // 定义每个ID对应的CSS选择器
+    const selectorMap = {
+        'profile-info': '#home-screen #profile-widget .profile-info',
+        'widget-2': '#home-screen .desktop-widget.icon-left',
+        'widget-3': '#home-screen .desktop-widget.icon-right'
+    };
+
+    for (const widgetId in styles) {
+        const widgetStyle = styles[widgetId];
+        const selector = selectorMap[widgetId];
+        if (selector && widgetStyle) {
+            let rule = '';
+            if (widgetStyle.color) rule += `background-color: ${widgetStyle.color} !important;`;
+            if (widgetStyle.height) rule += `height: ${widgetStyle.height} !important; min-height: ${widgetStyle.height} !important;`;
+            if (widgetStyle.shape) rule += `${widgetStyle.shape}`;
+            
+            if (rule) {
+                cssRules += `${selector} { ${rule} }\n`;
+            }
+        }
+    }
+    styleTag.innerHTML = cssRules;
+}
+
+/**
+ * 【核心】保存用户对卡片样式的修改
+ */
+async function saveWidgetStyles() {
+    const color = document.getElementById('widget-color-picker').value;
+    const height = document.getElementById('widget-height-input').value + 'px';
+    const shape = document.getElementById('widget-shape-css-input').value.trim();
+
+    const selectedCheckboxes = document.querySelectorAll('.widget-target-checkbox:checked');
+    if (selectedCheckboxes.length === 0) {
+        alert("请至少选择一个要应用样式的卡片。");
+        return;
+    }
+
+    if (!state.globalSettings.widgetStyles) {
+        state.globalSettings.widgetStyles = {};
+    }
+
+    selectedCheckboxes.forEach(cb => {
+        const widgetId = cb.value;
+        if (!state.globalSettings.widgetStyles[widgetId]) {
+            state.globalSettings.widgetStyles[widgetId] = {};
+        }
+        // 将新样式合并到旧样式中
+        Object.assign(state.globalSettings.widgetStyles[widgetId], { color, height, shape });
+    });
+
+    await db.globalSettings.put(state.globalSettings);
+    applyWidgetStyles();
+    await showCustomAlert("保存成功", "主屏幕卡片样式已更新！");
+}
+
+/**
+ * 【核心】重置选中卡片的样式
+ */
+async function resetWidgetStyles() {
+    const selectedCheckboxes = document.querySelectorAll('.widget-target-checkbox:checked');
+    if (selectedCheckboxes.length === 0) {
+        alert("请至少选择一个要重置的卡片。");
+        return;
+    }
+    
+    const confirmed = await showCustomConfirm("确认重置", `确定要将选中的 ${selectedCheckboxes.length} 个卡片恢复为默认样式吗？`, { confirmButtonClass: 'btn-danger' });
+    if (!confirmed) return;
+
+    if (!state.globalSettings.widgetStyles) return;
+
+    selectedCheckboxes.forEach(cb => {
+        const widgetId = cb.value;
+        delete state.globalSettings.widgetStyles[widgetId];
+    });
+
+    await db.globalSettings.put(state.globalSettings);
+    applyWidgetStyles();
+    await showCustomAlert("重置成功", "选中的卡片样式已恢复为默认。");
+}
+
+/**
+ * 【辅助】实时预览卡片样式变化
+ */
+function previewWidgetStyles() {
+    const color = document.getElementById('widget-color-picker').value;
+    const height = document.getElementById('widget-height-input').value + 'px';
+    const shape = document.getElementById('widget-shape-css-input').value.trim();
+    
+    const selectedCheckboxes = document.querySelectorAll('.widget-target-checkbox:checked');
+    const selectorMap = {
+        'profile-info': '#home-screen #profile-widget .profile-info',
+        'widget-2': '#home-screen .desktop-widget.icon-left',
+        'widget-3': '#home-screen .desktop-widget.icon-right'
+    };
+    
+    // 创建一个临时的style标签用于预览，避免污染永久样式
+    let previewStyleTag = document.getElementById('widget-preview-style');
+    if (!previewStyleTag) {
+        previewStyleTag = document.createElement('style');
+        previewStyleTag.id = 'widget-preview-style';
+        document.head.appendChild(previewStyleTag);
+    }
+    
+    let cssRules = '';
+    selectedCheckboxes.forEach(cb => {
+        const widgetId = cb.value;
+        const selector = selectorMap[widgetId];
+        if (selector) {
+            cssRules += `
+                ${selector} {
+                    background-color: ${color} !important;
+                    height: ${height} !important;
+                    min-height: ${height} !important;
+                    ${shape}
+                }
+            `;
+        }
+    });
+    previewStyleTag.innerHTML = cssRules;
+}
+// ▲▲▲ 新增JS代码结束 ▲▲▲
 
               // ===================================================================
                 // 4. 初始化函数 init()
@@ -41326,6 +42608,9 @@ setupCharPlayerControls();
         window.openReaderBookshelf = openReaderBookshelf;
         // ▼▼▼ 在这里粘贴新代码 ▼▼▼
         window.openDrawAndGuess = openDrawAndGuess;
+        // ▲▲▲ 新增代码结束 ▲▲▲
+        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+        window.openWalletScreen = openWalletScreen;
         // ▲▲▲ 新增代码结束 ▲▲▲
         document.getElementById('reader-manage-btn').addEventListener('click', () => {
             isReaderManagementMode = !isReaderManagementMode;
@@ -41437,6 +42722,9 @@ window.switchToCharHomeScreen = switchToCharHomeScreen;
                     window.renderWorldBookScreenProxy = renderWorldBookScreen;
         
                     await loadAllDataFromDB();
+        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+        await migrateOldTransfersToWallet();
+        // ▲▲▲ 新增代码结束 ▲▲▲
                     applyStatusBarVisibility(); // <-- 新增这一行
                     // ▼▼▼ 【核心】在这里添加下面这行新代码 ▼▼▼
                     await migrateOldRedPacketData();
@@ -41466,6 +42754,138 @@ window.switchToCharHomeScreen = switchToCharHomeScreen;
                     // ==========================================================
                     // --- 各种事件监听器 ---
                     // ==========================================================
+        // ▼▼▼ 【全新】主屏幕卡片自定义功能事件绑定 ▼▼▼
+
+        // 页面加载时，应用已保存的卡片样式
+        applyWidgetStyles();
+
+        // 为“应用”和“重置”按钮绑定事件
+        document.getElementById('apply-widget-style-btn').addEventListener('click', saveWidgetStyles);
+        document.getElementById('reset-widget-style-btn').addEventListener('click', resetWidgetStyles);
+
+        // 为所有输入控件绑定实时预览事件
+        document.getElementById('widget-settings-area').addEventListener('input', previewWidgetStyles);
+        
+        // 为高度滑块和输入框添加联动
+        const widgetHeightSlider = document.getElementById('widget-height-slider');
+        const widgetHeightInput = document.getElementById('widget-height-input');
+        widgetHeightSlider.addEventListener('input', () => { widgetHeightInput.value = widgetHeightSlider.value; });
+        widgetHeightInput.addEventListener('input', () => { 
+            const val = parseInt(widgetHeightInput.value);
+            if (!isNaN(val) && val >= widgetHeightSlider.min && val <= widgetHeightSlider.max) {
+                widgetHeightSlider.value = val;
+            }
+        });
+        
+        // 为“全选”复选框绑定事件
+        document.getElementById('widget-select-all-toggle').addEventListener('change', function(e) {
+            document.querySelectorAll('.widget-target-checkbox').forEach(cb => {
+                cb.checked = e.target.checked;
+            });
+            previewWidgetStyles(); // 全选后也触发一次预览
+        });
+
+        // ▲▲▲ 新增事件绑定结束 ▲▲▲
+
+        // ▼▼▼ 【全新】视频记录挂载开关交互事件 ▼▼▼
+        document.getElementById('video-memory-mount-toggle').addEventListener('change', (e) => {
+            document.getElementById('video-memory-count-wrapper').style.display = e.target.checked ? 'block' : 'none';
+        });
+        // ▲▲▲ 新增代码结束 ▲▲▲
+
+        // ▼▼▼ 【全新】好友动态设置功能事件绑定 ▼▼▼
+        document.getElementById('qzone-settings-btn').addEventListener('click', openQzoneSettingsModal);
+        document.getElementById('save-qzone-settings-btn').addEventListener('click', saveQzoneSettingsFromModal);
+        // ▲▲▲ 新增事件绑定结束 ▲▲▲
+
+        // ▼▼▼ 【全新】电视机App功能事件绑定 ▼▼▼
+        window.openTvScreen = openTvScreen; // 暴露函数给 onclick
+
+        // 头部按钮
+        document.getElementById('tv-manage-btn').addEventListener('click', () => {
+            isTvManagementMode = !isTvManagementMode;
+            updateTvManagementUI();
+        });
+        document.getElementById('tv-import-export-btn').addEventListener('click', async () => {
+            const choice = await showChoiceModal("请选择操作", [
+                { text: '导入影片 (.mp4, .mov, .webm)', value: 'import' },
+                { text: '导出全部影片信息', value: 'export_all' }
+            ]);
+            if (choice === 'import') {
+                document.getElementById('tv-import-input').click();
+            } else if (choice === 'export_all') {
+                const allVideos = await db.tvLibrary.toArray();
+                const metadata = allVideos.map(({ file, ...rest }) => rest);
+                exportBooks(metadata, `EPhone-全部影片列表.json`);
+            }
+        });
+        document.getElementById('tv-import-input').addEventListener('change', handleVideoImport);
+
+        // 片库列表事件委托
+        document.getElementById('tv-bookshelf-grid').addEventListener('click', (e) => {
+            const item = e.target.closest('.tv-item');
+            if (!item) return;
+            const videoId = parseInt(item.dataset.videoId);
+
+            if (isTvManagementMode) {
+                item.classList.toggle('selected');
+                if (selectedVideoIds.has(videoId)) {
+                    selectedVideoIds.delete(videoId);
+                } else {
+                    selectedVideoIds.add(videoId);
+                }
+            } else {
+                playVideo(videoId);
+            }
+        });
+        
+        // 播放器返回按钮
+        document.getElementById('video-player-back-btn').addEventListener('click', () => {
+            const player = document.getElementById('main-video-player');
+            player.pause(); // 暂停视频
+            player.src = ''; // 清空源
+            if (currentVideoUrl) {
+                URL.revokeObjectURL(currentVideoUrl); // 释放内存
+                currentVideoUrl = null;
+            }
+            showScreen('tv-screen');
+        });
+
+        // 底部操作栏按钮
+        document.getElementById('tv-select-all-checkbox').addEventListener('change', function(e) {
+            const isChecked = e.target.checked;
+            document.querySelectorAll('#tv-bookshelf-grid .tv-item').forEach(item => {
+                item.classList.toggle('selected', isChecked);
+                const videoId = parseInt(item.dataset.videoId);
+                if (isChecked) {
+                    selectedVideoIds.add(videoId);
+                } else {
+                    selectedVideoIds.delete(videoId);
+                }
+            });
+        });
+        document.getElementById('tv-pin-selected-btn').addEventListener('click', handlePinSelectedVideos);
+        document.getElementById('tv-export-selected-btn').addEventListener('click', exportSelectedVideos);
+        document.getElementById('tv-delete-selected-btn').addEventListener('click', handleDeleteSelectedVideos);
+        // ▲▲▲ 新增事件绑定结束 ▲▲▲
+
+        // ▼▼▼ 【全新】自定义时间功能事件绑定 ▼▼▼
+        window.openTimeSettingsScreen = openTimeSettingsScreen; // 暴露函数给 onclick
+        document.getElementById('save-time-settings-btn').addEventListener('click', saveTimeSettings);
+        // ▲▲▲ 新增事件绑定结束 ▲▲▲
+
+        // ▼▼▼ 【全新】为钱包“修改余额”按钮绑定事件 ▼▼▼
+        document.getElementById('modify-wallet-balance-btn').addEventListener('click', handleModifyWalletBalance);
+        // ▲▲▲ 新增代码结束 ▲▲▲
+
+        // ▼▼▼ 【全新】在这里粘贴下面的新代码 ▼▼▼
+        // 绑定语音模型拉取按钮
+        document.getElementById('fetch-voice-models-btn').addEventListener('click', () => {
+            // 复用现有的 fetchModels 函数，传入新的UI元素ID
+            fetchModels('voice-proxy-url', 'voice-api-key', 'voice-model-select');
+        });
+        // ▲▲▲ 新增代码结束 ▲▲▲
+
         // ▼▼▼ 【全新】你画我猜 - 临时信息修改功能事件绑定 ▼▼▼
 
         const interactiveArea = document.getElementById('draw-guess-interactive-area');
@@ -41672,7 +43092,43 @@ window.switchToCharHomeScreen = switchToCharHomeScreen;
         penTypeSelect.addEventListener('change', () => {
             drawingBoard.setPenType(penTypeSelect.value);
         });
+               // ▼▼▼ 【全新】在这里粘贴下面的新代码 ▼▼▼
+        // 7. 【V5.0 | 清空画板】为“清空”按钮绑定事件
+        document.getElementById('clear-canvas-btn').addEventListener('click', async () => {
+            const confirmed = await showCustomConfirm(
+                '确认清空',
+                '确定要清空当前画板上的所有内容吗？',
+                { confirmButtonClass: 'btn-danger' }
+            );
+            if (confirmed) {
+                drawingBoard.clearCanvas();
+            }
+        });
+        // ▲▲▲ 新增代码结束 ▲▲▲
+        // ... (紧接在 Part A 的代码之后) ...
         
+        // 8. 【V5.0 | 自定义颜色】为自定义颜色选择器绑定事件
+        const customColorInput = document.getElementById('custom-color-input');
+        const customColorPickerContainer = document.getElementById('custom-color-picker-container');
+
+        customColorInput.addEventListener('input', (e) => {
+            const newColor = e.target.value;
+
+            // a. 将画板颜色设置为新颜色
+            drawingBoard.setColor(newColor);
+            
+            // b. 将自定义颜色按钮的背景也更新为新颜色，提供实时反馈
+            customColorPickerContainer.style.background = newColor;
+
+            // c. 取消所有预设颜色点的激活状态
+            document.querySelectorAll('.color-palette .color-dot').forEach(dot => dot.classList.remove('active'));
+        });
+
+        // ▲▲▲ 新增代码结束 ▲▲▲
+
+        // 9. 【V5.0 | AI绘画】为右侧游戏控制按钮绑定事件
+        // ... (后续代码保持不变) ...
+
         // 7. 【V5.0 | AI绘画】为右侧游戏控制按钮绑定事件
         document.getElementById('draw-guess-get-topic-btn').addEventListener('click', () => alert('AI出题功能开发中...'));
         document.getElementById('draw-guess-ai-turn-btn').addEventListener('click', handleAiTurnToDraw);
@@ -43135,19 +44591,7 @@ document.getElementById('co-reading-clear-btn').addEventListener('click', clearC
 document.getElementById('co-reading-settings-btn').addEventListener('click', openCoReadingSettingsModal);
 
 
-// ▼▼▼ 【全新 | 优化】共读输入框与底部操作栏联动 ▼▼▼
-document.getElementById('co-reading-input').addEventListener('input', (e) => {
-    const bottomActions = document.getElementById('co-reading-bottom-actions');
-    // 如果输入框中有非空白字符
-    if (e.target.value.trim()) {
-        // 就显示操作栏
-        bottomActions.style.display = 'flex';
-    } else {
-        // 否则就隐藏
-        bottomActions.style.display = 'none';
-    }
-});
-// ▲▲▲ 新增事件绑定结束 ▲▲▲
+
 
 
 
@@ -43835,7 +45279,11 @@ function updateChatListItem(chatId) {
             state.apiConfig.secondaryProxyUrl = document.getElementById('secondary-proxy-url').value.trim();
             state.apiConfig.secondaryApiKey = document.getElementById('secondary-api-key').value.trim();
             state.apiConfig.secondaryModel = document.getElementById('secondary-model-select').value;
-            
+                        // 【核心新增】保存语音模型设置
+            state.apiConfig.voiceProxyUrl = document.getElementById('voice-proxy-url').value.trim();
+            state.apiConfig.voiceApiKey = document.getElementById('voice-api-key').value.trim();
+            state.apiConfig.voiceModel = document.getElementById('voice-model-select').value;
+            // ▲▲▲ 新增代码结束 ▲▲▲
             await db.apiConfig.put(state.apiConfig);
         
             // 后台活动设置的保存逻辑保持不变
@@ -44290,9 +45738,21 @@ renderCustomBubbleColorSettings(chat); // 【核心新增】渲染自定义颜�
             document.getElementById('couple-avatar-awareness-toggle').checked = chat.settings.coupleAvatarAwareness || false;
             // ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼
             document.getElementById('ai-image-gen-toggle').checked = chat.settings.enableAiImageGen || false;
-            // ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼
-            document.getElementById('video-memory-mount-toggle').checked = chat.settings.mountVideoMemory || false;
-            // ▲▲▲ 新增代码结束 ▲▲▲
+            // ▼▼▼ 【全新V2.0 | 支持自定义次数】请用这整块代码替换旧的 video-memory-mount-toggle 赋值代码 ▼▼▼
+            const videoMountToggle = document.getElementById('video-memory-mount-toggle');
+            const videoCountWrapper = document.getElementById('video-memory-count-wrapper');
+            const videoCountInput = document.getElementById('video-memory-count-input');
+            
+            // 1. 根据保存的数据，设置开关的初始状态
+            videoMountToggle.checked = chat.settings.mountVideoMemory || false;
+            
+            // 2. 根据开关状态，决定是否显示次数输入框
+            videoCountWrapper.style.display = videoMountToggle.checked ? 'block' : 'none';
+            
+            // 3. 填充次数输入框的内容
+            videoCountInput.value = chat.settings.videoMemoryCount || 1;
+            // ▲▲▲ 替换结束 ▲▲▲
+
             // ▲▲▲ 新增代码结束 ▲▲▲
             document.getElementById('auto-memory-interval').value = chat.settings.autoMemoryInterval || 20;
             document.getElementById('show-timestamp-toggle').checked = chat.settings.showTimestamps;
@@ -44460,7 +45920,11 @@ renderCustomBubbleColorSettings(chat); // 【核心新增】渲染自定义颜�
         // ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼
         chat.settings.enableAiImageGen = document.getElementById('ai-image-gen-toggle').checked;
         // ▲▲▲ 新增代码结束 ▲▲▲
-chat.settings.mountVideoMemory = document.getElementById('video-memory-mount-toggle').checked;
+        // ▼▼▼ 【全新V2.0 | 支持自定义次数】请用这整块代码替换旧的 mountVideoMemory 保存代码 ▼▼▼
+        chat.settings.mountVideoMemory = document.getElementById('video-memory-mount-toggle').checked;
+        chat.settings.videoMemoryCount = parseInt(document.getElementById('video-memory-count-input').value) || 1;
+        // ▲▲▲ 替换结束 ▲▲▲
+
             chat.settings.autoMemoryInterval = parseInt(document.getElementById('auto-memory-interval').value) || 20;
             chat.settings.showTimestamps = document.getElementById('show-timestamp-toggle').checked;
 // ▼▼▼ 在这里粘贴新代码 ▼▼▼
@@ -47756,6 +49220,129 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
 <!-- ▼▼▼ 请将这个【全新的 <audio> 标签】粘贴到 <body> 标签的最末尾，紧邻 </body> 之前 ▼▼▼ -->
 <audio id="notification-sound-player" preload="auto"></audio>
 <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】用户钱包App界面 ▼▼▼ -->
+<div id="wallet-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" onclick="showScreen('home-screen')">‹</span>
+        <span>我的钱包</span>
+        <span style="width: 30px;"></span>
+    </div>
+    <div id="wallet-content" class="list-container">
+        <!-- 余额卡片将由JS动态填充内容 -->
+        <div class="wallet-balance-card">
+            <p class="wallet-balance-label">账户余额 (元)</p>
+            <p id="user-wallet-balance" class="wallet-balance-amount">520.00</p>
+        </div>
+           <!-- ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼ -->
+    <h3 style="font-size: 16px; color: var(--text-primary); margin: 20px 15px 10px;">交易明细</h3>
+    <div id="wallet-transaction-list">
+        <!-- 交易记录将由JS动态生成在这里 -->
+    </div>
+    <!-- ▲▲▲ 新增代码结束 ▲▲▲ -->
+    </div>
+    <!-- ▼▼▼ 【核心新增】钱包页面底部的操作栏 ▼▼▼ -->
+    <div id="wallet-footer">
+        <button id="modify-wallet-balance-btn" class="form-button">修改余额</button>
+    </div>
+    <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】自定义时间App界面 ▼▼▼ -->
+<div id="time-settings-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" onclick="showScreen('home-screen')">‹</span>
+        <span>自定义时间</span>
+        <span class="save-btn" id="save-time-settings-btn">保存</span>
+    </div>
+    <div class="form-container">
+        <div class="form-group">
+            <label for="custom-time-input">设置虚拟日期和时间</label>
+            <input type="datetime-local" id="custom-time-input">
+            <p style="font-size: 12px; color: #8a8a8a; margin-top: 8px;">
+                设置一个虚拟的时间，当下方开关开启时，AI 将感知到这个时间而不是真实时间。
+            </p>
+        </div>
+        <hr style="opacity: 0.2; margin: 20px 0;">
+        <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+            <label for="enable-custom-time-toggle" style="margin-bottom: 0;">
+                应用自定义时间
+                <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px;">
+                    开启后，所有聊天中的AI都将使用您上方设置的虚拟时间。
+                </p>
+            </label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="enable-custom-time-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】电视机App界面 ▼▼▼ -->
+<div id="tv-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" onclick="showScreen('home-screen')">‹</span>
+        <span>电视机</span>
+        <div class="header-actions">
+            <span id="tv-manage-btn" class="action-btn">管理</span>
+            <span id="tv-import-export-btn" class="action-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+            </span>
+        </div>
+    </div>
+    <div id="tv-bookshelf-grid" class="list-container">
+        <!-- 视频列表将由JS动态生成在这里 -->
+    </div>
+    <!-- 批量操作栏，默认隐藏 -->
+    <div id="tv-action-bar" style="display: none;">
+        <label class="select-all-label"><input type="checkbox" id="tv-select-all-checkbox"> 全选</label>
+        <button id="tv-pin-selected-btn" class="action-bar-btn">置顶/取消</button>
+        <button id="tv-export-selected-btn" class="action-bar-btn export">导出选中</button>
+        <button id="tv-delete-selected-btn" class="action-bar-btn delete">删除</button>
+    </div>
+    <!-- 隐藏的文件输入框，用于导入视频 -->
+    <input type="file" id="tv-import-input" accept="video/*,.json" multiple hidden>
+</div>
+
+<!-- 【全新】视频播放器屏幕 -->
+<div id="video-player-screen" class="screen">
+    <div class="header">
+        <span class="back-btn" id="video-player-back-btn">‹</span>
+        <span id="video-player-title"></span>
+        <span style="width: 30px;"></span>
+    </div>
+    <div class="list-container" style="padding:0; display:flex; align-items:center; justify-content:center; background-color:black;">
+        <video id="main-video-player" controls playsinline style="width: 100%; height: auto; max-height:100%;"></video>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】好友动态设置模态框 ▼▼▼ -->
+<div id="qzone-settings-modal" class="modal">
+    <div class="modal-content" style="height: auto;">
+        <div class="modal-header">
+            <span>动态设置</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                <label for="qzone-image-gen-toggle" style="margin-bottom: 0;">
+                    启用AI图片生成
+                    <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px;">
+                        关闭后，AI发的图片将显示为灰色占位图，点击可查看图片描述。
+                    </p>
+                </label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="qzone-image-gen-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="save" id="save-qzone-settings-btn" style="width: 100%;">完成</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
     <!-- ▼▼▼ 【全新】教程App界面 ▼▼▼ -->
     <div id="tutorial-screen" class="screen">
         <div class="header">
@@ -47923,33 +49510,49 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
             </div>
         </div>
 
-          <!-- ▼▼▼ 【V3.0 全新绘画界面】 ▼▼▼ -->
+          <!-- ▼▼▼ 【V5.0 竖版布局重构】 ▼▼▼ -->
         <div id="draw-guess-main-area">
-            <!-- 欢迎提示语 (逻辑不变) -->
+            <!-- 欢迎提示语 (保持不变) -->
             <p id="draw-guess-welcome-text">请先点击右上角“选择”按钮<br>邀请一位伙伴来玩吧！</p>
 
-            <!-- 绘画工具和画板的容器，默认隐藏 -->
+            <!-- 绘画工作室容器，现在是垂直布局，默认隐藏 -->
             <div id="draw-guess-studio" style="display: none;">
-                <!-- 左侧工具栏：调色盘和画笔工具 -->
-                <div class="drawing-tools left">
-                    <div class="color-palette">
-                        <div class="color-dot active" style="background-color: #000000;" data-color="#000000"></div>
-                        <div class="color-dot" style="background-color: #ff3b30;" data-color="#ff3b30"></div>
-                        <div class="color-dot" style="background-color: #ff9500;" data-color="#ff9500"></div>
-                        <div class="color-dot" style="background-color: #ffcc00;" data-color="#ffcc00"></div>
-                        <div class="color-dot" style="background-color: #4cd964;" data-color="#4cd964"></div>
-                        <div class="color-dot" style="background-color: #007aff;" data-color="#007aff"></div>
-                        <div class="color-dot" style="background-color: #5856d6;" data-color="#5856d6"></div>
-                        <div class="color-dot" style="background-color: #af52de;" data-color="#af52de"></div>
-                        <div class="color-dot" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="#ffffff"></div>
+                <!-- 1. 画板现在在最上面 -->
+                <canvas id="drawing-canvas"></canvas>
+            
+                <!-- 2. 全新的工具栏容器，将所有工具都放在这里 -->
+                <div id="draw-guess-tool-bar">
+                    <!-- 左侧工具：调色盘、画笔、橡皮、撤回 -->
+                    <div class="drawing-tools left">
+                        <div class="color-palette">
+                            <div class="color-dot active" style="background-color: #000000;" data-color="#000000"></div>
+                            <div class="color-dot" style="background-color: #ff3b30;" data-color="#ff3b30"></div>
+                            <div class="color-dot" style="background-color: #ff9500;" data-color="#ff9500"></div>
+                            <div class="color-dot" style="background-color: #ffcc00;" data-color="#ffcc00"></div>
+                            <div class="color-dot" style="background-color: #4cd964;" data-color="#4cd964"></div>
+                            <div class="color-dot" style="background-color: #007aff;" data-color="#007aff"></div>
+                            <div class="color-dot" style="background-color: #5856d6;" data-color="#5856d6"></div>
+                            <div class="color-dot" style="background-color: #af52de;" data-color="#af52de"></div>
+                            <div class="color-dot" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="#ffffff"></div>
+                        </div>
+                <!-- ▼▼▼ 【核心新增2】这就是我们的自定义颜色选择器 ▼▼▼ -->
+                <div id="custom-color-picker-container" class="custom-color-picker">
+                    <input type="color" id="custom-color-input" value="#000000">
+                </div>
+            </div>
+            <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+                        <div class="tool-buttons">
+                            <button class="tool-btn active" data-tool="pen">笔</button>
+                            <button class="tool-btn" data-tool="eraser">橡皮</button>
+                            <button class="tool-btn" data-tool="undo">撤回</button>
+                <!-- ▼▼▼ 【核心新增3】全新的“清空”按钮 ▼▼▼ -->
+                <button id="clear-canvas-btn" class="tool-btn" data-tool="clear">清空</button>
+                <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+                        </div>
                     </div>
-                    <div class="tool-buttons">
-                        <button class="tool-btn active" data-tool="pen">笔</button>
-                        <button class="tool-btn" data-tool="eraser">橡皮</button>
-                        <button class="tool-btn" data-tool="undo">撤回</button>
-                    </div>
-                    <!-- ▼▼▼ 【全新】笔刷设置区域，默认隐藏 ▼▼▼ -->
-                    <div id="brush-settings" style="display: none; width: 100%;">
+            
+                    <!-- 笔刷高级设置 (保持不变) -->
+                    <div id="brush-settings" style="display: none; width: 100%; max-width: 150px;">
                         <div id="pen-settings">
                             <label for="pen-type-select">类型</label>
                             <select id="pen-type-select">
@@ -47966,24 +49569,17 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
                             <input type="number" id="brush-size-input" min="1" value="5">
                         </div>
                     </div>
-                    <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
-
-                </div>
-
-                <!-- 中间画板 -->
-                <canvas id="drawing-canvas"></canvas>
-
-
-
-
-                <!-- 右侧游戏控制按钮 -->
-                <div class="drawing-tools right">
-                    <button class="game-control-btn" id="draw-guess-get-topic-btn">AI出题</button>
-                    <button class="game-control-btn" id="draw-guess-ai-turn-btn">轮到他了</button>
+                    
+                    <!-- 右侧游戏控制按钮 -->
+                    <div class="game-controls-group">
+                        <button class="game-control-btn" id="draw-guess-get-topic-btn">AI出题</button>
+                        <button class="game-control-btn" id="draw-guess-ai-turn-btn">轮到他了</button>
+                    </div>
                 </div>
             </div>
         </div>
         <!-- ▲▲▲ 替换结束 ▲▲▲ -->
+
 
         <!-- 5. 【新增】底部操作按钮 -->
         <div id="draw-guess-bottom-bar" style="display: none;">
