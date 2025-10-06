@@ -15635,7 +15635,7 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
                 // ===================================================================
         
         // ▼▼▼ 【请用这个 V30 版本】完整替换旧的 db.version(...) 代码块 ▼▼▼
-        db.version(33).stores({ 
+        db.version(34).stores({ 
             chats: '&id, isGroup, groupId, isPinned, memos, diary, appUsageLog',
             apiConfig: '&id, voiceProxyUrl, voiceApiKey, voiceModel',
  
@@ -15666,7 +15666,10 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
             avatarFrames: '++id, &url', // id自增, url是唯一索引，防止重复导入
     // ▲▲▲ 粘贴结束 ▲▲▲
         // ▼▼▼ 在这里粘贴新代码 ▼▼▼
-        tvLibrary: '++id, title, isPinned' // 用于存储视频文件和元数据
+        tvLibrary: '++id, title, isPinned', // 用于存储视频文件和元数据
+        // ▲▲▲ 新增代码结束 ▲▲▲
+        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+        forumPosts: '++id, authorId, timestamp' // 【核心新增】为论坛帖子创建独立的数据库表
         // ▲▲▲ 新增代码结束 ▲▲▲
 // ▲▲▲ 替换结束 ▲▲▲
 
@@ -17206,6 +17209,13 @@ if (!chat.settings.customBubbleColors) chat.settings.customBubbleColors = { ai: 
 // ▲▲▲ 粘贴结束 ▲▲▲
 
         if (!chat.longTermMemory) chat.longTermMemory = [];
+        // ▼▼▼ 【核心修复】在这里为旧数据添加 charWallpaper 字段 ▼▼▼
+        if (typeof chat.settings.charWallpaper === 'undefined') {
+            chat.settings.charWallpaper = ''; // 默认为空字符串
+        }
+        // ▲▲▲ 修复结束 ▲▲▲
+
+
         // 【全新】为旧数据添加角色手机图标的默认设置
         if (!chat.settings.charAppIcons) {
             chat.settings.charAppIcons = { ...DEFAULT_CHAR_APP_ICONS };
@@ -27799,7 +27809,9 @@ async function showCallTranscript(recordId) {
     const modal = document.getElementById('call-transcript-modal');
     const titleEl = document.getElementById('transcript-modal-title');
     const bodyEl = document.getElementById('transcript-modal-body');
-
+    // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+    modal.dataset.currentRecordId = recordId; // 将当前记录ID暂存到模态框上
+    // ▲▲▲ 新增代码结束 ▲▲▲
     titleEl.textContent = `通话于 ${new Date(record.timestamp).toLocaleString()} (时长: ${Math.floor(record.duration / 60)}分${record.duration % 60}秒)`;
     bodyEl.innerHTML = '';
     
@@ -32417,6 +32429,7 @@ function renderCharacterSelector() {
     });
 }
 
+// ▼▼▼ 【V2.0 | 壁纸解耦修复版】请用此函数替换旧的 switchToCharacterPhone 函数 ▼▼▼
 /**
  * 切换到指定角色的手机界面
  * @param {string} characterId - 角色的ID
@@ -32425,20 +32438,32 @@ async function switchToCharacterPhone(characterId) {
     activeCharacterId = characterId;
     console.log(`已切换到角色 ${characterId} 的手机`);
     
-    // 应用该角色的壁纸
     const char = state.chats[characterId];
     const charPhoneScreen = document.getElementById('character-phone-screen');
-    const wallpaper = char.settings.background || state.globalSettings.wallpaper;
+
+    // --- 【【【这就是本次修复的核心！】】】 ---
+    // 1. 优先使用角色自己的 charWallpaper
+    const wallpaper = char.settings.charWallpaper;
+
+    // 2. 根据是否存在专属壁纸，来设置背景
     if (wallpaper && wallpaper.startsWith('data:image')) {
         charPhoneScreen.style.backgroundImage = `url(${wallpaper})`;
     } else if (wallpaper) {
         charPhoneScreen.style.backgroundImage = wallpaper;
+    } else {
+        // 3. 【关键】如果没有专属壁纸，就恢复为透明，让它透出主屏幕的默认蓝色渐变背景
+        charPhoneScreen.style.backgroundImage = 'none';
+        // 确保背景色也恢复默认，防止旧的白色背景残留
+        charPhoneScreen.style.backgroundColor = 'transparent';
     }
+    // --- 【【【修复结束】】】 ---
     
-    // 渲染并显示角色手机的主屏幕
+    // 渲染并显示角色手机的主屏幕 (这部分逻辑不变)
     renderCharHomeScreen();
     showScreen('character-phone-screen');
 }
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 /**
  * 返回到用户自己的手机主屏幕
@@ -32450,7 +32475,7 @@ function switchToMyPhone() {
 }
 
         /**
-         * 【V2.0 | 支持图标更新】渲染角色手机的主屏幕
+         * 【V3.0 | 最终修复版】渲染角色手机的主屏幕，确保所有图标都能正确应用自定义设置
          */
         function renderCharHomeScreen() {
             if (!activeCharacterId) return;
@@ -32464,22 +32489,45 @@ function switchToMyPhone() {
             document.getElementById('char-main-time').textContent = timeString;
             document.getElementById('char-main-date').textContent = dateString;
 
-            // 2. 【核心新增】应用角色专属的App图标
-            const charIcons = char.settings.charAppIcons || { ...DEFAULT_CHAR_APP_ICONS };
-            const appGrid = document.getElementById('char-app-grid');
+            // --- 【【【这就是本次修复的核心！】】】 ---
 
-            for (const iconId in charIcons) {
-                // 精确查找每个图标的 <img> 标签
-                const appIconElement = appGrid.querySelector(`[onclick*="'${iconId}'"]`);
+            // 2. 定义一个从 onclick 事件到 iconId 的精确映射
+            // 这确保了无论 onclick 的写法多复杂，我们都能找到正确的图标ID
+            const onclickToIconIdMap = {
+                "openCharApp('qq')": 'qq',
+                "openCharApp('album')": 'album',
+                "openCharApp('browser')": 'browser',
+                "openCharApp('taobao')": 'taobao',
+                "openCharApp('memo')": 'memo',
+                "openCharApp('diary')": 'diary',
+                "openCharApp('amap')": 'amap',
+                "openCharApp('usage')": 'usage',
+                "openCharApp('music')": 'music',
+                "openCharApp('wallet')": 'wallet',
+                "openCharSettingsScreen()": 'settings', // <--- 修复“设置”App
+                "switchToMyPhone()": 'ephone'      // <--- 修复“Ephone”App
+            };
+
+            // 3. 获取用户为这个角色保存的图标设置
+            const customIcons = char.settings.charAppIcons || {};
+
+            // 4. 遍历这个映射表，为每一个App图标更新它的 src
+            for (const onclickAttr in onclickToIconIdMap) {
+                const iconId = onclickToIconIdMap[onclickAttr];
+                const appIconElement = document.querySelector(`#char-app-grid .app-icon[onclick="${onclickAttr}"]`);
+                
                 if (appIconElement) {
                     const imgElement = appIconElement.querySelector('img');
                     if (imgElement) {
-                        imgElement.src = charIcons[iconId];
+                        // 优先使用用户自定义的图标，如果没有，则使用默认图标
+                        imgElement.src = customIcons[iconId] || DEFAULT_CHAR_APP_ICONS[iconId];
                     }
                 }
             }
             
-            // 3. 切换屏幕（逻辑不变）
+            // --- 【【【修复结束】】】 ---
+            
+            // 5. 切换屏幕（逻辑不变）
             switchToCharScreen('char-home-screen');
         }
 
@@ -36321,62 +36369,67 @@ function renderCharIconSettings() {
 
         // === 【全新】角色手机壁纸更换功能核心代码 ===
 
-        /**
-         * 渲染角色设置页面的壁纸预览
-         */
-        function renderCharWallpaperPreview() {
-            if (!activeCharacterId) return;
-            const chat = state.chats[activeCharacterId];
-            if (!chat) return;
+// ▼▼▼ 【V2.0 | 解耦修复版】请用此函数替换旧的 renderCharWallpaperPreview 函数 ▼▼▼
+function renderCharWallpaperPreview() {
+    if (!activeCharacterId) return;
+    const chat = state.chats[activeCharacterId];
+    if (!chat) return;
 
-            const previewEl = document.getElementById('char-wallpaper-preview');
-            const removeBtn = document.getElementById('char-wallpaper-remove-btn');
-            
-            // 优先使用角色自己的壁纸设置，如果没有，则使用全局壁纸作为预览
-            const wallpaper = chat.settings.background || state.globalSettings.wallpaper;
-            
-            if (wallpaper && wallpaper.startsWith('data:image')) {
-                previewEl.style.backgroundImage = `url(${wallpaper})`;
-                previewEl.textContent = '';
-            } else if (wallpaper) {
-                previewEl.style.backgroundImage = wallpaper;
-                previewEl.textContent = '当前为渐变色';
-            } else {
-                previewEl.style.backgroundImage = 'none';
-                previewEl.textContent = '点击下方更换';
-            }
+    const previewEl = document.getElementById('char-wallpaper-preview');
+    const removeBtn = document.getElementById('char-wallpaper-remove-btn');
+    
+    // 【核心修复】现在只读取和显示 charWallpaper 字段
+    const wallpaper = chat.settings.charWallpaper;
+    
+    if (wallpaper && wallpaper.startsWith('data:image')) {
+        previewEl.style.backgroundImage = `url(${wallpaper})`;
+        previewEl.textContent = '';
+    } else if (wallpaper) {
+        // 虽然不太可能，但还是兼容一下渐变色等情况
+        previewEl.style.backgroundImage = wallpaper;
+        previewEl.textContent = '当前为渐变色';
+    } else {
+        previewEl.style.backgroundImage = 'none';
+        previewEl.textContent = '点击下方更换';
+    }
 
-            // 只有当角色有自己独立的壁纸时，才显示“移除”按钮
-            removeBtn.style.display = chat.settings.background ? 'inline-block' : 'none';
+    // 只有当角色设置了自己的专属CPhone壁纸时，才显示“移除”按钮
+    removeBtn.style.display = wallpaper ? 'inline-block' : 'none';
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+// ▼▼▼ 【V2.0 | 解耦修复版】请用此函数替换旧的 applyCharWallpaper 函数 ▼▼▼
+/**
+ * 【核心】将新的壁纸应用到【角色手机】，并只修改 charWallpaper 字段
+ * @param {string | null} newBackground - 新的壁纸URL，或null来移除
+ */
+async function applyCharWallpaper(newBackground) {
+    if (!activeCharacterId) return;
+    const chat = state.chats[activeCharacterId];
+    if (!chat) return;
+
+    // 【核心修复】现在只更新 charWallpaper 字段，不再触碰 settings.background
+    chat.settings.charWallpaper = newBackground || ''; 
+    
+    await db.chats.put(chat); // 保存到数据库
+    renderCharWallpaperPreview(); // 更新预览图
+    
+    // 即时更新【当前打开的】角色手机屏幕的背景
+    const charPhoneScreen = document.getElementById('character-phone-screen');
+    if (charPhoneScreen.classList.contains('active')) {
+        const wallpaperToApply = chat.settings.charWallpaper; // 直接使用新字段
+         if (wallpaperToApply && wallpaperToApply.startsWith('data:image')) {
+            charPhoneScreen.style.backgroundImage = `url(${wallpaperToApply})`;
+        } else {
+             // 如果没有专属壁纸，就恢复为透明，让它显示主屏幕的默认壁纸
+            charPhoneScreen.style.backgroundImage = 'none';
         }
+    }
+    
+    await showCustomAlert("成功", "角色的手机壁纸已更新！");
+}
+// ▲▲▲ 替换结束 ▲▲▲
 
-        /**
-         * 【核心】将新的壁纸应用到角色手机上（内存和数据库）
-         * @param {string | null} newBackground - 新的壁纸URL/渐变色，或null来移除
-         */
-        async function applyCharWallpaper(newBackground) {
-            if (!activeCharacterId) return;
-            const chat = state.chats[activeCharacterId];
-            if (!chat) return;
-
-            chat.settings.background = newBackground || ''; // 如果传入null或空字符串，则清空设置
-            
-            await db.chats.put(chat); // 保存到数据库
-            renderCharWallpaperPreview(); // 更新预览图
-            
-            // 即时更新角色手机屏幕的背景
-            const charPhoneScreen = document.getElementById('character-phone-screen');
-            if (charPhoneScreen.classList.contains('active')) {
-                const wallpaperToApply = chat.settings.background || state.globalSettings.wallpaper;
-                 if (wallpaperToApply && wallpaperToApply.startsWith('data:image')) {
-                    charPhoneScreen.style.backgroundImage = `url(${wallpaperToApply})`;
-                } else if (wallpaperToApply) {
-                    charPhoneScreen.style.backgroundImage = wallpaperToApply;
-                }
-            }
-            
-            await showCustomAlert("成功", "角色的手机壁纸已更新！");
-        }
         // === 【全新】阅读器App功能核心代码 ===
         let isReaderManagementMode = false;
         let selectedBookIds = new Set();
@@ -39472,23 +39525,25 @@ function openAppSelectorForLabelReset() {
  */
 function applyAllAppLabels() {
     // 【核心修复1】创建一个从 iconId 到主屏幕 onclick 事件的精确映射
-    const ICON_ID_TO_ONCLICK_MAP = {
-        'qq': "showScreen('chat-list-screen')",
-        'world-book': "showScreen('world-book-screen')",
-        'wallpaper': "showScreen('wallpaper-screen')",
-        'renderer': "openRenderingRulesScreen()",
-        'tutorial': "openTutorialScreen()",
-        'reader': "openReaderBookshelf()",
-        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
-        'time': "openTimeSettingsScreen()",
-        // ▲▲▲ 新增代码结束 ▲▲▲
-        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
-        'tv': "openTvScreen()",
-        // ▲▲▲ 新增代码结束 ▲▲▲
-        'api-settings': "showScreen('api-settings-screen')",
-        'font': "showScreen('font-settings-screen')",
-        'char-phone': "openCharacterSelector()"
-    };
+        const ICON_ID_TO_ONCLICK_MAP = {
+            'qq': "showScreen('chat-list-screen')",
+            'world-book': "showScreen('world-book-screen')",
+            'wallpaper': "showScreen('wallpaper-screen')",
+            'renderer': "openRenderingRulesScreen()",
+            'tutorial': "openTutorialScreen()",
+            'reader': "openReaderBookshelf()",
+            'time': "openTimeSettingsScreen()",
+            'tv': "openTvScreen()",
+            // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+            'draw-guess': "openDrawAndGuess()",
+            'wallet': "openWalletScreen()",
+            // ▲▲▲ 新增代码结束 ▲▲▲
+            'api-settings': "showScreen('api-settings-screen')",
+            'font': "showScreen('font-settings-screen')",
+            'char-phone': "openCharacterSelector()", 
+            'forum': "openForumScreen()"
+        };
+
 
     // 【核心修复2】我们不再遍历DOM，而是遍历我们的“标准地图”，确保万无一失
     for (const iconId in ICON_ID_TO_ONCLICK_MAP) {
@@ -40084,31 +40139,31 @@ function openForumScreen() {
 }
 
 /**
- * 【核心】渲染论坛首页的瀑布流内容
+ * 【V2.0 | 已修复数据串扰BUG】渲染论坛首页的瀑布流内容
  */
 async function renderForumContent() {
     const gridEl = document.getElementById('forum-content-grid');
     gridEl.innerHTML = ''; // 清空旧内容
 
-    // 为了快速演示，我们直接使用已有的动态数据来填充
-    const posts = await db.qzonePosts.orderBy('timestamp').reverse().limit(20).toArray();
+    // --- 【【【核心修复：从新的、正确的 forumPosts 表读取数据】】】 ---
+    const posts = await db.forumPosts.orderBy('timestamp').reverse().limit(20).toArray();
 
     if (posts.length === 0) {
-        gridEl.style.columnCount = 1; // 没有内容时，恢复单列布局
-        gridEl.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">社区还没有任何内容哦~</p>';
+        gridEl.style.columnCount = 1; 
+        // 【体验优化】修改提示文案，引导用户发布内容
+        gridEl.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">这里还没有笔记，点击下方的“+”<br>发布第一篇笔记吧！</p>';
         return;
     }
     
-    gridEl.style.columnCount = 2; // 确保是两列
+    gridEl.style.columnCount = 2;
 
     posts.forEach(post => {
+        // --- 这里的卡片渲染逻辑保持不变，因为它现在读取的是正确的数据 ---
         let imageUrl = 'https://i.postimg.cc/pT2xKzPz/album-cover-placeholder.png'; // 默认占位图
         let title = "分享一条有趣的动态";
 
-        // 根据帖子类型决定卡片内容
         if (post.type === 'shuoshuo' && post.content) {
             title = post.content;
-            // 如果说说内容很短，可以尝试用它生成一张相关图片
             const imagePrompt = `Scenery, ${post.content}, anime style, beautiful, high quality`;
             imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}`;
         } else if (post.type === 'image_post' && post.imageUrl) {
@@ -40116,13 +40171,11 @@ async function renderForumContent() {
             title = post.publicText || post.imageDescription || '一张好看的图片';
         } else if (post.type === 'text_image' && post.hiddenContent) {
             title = post.publicText || post.hiddenContent;
-            // 使用文字图的prompt来生成图片
             if (post.image_prompt) {
                  imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(post.image_prompt)}`;
             }
         }
 
-        // 获取作者信息
         let authorAvatar = defaultAvatar;
         let authorName = '一位用户';
         if (post.authorId === 'user') {
@@ -40134,7 +40187,6 @@ async function renderForumContent() {
             authorName = authorChat.name;
         }
 
-        // 创建卡片HTML
         const card = document.createElement('div');
         card.className = 'forum-card';
         card.innerHTML = `
@@ -40157,7 +40209,6 @@ async function renderForumContent() {
     });
 }
 
-// ▲▲▲ 全新JS代码粘贴结束 ▲▲▲
 // ▼▼▼ 【全新】论坛个人资料编辑功能的核心函数 ▼▼▼
 
 // ▼▼▼ 【V2.0 | 已修复数据读取BUG】论坛个人资料编辑功能的核心函数 ▼▼▼
@@ -48045,10 +48096,57 @@ document.getElementById('chat-settings-screen').addEventListener('click', (e) =>
             }
         });
         
-        // 4. 关闭详情弹窗的逻辑保持不变
-        document.getElementById('close-transcript-modal-btn').addEventListener('click', () => {
-            document.getElementById('call-transcript-modal').classList.remove('visible');
+        // ▼▼▼ 【最终修复版】用这整块代码替换旧的“关闭详情弹窗”逻辑 ▼▼▼
+        // 4. 为详情弹窗的三个按钮绑定事件
+        document.getElementById('call-transcript-modal').addEventListener('click', async (e) => {
+            const modal = document.getElementById('call-transcript-modal');
+            const recordId = parseInt(modal.dataset.currentRecordId); // 我们将在这里存储当前记录的ID
+            const chat = state.chats[state.activeChatId];
+
+            if (e.target.id === 'close-transcript-modal-btn') {
+                modal.classList.remove('visible');
+            } 
+            else if (e.target.id === 'delete-transcript-btn') {
+                const confirmed = await showCustomConfirm(
+                    "确认删除", "确定要永久删除这条通话记录吗？此操作不可恢复。", { confirmButtonClass: 'btn-danger' }
+                );
+                if (confirmed && !isNaN(recordId)) {
+                    modal.classList.remove('visible');
+                    await db.callRecords.delete(recordId);
+                    await renderCallHistoryScreen();
+                    alert('通话记录已删除。');
+                }
+            }
+            else if (e.target.id === 'manual-summarize-btn') {
+                modal.classList.remove('visible');
+                if (isNaN(recordId) || !chat) {
+                    alert('错误：找不到该通话记录所属的聊天对象。');
+                    return;
+                }
+                
+                const record = await db.callRecords.get(recordId);
+                if (!record || !record.transcript || record.transcript.length === 0) {
+                     alert("没有文字稿可供总结。");
+                     return;
+                }
+
+                await showCustomAlert("请稍候...", "正在请求AI进行手动总结...");
+                
+                try {
+                    const transcriptText = record.transcript.map(h => {
+                        const sender = h.role === 'user' ? (chat.settings.myNickname || '我') : (h.senderName || chat.name);
+                        return `${sender}: ${h.content}`;
+                    }).join('\n');
+
+                    await summarizeCallTranscript(record.chatId, transcriptText);
+                    await showCustomAlert("总结成功", `手动总结已完成！新的记忆已添加到“${chat.name}”的长期记忆中。`);
+                } catch (error) {
+                    await showCustomAlert("总结失败", `操作失败，未能生成长期记忆。\n\n错误详情: ${error.message}`);
+                }
+            }
         });
+        // ▲▲▲ 替换结束 ▲▲▲
+
         
         // ▲▲▲ 替换结束 ▲▲▲
         
