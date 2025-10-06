@@ -11222,6 +11222,9 @@ input[type=number]::-webkit-outer-spin-button {
                     </div>
                 </div>
             </div>
+
+
+
             <!-- 页面2: 新增阅读器App和你画我猜App -->
             <!-- 页面2: 新增阅读器App、你画我猜App等 -->
             <div class="home-screen-page">
@@ -11255,6 +11258,10 @@ input[type=number]::-webkit-outer-spin-button {
                 </div>
             </div>
 
+
+
+            <!-- 页面3: 放置新App -->
+            <div class="home-screen-page">
      <!-- 悬浮X Logo - 只在主页面显示 -->
       <div id="floating-x-logo" class="floating-x-hidden">
         <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
@@ -11267,7 +11274,7 @@ input[type=number]::-webkit-outer-spin-button {
       <style>
         /* 悬浮X Logo样式 */
         #floating-x-logo {
-          position: fixed;
+          position: absolute; /* 核心修复：从 fixed 改为 absolute */
           right: 20px;
           top: 50%;
           transform: translateY(-50%);
@@ -11356,10 +11363,6 @@ input[type=number]::-webkit-outer-spin-button {
           }
         });
       </script>
-
-
-            <!-- 页面3: 放置新App -->
-            <div class="home-screen-page">
                  <div id="desktop-app-container" style="margin-top: 20px;">
                     <div class="desktop-app-icon" onclick="openTutorialScreen()">
                         <!-- 【核心修改】为教程图标的<img>标签添加ID -->
@@ -14889,7 +14892,15 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
             // ▼▼▼ 在这里粘贴新代码 ▼▼▼
             'draw-guess': 'https://i.postimg.cc/k5dG3B4p/draw-guess-icon.png',
             // ▲▲▲ 新增代码结束 ▲▲▲
-
+            // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+            'wallet': 'https://i.postimg.cc/d1mH2z5J/IMG-7301.jpg',
+            // ▲▲▲ 新增代码结束 ▲▲▲
+            // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+            'time': 'https://i.postimg.cc/zX8b5wM4/IMG-7302.jpg',
+            // ▲▲▲ 新增代码结束 ▲▲▲
+            // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+            'tv': 'https://i.postimg.cc/8PtnC5Q6/tv-icon.png',
+            // ▲▲▲ 新增代码结束 ▲▲▲
             // Dock栏的图标
             'api-settings': 'https://i.postimg.cc/MK8rJ8t7/IMG-6438.jpg',
             'font': 'https://i.postimg.cc/pXxk1JXk/IMG-6442.jpg',
@@ -36164,13 +36175,15 @@ function renderCharIconSettings() {
             if (!grid) return;
             grid.innerHTML = '';
 
-            const appLabels = { 'world-book': '世界书', 'qq': 'QQ', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜','api-settings': 'API设置', 'wallpaper': '外观设置', 'font': '字体', 'char-phone': 'Cphone' };
+            const appLabels = { 'world-book': '世界书', 'qq': 'QQ', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机','api-settings': 'API设置', 'wallpaper': '外观设置', 'font': '字体', 'char-phone': 'Cphone' };
 
-            for (const iconId in state.globalSettings.appIcons) {
-                const iconUrl = state.globalSettings.appIcons[iconId];
+            // ▼▼▼ 【核心修复】将循环的目标从 state 改为固定的、权威的默认图标列表 ▼▼▼
+            for (const iconId in DEFAULT_APP_ICONS) {
+                const iconUrl = state.globalSettings.appIcons[iconId] || DEFAULT_APP_ICONS[iconId];
                 const labelText = appLabels[iconId] || '未知App';
 
                 const item = document.createElement('div');
+
                 item.className = 'icon-setting-item';
                 item.dataset.iconId = iconId;
 
@@ -39087,7 +39100,7 @@ function openAppSelector(action) {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -39185,7 +39198,7 @@ function openAppSelectorForSize() {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -39242,7 +39255,7 @@ function openAppSelectorForAnimation(action) {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -39344,7 +39357,7 @@ function getKeyframesCss(animData) {
  * @returns {string} - 最终的显示名称
  */
 function getAppLabel(iconId) {
-    const defaultLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const defaultLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
     // 优先从 state.globalSettings.appIconLabels 中获取，如果没有，再使用默认标签
     return state.globalSettings.appIconLabels?.[iconId] || defaultLabels[iconId] || iconId;
 }
@@ -39445,6 +39458,12 @@ function applyAllAppLabels() {
         'renderer': "openRenderingRulesScreen()",
         'tutorial': "openTutorialScreen()",
         'reader': "openReaderBookshelf()",
+        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+        'time': "openTimeSettingsScreen()",
+        // ▲▲▲ 新增代码结束 ▲▲▲
+        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+        'tv': "openTvScreen()",
+        // ▲▲▲ 新增代码结束 ▲▲▲
         'api-settings': "showScreen('api-settings-screen')",
         'font': "showScreen('font-settings-screen')",
         'char-phone': "openCharacterSelector()"
@@ -43045,33 +43064,57 @@ window.switchToCharHomeScreen = switchToCharHomeScreen;
         });
 
         
-        // 5. 【V4.0 | 真实工具切换】为左侧工具栏绑定事件
-        const leftTools = document.querySelector('.drawing-tools.left');
-        leftTools.addEventListener('click', (e) => {
+        // ▼▼▼ 【V6.0 | 最终修复版】你画我猜工具栏统一事件处理器 ▼▼▼
+        document.getElementById('draw-guess-tool-bar').addEventListener('click', async (e) => {
             const target = e.target;
-
-            // 切换颜色
-            if (target.classList.contains('color-dot')) {
-                leftTools.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
-                target.classList.add('active');
-                drawingBoard.setColor(target.dataset.color);
+            
+            // --- 1. 处理颜色点击 ---
+            const colorDot = target.closest('.color-dot');
+            if (colorDot) {
+                // 移除所有颜色点的激活状态
+                document.querySelectorAll('.color-palette .color-dot').forEach(dot => dot.classList.remove('active'));
+                // 激活当前点击的颜色点
+                colorDot.classList.add('active');
+                // 设置画板颜色
+                drawingBoard.setColor(colorDot.dataset.color);
                 return;
             }
-            
-            // 切换工具（笔/橡皮/撤回）
+
+            // --- 2. 处理工具按钮点击 ---
             const toolBtn = target.closest('.tool-btn');
             if (toolBtn) {
                 const tool = toolBtn.dataset.tool;
-                if (tool === 'undo') {
-                    drawingBoard.undo();
-                } else {
-                    leftTools.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-                    toolBtn.classList.add('active');
-                    drawingBoard.setTool(tool);
-                    document.getElementById('brush-settings').style.display = 'block';
+                const allToolBtns = document.querySelectorAll('.tool-buttons .tool-btn');
+
+                switch (tool) {
+                    case 'pen':
+                    case 'eraser':
+                        // 切换画笔/橡皮
+                        allToolBtns.forEach(btn => btn.classList.remove('active'));
+                        toolBtn.classList.add('active');
+                        drawingBoard.setTool(tool);
+                        document.getElementById('brush-settings').style.display = 'block';
+                        break;
+                    case 'undo':
+                        // 执行撤回，不改变当前激活的工具
+                        drawingBoard.undo();
+                        break;
+                    case 'clear':
+                        // 执行清空，不改变当前激活的工具
+                        const confirmed = await showCustomConfirm(
+                            '确认清空',
+                            '确定要清空当前画板上的所有内容吗？',
+                            { confirmButtonClass: 'btn-danger' }
+                        );
+                        if (confirmed) {
+                            drawingBoard.clearCanvas();
+                        }
+                        break;
                 }
             }
         });
+        // ▲▲▲ 修复结束 ▲▲▲
+
         
         // 6. 【V4.0 | 笔刷设置】为笔刷设置区域绑定事件
         const brushSettings = document.getElementById('brush-settings');
@@ -43093,18 +43136,7 @@ window.switchToCharHomeScreen = switchToCharHomeScreen;
             drawingBoard.setPenType(penTypeSelect.value);
         });
                // ▼▼▼ 【全新】在这里粘贴下面的新代码 ▼▼▼
-        // 7. 【V5.0 | 清空画板】为“清空”按钮绑定事件
-        document.getElementById('clear-canvas-btn').addEventListener('click', async () => {
-            const confirmed = await showCustomConfirm(
-                '确认清空',
-                '确定要清空当前画板上的所有内容吗？',
-                { confirmButtonClass: 'btn-danger' }
-            );
-            if (confirmed) {
-                drawingBoard.clearCanvas();
-            }
-        });
-        // ▲▲▲ 新增代码结束 ▲▲▲
+
         // ... (紧接在 Part A 的代码之后) ...
         
         // 8. 【V5.0 | 自定义颜色】为自定义颜色选择器绑定事件
@@ -50072,7 +50104,7 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
         <!-- 【核心修复】为“购物”、“发布”、“消息”按钮添加了 data-view 属性 -->
         <div class="forum-bottom-item" data-view="shopping">
             <svg class="forum-icon" viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.22-1.05-.59-1.42zM13 20.01L4 11V4h7l9 9-7 6.99z"></path><circle cx="6.5" cy="6.5" r="1.5"></circle></svg>
-            <span>购物</span>
+            <span>直播</span>
         </div>
         <div class="forum-bottom-item-special" data-view="publish">
             <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></svg>
@@ -50205,8 +50237,29 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
 
 
 
-<audio id="char-audio-player" preload="auto"></audio>
 
+
+<audio id="char-audio-player" preload="auto"></audio>
+<!-- ▼▼▼ 【全新】PWA Service Worker 注册脚本 ▼▼▼ -->
+<script>
+    // 确保在页面加载完成后再执行，避免阻塞页面渲染
+    window.addEventListener('load', () => {
+      // 检查浏览器是否支持 Service Worker
+      if ('serviceWorker' in navigator) {
+        // 如果支持，就去注册我们创建的 sw.js 文件
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            // 注册成功
+            console.log('PWA Service Worker 注册成功，作用域:', registration.scope);
+          })
+          .catch((error) => {
+            // 注册失败
+            console.error('PWA Service Worker 注册失败:', error);
+          });
+      }
+    });
+</script>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 </body>
 </html>
 
