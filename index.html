@@ -10904,38 +10904,7 @@ input[type=number]::-webkit-outer-spin-button {
     cursor: pointer;
 }
 /* ▲▲▲ 新增CSS结束 ▲▲▲ */
-/* ▼▼▼ 【全新】用户钱包App样式 ▼▼▼ */
-#wallet-screen {
-    background-color: #f0f2f5;
-}
-#phone-screen.dark-mode #wallet-screen {
-    background-color: #000000;
-}
 
-.wallet-balance-card {
-    margin: 20px 15px;
-    padding: 30px 20px;
-    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-    border-radius: 20px;
-    color: white;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(253, 160, 133, 0.4);
-}
-
-.wallet-balance-label {
-    font-size: 16px;
-    font-weight: 500;
-    opacity: 0.8;
-    margin: 0 0 10px 0;
-}
-
-.wallet-balance-amount {
-    font-size: 48px;
-    font-weight: 700;
-    margin: 0;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-/* ▲▲▲ 新增CSS结束 ▲▲▲ */
 /* ▼▼▼ 【全新】用户钱包App交易记录样式 ▼▼▼ */
 #wallet-transaction-list {
     padding: 0 15px;
@@ -11244,10 +11213,6 @@ input[type=number]::-webkit-outer-spin-button {
                         <span class="label">你画我猜</span>
                     </div>
                     
-                    <div class="desktop-app-icon" onclick="openWalletScreen()">
-                        <div class="icon-bg-desktop"><img id="icon-img-wallet" src="https://i.postimg.cc/d1mH2z5J/IMG-7301.jpg" alt="钱包"></div>
-                        <span class="label">钱包</span>
-                    </div>
 
                     <div class="desktop-app-icon" onclick="openTimeSettingsScreen()">
                         <div class="icon-bg-desktop"><img id="icon-img-time" src="https://i.postimg.cc/zX8b5wM4/IMG-7302.jpg" alt="自定义时间"></div>
@@ -14897,9 +14862,6 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
             'draw-guess': 'https://i.postimg.cc/k5dG3B4p/draw-guess-icon.png',
             // ▲▲▲ 新增代码结束 ▲▲▲
             // ▼▼▼ 在这里粘贴新代码 ▼▼▼
-            'wallet': 'https://i.postimg.cc/d1mH2z5J/IMG-7301.jpg',
-            // ▲▲▲ 新增代码结束 ▲▲▲
-            // ▼▼▼ 在这里粘贴新代码 ▼▼▼
             'time': 'https://i.postimg.cc/zX8b5wM4/IMG-7302.jpg',
             // ▲▲▲ 新增代码结束 ▲▲▲
             // ▼▼▼ 在这里粘贴新代码 ▼▼▼
@@ -17336,26 +17298,12 @@ if (!state.globalSettings.widgetData) {
         forceMention: false,         // 强制提及开关状态
         mentionIntensity: 'light',    // 提及强度
         // ▼▼▼ 在这里粘贴新代码 ▼▼▼
-        walletBalance: 520, // 用户的钱包余额
-        // ▲▲▲ 新增代码结束 ▲▲▲
-        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
-        walletTransactions: [], // 用户的钱包交易记录
-        // ▲▲▲ 新增代码结束 ▲▲▲
         // ▼▼▼ 在这里粘贴新代码 ▼▼▼
         enableImageGen: false // 动态页面的AI生图开关，默认关闭
         // ▲▲▲ 新增代码结束 ▲▲▲
     };
     state.qzoneSettings = { ...defaultQzoneSettings, ...(qzoneSettings || {}) };
-    // 【核心新增】为旧数据兼容钱包余额字段
-    if (typeof state.qzoneSettings.walletBalance === 'undefined') {
-        state.qzoneSettings.walletBalance = 520;
-    }
-    // ▲▲▲ 新增代码结束 ▲▲▲
-    // ▼▼▼ 在这里粘贴新代码 ▼▼▼
-    if (!state.qzoneSettings.walletTransactions) {
-        state.qzoneSettings.walletTransactions = [];
-    }
-    // ▲▲▲ 新增代码结束 ▲▲▲
+
     // 确保从旧数据加载时，forumProfile和followersList也存在
     if (!state.qzoneSettings.forumProfile) {
         state.qzoneSettings.forumProfile = { followersList: [] };
@@ -21558,59 +21506,7 @@ if (qzoneActionTaken) {
         
                 async function sendSticker(sticker) { if (!state.activeChatId) return; const chat = state.chats[state.activeChatId]; const msg = { role: 'user', content: sticker.url, meaning: sticker.name, timestamp: Date.now() }; chat.history.push(msg); await db.chats.put(chat); appendMessage(msg, chat); renderChatList(); document.getElementById('sticker-panel').classList.remove('visible'); }
         
-// ▼▼▼ 【全新V2.0 | 钱包联动版】请用此函数替换旧的 sendUserTransfer 函数 ▼▼▼
-async function sendUserTransfer() { 
-    if (!state.activeChatId) return; 
-
-    const amountInput = document.getElementById('transfer-amount'); 
-    const noteInput = document.getElementById('transfer-note'); 
-    const amount = parseFloat(amountInput.value); 
-    const note = noteInput.value.trim(); 
-
-    if (isNaN(amount) || amount <= 0 || amount > 999999999999999999999999999999) { 
-        alert('请输入有效的金额 (0.01 到 99999999999999999999999999999 之间)！'); 
-        return; 
-    }
-    
-    // --- 【【【核心修改1：余额检查】】】 ---
-    const currentBalance = state.qzoneSettings.walletBalance || 0;
-    if (amount > currentBalance) {
-        await showCustomAlert("操作失败", `余额不足！您的当前余额为 ¥${currentBalance.toFixed(2)}，不足以支付 ¥${amount.toFixed(2)}。`);
-        return;
-    }
-
-    const chat = state.chats[state.activeChatId]; 
-    const senderName = chat.isGroup ? (chat.settings.myNickname || '我') : '我'; 
-    const receiverName = chat.isGroup ? '群聊' : chat.name; 
-    const msg = { role: 'user', type: 'transfer', amount: amount, note: note, senderName, receiverName, timestamp: Date.now() }; 
-
-    // --- 【【【核心修改2：扣款与记录】】】 ---
-    // 1. 扣除余额
-    state.qzoneSettings.walletBalance -= amount;
-    // 2. 创建交易记录
-    const transaction = {
-        type: 'expense',
-        amount: amount,
-        description: `转账给 ${receiverName}`,
-        note: note,
-        timestamp: msg.timestamp
-    };
-    // 3. 将新记录添加到列表开头
-    state.qzoneSettings.walletTransactions.unshift(transaction);
-    // 4. 保存更新后的用户设置
-    await db.qzoneSettings.put(state.qzoneSettings);
-
-    // --- （后续逻辑保持不变） ---
-    chat.history.push(msg); 
-    await db.chats.put(chat); 
-    appendMessage(msg, chat); 
-    renderChatList(); 
-    document.getElementById('transfer-modal').classList.remove('visible'); 
-    amountInput.value = ''; 
-    noteInput.value = ''; 
-}
-// ▲▲▲ 替换结束 ▲▲▲
-
+                async function sendUserTransfer() { if (!state.activeChatId) return; const amountInput = document.getElementById('transfer-amount'); const noteInput = document.getElementById('transfer-note'); const amount = parseFloat(amountInput.value); const note = noteInput.value.trim(); if (isNaN(amount) || amount < 0 || amount > 999999) { alert('请输入有效的金额 (0 到 999999 之间)！'); return; } const chat = state.chats[state.activeChatId]; const senderName = chat.isGroup ? (chat.settings.myNickname || '我') : '我'; const receiverName = chat.isGroup ? '群聊' : chat.name; const msg = { role: 'user', type: 'transfer', amount: amount, note: note, senderName, receiverName, timestamp: Date.now() }; chat.history.push(msg); await db.chats.put(chat); appendMessage(msg, chat); renderChatList(); document.getElementById('transfer-modal').classList.remove('visible'); amountInput.value = ''; noteInput.value = ''; }
         /**
          * 【全新 V3.0】发送一个位置共享卡片 (背景图已内置)
          */
@@ -25215,73 +25111,61 @@ async function endVideoCall() {
          * 处理用户接受或拒绝转账的逻辑
          * @param {string} choice - 用户的选择, 'accepted' 或 'declined'
          */
-// ▼▼▼ 【全新V2.0 | 钱包联动版】请用此函数替换旧的 handleUserTransferResponse 函数 ▼▼▼
-async function handleUserTransferResponse(choice) {
-    if (!activeTransferTimestamp) return;
-
-    const timestamp = activeTransferTimestamp;
-    const chat = state.chats[state.activeChatId];
-    const messageIndex = chat.history.findIndex(m => m.timestamp === timestamp);
-    if (messageIndex === -1) return;
-
-    const originalMessage = chat.history[messageIndex];
-    originalMessage.status = choice;
-
-    let systemContent;
-    const myNickname = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
-
-    // --- 【【【核心修改：在这里处理资金和记录】】】 ---
-    if (choice === 'accepted') {
-        // 1. 增加余额
-        state.qzoneSettings.walletBalance += originalMessage.amount;
-        // 2. 创建入账记录
-        const transaction = {
-            type: 'income',
-            amount: originalMessage.amount,
-            description: `收到来自 ${originalMessage.senderName} 的转账`,
-            note: originalMessage.note,
-            timestamp: Date.now()
-        };
-        state.qzoneSettings.walletTransactions.unshift(transaction);
-        systemContent = `[系统提示：你接受了“${originalMessage.senderName}”的转账。]`;
-
-    } else { // 'declined'
-        // 1. 创建“拒收”记录
-        const transaction = {
-            type: 'info', // 使用新的'info'类型
-            amount: originalMessage.amount,
-            description: `拒收了来自 ${originalMessage.senderName} 的转账`,
-            note: originalMessage.note,
-            timestamp: Date.now()
-        };
-        state.qzoneSettings.walletTransactions.unshift(transaction);
-        // 2. 生成退款消息 (这部分逻辑不变)
-        const refundMessage = {
-            role: 'user', type: 'transfer', isRefund: true,
-            amount: originalMessage.amount, note: '已拒收对方转账', timestamp: Date.now() + 1
-        };
-        chat.history.push(refundMessage);
-        systemContent = `[系统提示：你拒绝并退还了“${originalMessage.senderName}”的转账。]`;
-    }
-    
-    // --- （后续逻辑保持不变，但现在会保存 qzoneSettings） ---
-    const hiddenMessage = {
-        role: 'system', content: systemContent,
-        timestamp: Date.now() + 2, isHidden: true
-    };
-    chat.history.push(hiddenMessage);
-
-    // 一次性保存两个数据库的更新
-    await Promise.all([
-        db.chats.put(chat),
-        db.qzoneSettings.put(state.qzoneSettings)
-    ]);
-    
-    hideTransferActionModal(); 
-    renderChatInterface(state.activeChatId);
-    renderChatList();
-}
-// ▲▲▲ 替换结束 ▲▲▲
+        /**
+         * 处理用户接受或拒绝转账的逻辑
+         * @param {string} choice - 用户的选择, 'accepted' 或 'declined'
+         */
+        async function handleUserTransferResponse(choice) {
+            if (!activeTransferTimestamp) return;
+        
+            const timestamp = activeTransferTimestamp;
+            const chat = state.chats[state.activeChatId];
+            const messageIndex = chat.history.findIndex(m => m.timestamp === timestamp);
+            if (messageIndex === -1) return;
+        
+            // 1. 更新原始转账消息的状态
+            const originalMessage = chat.history[messageIndex];
+            originalMessage.status = choice;
+        
+            let systemContent;
+        
+            // 2. 如果用户选择“拒绝”
+            if (choice === 'declined') {
+                // 立刻在前端生成一个“退款”卡片，让用户看到
+                const refundMessage = {
+                    role: 'user',
+                    type: 'transfer',
+                    isRefund: true, // 这是一个关键标记，用于UI显示这是退款
+                    amount: originalMessage.amount,
+                    note: '已拒收对方转账',
+                    timestamp: Date.now()
+                };
+                chat.history.push(refundMessage);
+                
+                // 准备一条对AI可见的隐藏消息，告诉它发生了什么
+                systemContent = `[系统提示：你拒绝并退还了“${originalMessage.senderName}”的转账。]`;
+            } else { // 如果用户选择“接受”
+                // 只需准备隐藏消息通知AI即可
+                systemContent = `[系统提示：你接受了“${originalMessage.senderName}”的转账。]`;
+            }
+        
+            // 3. 创建这条对用户隐藏、但对AI可见的系统消息
+            const hiddenMessage = {
+                role: 'system',
+                content: systemContent,
+                timestamp: Date.now() + 1, // 保证时间戳在退款消息之后
+                isHidden: true // 这个标记会让它不在聊天界面显示
+            };
+            chat.history.push(hiddenMessage);
+        
+            // 4. 保存所有更改到数据库，并刷新界面
+            await db.chats.put(chat);
+            hideTransferActionModal(); 
+            renderChatInterface(state.activeChatId);
+            renderChatList();
+        }
+        
+        // ▲▲▲ 新函数粘贴结束 ▲▲▲
 
         // ▼▼▼ 【全新】清除动态回复状态并重置输入框 ▼▼▼
         function clearQzoneReplyContext(postContainer) {
@@ -36244,7 +36128,7 @@ function renderCharIconSettings() {
             if (!grid) return;
             grid.innerHTML = '';
 
-            const appLabels = { 'world-book': '世界书', 'qq': 'QQ', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'wallpaper': '外观设置', 'font': '字体', 'char-phone': 'Cphone' };
+            const appLabels = { 'world-book': '世界书', 'qq': 'QQ', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜',  'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'wallpaper': '外观设置', 'font': '字体', 'char-phone': 'Cphone' };
 
             // ▼▼▼ 【核心修复】将循环的目标从 state 改为固定的、权威的默认图标列表 ▼▼▼
             for (const iconId in DEFAULT_APP_ICONS) {
@@ -39174,7 +39058,7 @@ function openAppSelector(action) {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -39272,7 +39156,7 @@ function openAppSelectorForSize() {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -39329,7 +39213,7 @@ function openAppSelectorForAnimation(action) {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜',  'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -39431,7 +39315,7 @@ function getKeyframesCss(animData) {
  * @returns {string} - 最终的显示名称
  */
 function getAppLabel(iconId) {
-    const defaultLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const defaultLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜',  'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
     // 优先从 state.globalSettings.appIconLabels 中获取，如果没有，再使用默认标签
     return state.globalSettings.appIconLabels?.[iconId] || defaultLabels[iconId] || iconId;
 }
@@ -39536,7 +39420,6 @@ function applyAllAppLabels() {
             'tv': "openTvScreen()",
             // ▼▼▼ 在这里粘贴新代码 ▼▼▼
             'draw-guess': "openDrawAndGuess()",
-            'wallet': "openWalletScreen()",
             // ▲▲▲ 新增代码结束 ▲▲▲
             'api-settings': "showScreen('api-settings-screen')",
             'font': "showScreen('font-settings-screen')",
@@ -42076,181 +41959,9 @@ function openMessageManager(mode) {
             // 操作完成后关闭弹窗
             document.getElementById('draw-guess-message-manager-modal').classList.remove('visible');
         }
-// ▼▼▼ 【全新】用户钱包功能核心代码 ▼▼▼
 
-/**
- * 【总入口】打开用户钱包屏幕
- */
-function openWalletScreen() {
-    renderWalletScreen();
-    showScreen('wallet-screen');
-}
 
-// ▼▼▼ 【全新V2.0 | 支持交易记录】请用此函数替换旧的 renderWalletScreen 函数 ▼▼▼
-function renderWalletScreen() {
-    // 1. 渲染余额 (逻辑不变)
-    const balance = state.qzoneSettings.walletBalance || 0;
-    document.getElementById('user-wallet-balance').textContent = balance.toFixed(2);
 
-    // 2. 渲染交易列表
-    const listEl = document.getElementById('wallet-transaction-list');
-    listEl.innerHTML = '';
-    const transactions = state.qzoneSettings.walletTransactions || [];
-
-    if (transactions.length === 0) {
-        listEl.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 30px 0;">还没有任何交易记录。</p>';
-        return;
-    }
-
-    // 按时间从新到旧排序
-    transactions.sort((a, b) => b.timestamp - a.timestamp);
-
-    transactions.forEach(item => {
-        const itemEl = document.createElement('div');
-        itemEl.className = 'wallet-transaction-item';
-
-        const date = new Date(item.timestamp);
-        const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-        
-        let iconHtml = '', amountHtml = '';
-        switch (item.type) {
-            case 'income':
-                iconHtml = '<div class="transaction-icon income">收</div>';
-                amountHtml = `<div class="transaction-amount income">+${item.amount.toFixed(2)}</div>`;
-                break;
-            case 'expense':
-                iconHtml = '<div class="transaction-icon expense">付</div>';
-                amountHtml = `<div class="transaction-amount expense">-${item.amount.toFixed(2)}</div>`;
-                break;
-            case 'refund':
-                iconHtml = '<div class="transaction-icon refund">退</div>';
-                amountHtml = `<div class="transaction-amount refund">+${item.amount.toFixed(2)}</div>`;
-                break;
-            default: // info
-                iconHtml = '<div class="transaction-icon info">i</div>';
-                amountHtml = `<div class="transaction-amount info">¥${item.amount.toFixed(2)}</div>`;
-                break;
-        }
-
-        itemEl.innerHTML = `
-            ${iconHtml}
-            <div class="transaction-details">
-                <div class="transaction-description">${item.description}</div>
-                <div class="transaction-date">${dateString}</div>
-                ${item.note ? `<div class="transaction-note">备注: ${item.note}</div>` : ''}
-            </div>
-            ${amountHtml}
-        `;
-        listEl.appendChild(itemEl);
-    });
-}
-// ▲▲▲ 替换结束 ▲▲▲
-// ▼▼▼ 【全新】一次性数据迁移函数 ▼▼▼
-/**
- * 扫描所有聊天记录，将旧的转账消息迁移到钱包交易记录中。
- * 此函数只在用户首次更新并加载时执行一次。
- */
-async function migrateOldTransfersToWallet() {
-    // 1. 检查是否需要迁移
-    // 如果已有交易记录，或者根本没有聊天，就直接退出
-    if ((state.qzoneSettings.walletTransactions && state.qzoneSettings.walletTransactions.length > 0) || Object.keys(state.chats).length === 0) {
-        console.log("钱包数据迁移：无需执行。");
-        return;
-    }
-    
-    console.log("钱包数据迁移：检测到旧版本数据，开始迁移...");
-    let newTransactions = [];
-
-    // 2. 遍历所有聊天记录
-    for (const chat of Object.values(state.chats)) {
-        for (const msg of chat.history) {
-            if (msg.type === 'transfer') {
-                let transaction = null;
-                if (msg.role === 'user') { // 用户发出的转账
-                    transaction = {
-                        type: 'expense',
-                        amount: msg.amount,
-                        description: `转账给 ${msg.receiverName || chat.name}`,
-                        note: msg.note,
-                        timestamp: msg.timestamp
-                    };
-                } else { // 用户收到的转账
-                    if (msg.status === 'accepted') {
-                        transaction = {
-                            type: 'income',
-                            amount: msg.amount,
-                            description: `收到来自 ${msg.senderName} 的转账`,
-                            note: msg.note,
-                            timestamp: msg.timestamp 
-                        };
-                    } else if (msg.status === 'declined') {
-                        transaction = {
-                            type: 'info',
-                            amount: msg.amount,
-                            description: `拒收了来自 ${msg.senderName} 的转账`,
-                            note: msg.note,
-                            timestamp: msg.timestamp
-                        };
-                    }
-                }
-                if (transaction) {
-                    newTransactions.push(transaction);
-                }
-            }
-        }
-    }
-
-    // 3. 如果找到了需要迁移的数据
-    if (newTransactions.length > 0) {
-        // 4. 将新生成的交易记录存入 state 和数据库
-        state.qzoneSettings.walletTransactions = newTransactions;
-        await db.qzoneSettings.put(state.qzoneSettings);
-        console.log(`钱包数据迁移：成功迁移了 ${newTransactions.length} 条交易记录。`);
-    } else {
-        console.log("钱包数据迁移：未找到可迁移的转账记录。");
-    }
-}
-// ▲▲▲ 新增代码结束 ▲▲▲
-
-// ▼▼▼ 【全新】修改钱包余额的核心功能函数 ▼▼▼
-/**
- * 处理用户点击“修改余额”按钮的逻辑
- */
-async function handleModifyWalletBalance() {
-    // 1. 获取当前余额，用于在弹窗中作为默认值显示
-    const currentBalance = state.qzoneSettings.walletBalance || 0;
-
-    // 2. 弹出输入框，让用户输入新的余额
-    const newBalanceStr = await showCustomPrompt(
-        "修改钱包余额", 
-        "请输入新的余额",
-        currentBalance.toFixed(2), // 将当前余额格式化后作为默认值
-        "number" // 指定输入框类型为数字
-    );
-
-    // 3. 如果用户点击了“取消”，则直接退出
-    if (newBalanceStr === null) return;
-
-    // 4. 将用户输入的字符串转换为数字，并进行合法性验证
-    const newBalance = parseFloat(newBalanceStr);
-    if (isNaN(newBalance) || newBalance < 0) {
-        alert("请输入一个有效的非负数金额！");
-        return;
-    }
-
-    // 5. 更新内存中的余额数据
-    state.qzoneSettings.walletBalance = newBalance;
-
-    // 6. 将包含最新余额的整个设置对象，永久保存到数据库
-    await db.qzoneSettings.put(state.qzoneSettings);
-
-    // 7. 重新渲染钱包页面，让新余额立即显示出来
-    renderWalletScreen();
-
-    // 8. 给出成功的提示
-    await showCustomAlert("成功", `钱包余额已成功修改为 ¥${newBalance.toFixed(2)}`);
-}
-// ▲▲▲ 新增JS代码结束 ▲▲▲
 // ▼▼▼ 【全新】自定义时间功能核心代码 ▼▼▼
 
 /**
@@ -42716,9 +42427,7 @@ setupCharPlayerControls();
         // ▼▼▼ 在这里粘贴新代码 ▼▼▼
         window.openDrawAndGuess = openDrawAndGuess;
         // ▲▲▲ 新增代码结束 ▲▲▲
-        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
-        window.openWalletScreen = openWalletScreen;
-        // ▲▲▲ 新增代码结束 ▲▲▲
+
         document.getElementById('reader-manage-btn').addEventListener('click', () => {
             isReaderManagementMode = !isReaderManagementMode;
             updateReaderManagementUI();
@@ -42829,9 +42538,7 @@ window.switchToCharHomeScreen = switchToCharHomeScreen;
                     window.renderWorldBookScreenProxy = renderWorldBookScreen;
         
                     await loadAllDataFromDB();
-        // ▼▼▼ 在这里粘贴新代码 ▼▼▼
-        await migrateOldTransfersToWallet();
-        // ▲▲▲ 新增代码结束 ▲▲▲
+
                     applyStatusBarVisibility(); // <-- 新增这一行
                     // ▼▼▼ 【核心】在这里添加下面这行新代码 ▼▼▼
                     await migrateOldRedPacketData();
@@ -42981,9 +42688,7 @@ window.switchToCharHomeScreen = switchToCharHomeScreen;
         document.getElementById('save-time-settings-btn').addEventListener('click', saveTimeSettings);
         // ▲▲▲ 新增事件绑定结束 ▲▲▲
 
-        // ▼▼▼ 【全新】为钱包“修改余额”按钮绑定事件 ▼▼▼
-        document.getElementById('modify-wallet-balance-btn').addEventListener('click', handleModifyWalletBalance);
-        // ▲▲▲ 新增代码结束 ▲▲▲
+
 
         // ▼▼▼ 【全新】在这里粘贴下面的新代码 ▼▼▼
         // 绑定语音模型拉取按钮
@@ -49387,33 +49092,7 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
 <!-- ▼▼▼ 请将这个【全新的 <audio> 标签】粘贴到 <body> 标签的最末尾，紧邻 </body> 之前 ▼▼▼ -->
 <audio id="notification-sound-player" preload="auto"></audio>
 <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
-<!-- ▼▼▼ 【全新】用户钱包App界面 ▼▼▼ -->
-<div id="wallet-screen" class="screen">
-    <div class="header">
-        <span class="back-btn" onclick="showScreen('home-screen')">‹</span>
-        <span>我的钱包</span>
-        <span style="width: 30px;"></span>
-    </div>
-    <div id="wallet-content" class="list-container">
-        <!-- 余额卡片将由JS动态填充内容 -->
-        <div class="wallet-balance-card">
-            <p class="wallet-balance-label">账户余额 (元)</p>
-            <p id="user-wallet-balance" class="wallet-balance-amount">520.00</p>
-        </div>
-           <!-- ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼ -->
-    <h3 style="font-size: 16px; color: var(--text-primary); margin: 20px 15px 10px;">交易明细</h3>
-    <div id="wallet-transaction-list">
-        <!-- 交易记录将由JS动态生成在这里 -->
-    </div>
-    <!-- ▲▲▲ 新增代码结束 ▲▲▲ -->
-    </div>
-    <!-- ▼▼▼ 【核心新增】钱包页面底部的操作栏 ▼▼▼ -->
-    <div id="wallet-footer">
-        <button id="modify-wallet-balance-btn" class="form-button">修改余额</button>
-    </div>
-    <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
-</div>
-<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
 <!-- ▼▼▼ 【全新】自定义时间App界面 ▼▼▼ -->
 <div id="time-settings-screen" class="screen">
     <div class="header">
