@@ -14905,6 +14905,9 @@ const DEFAULT_NOTIFICATION_SOUND = 'https://www.myinstants.com/media/sounds/noti
             // ▼▼▼ 在这里粘贴新代码 ▼▼▼
             'tv': 'https://i.postimg.cc/8PtnC5Q6/tv-icon.png',
             // ▲▲▲ 新增代码结束 ▲▲▲
+            // ▼▼▼ 在这里粘贴新代码 ▼▼▼
+            'forum': 'https://i.postimg.cc/8PLc3r57/xiaohongshu-icon.png',
+            // ▲▲▲ 新增代码结束 ▲▲▲
             // Dock栏的图标
             'api-settings': 'https://i.postimg.cc/MK8rJ8t7/IMG-6438.jpg',
             'font': 'https://i.postimg.cc/pXxk1JXk/IMG-6442.jpg',
@@ -36193,7 +36196,7 @@ function renderCharIconSettings() {
             if (!grid) return;
             grid.innerHTML = '';
 
-            const appLabels = { 'world-book': '世界书', 'qq': 'QQ', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机','api-settings': 'API设置', 'wallpaper': '外观设置', 'font': '字体', 'char-phone': 'Cphone' };
+            const appLabels = { 'world-book': '世界书', 'qq': 'QQ', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'wallpaper': '外观设置', 'font': '字体', 'char-phone': 'Cphone' };
 
             // ▼▼▼ 【核心修复】将循环的目标从 state 改为固定的、权威的默认图标列表 ▼▼▼
             for (const iconId in DEFAULT_APP_ICONS) {
@@ -39118,7 +39121,7 @@ function openAppSelector(action) {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -39216,7 +39219,7 @@ function openAppSelectorForSize() {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -39273,7 +39276,7 @@ function openAppSelectorForAnimation(action) {
     listEl.innerHTML = '';
     document.getElementById('app-selector-select-all').checked = false;
 
-    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const appLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
 
     for (const iconId in DEFAULT_APP_ICONS) {
         const item = document.createElement('div');
@@ -39375,7 +39378,7 @@ function getKeyframesCss(animData) {
  * @returns {string} - 最终的显示名称
  */
 function getAppLabel(iconId) {
-    const defaultLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
+    const defaultLabels = { 'qq': 'QQ', 'world-book': '世界书', 'wallpaper': '外观设置', 'renderer': '渲染器', 'tutorial': '教程', 'reader': '阅读器', 'draw-guess': '你画我猜', 'wallet': '钱包', 'time': '自定义时间', 'tv': '电视机', 'forum': '论坛','api-settings': 'API设置', 'font': '字体', 'char-phone': 'Cphone' };
     // 优先从 state.globalSettings.appIconLabels 中获取，如果没有，再使用默认标签
     return state.globalSettings.appIconLabels?.[iconId] || defaultLabels[iconId] || iconId;
 }
