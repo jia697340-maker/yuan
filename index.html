@@ -39687,7 +39687,7 @@ function handleWorldBookImportClick() {
 }
 
 /**
- * 【核心】处理用户选择的JSON文件
+ * 【V2.0 | 已修复包裹格式BUG】处理用户选择的JSON文件
  * @param {Event} event - 文件输入框的 change 事件
  */
 async function handleWorldBookFileImport(event) {
@@ -39701,18 +39701,33 @@ async function handleWorldBookFileImport(event) {
         if (file.name.endsWith('.json')) {
             try {
                 const text = await file.text();
-                const booksToImport = JSON.parse(text);
+                const importData = JSON.parse(text);
                 
-                if (Array.isArray(booksToImport)) {
-                    // 使用事务来确保导入的原子性
+                // ▼▼▼ 【核心修复】从这里开始重构逻辑 ▼▼▼
+                let actualBooksArray = [];
+
+                // 1. 检查是否是我们新的“包裹”格式
+                if (importData.type === 'EPhoneWorldBooksBackup' && Array.isArray(importData.books)) {
+                    console.log("检测到新的包裹格式，正在解包...");
+                    actualBooksArray = importData.books;
+                } 
+                // 2. 检查是否是旧的、直接的书籍数组格式（保持向后兼容）
+                else if (Array.isArray(importData)) {
+                    console.log("检测到旧的数组格式，直接使用...");
+                    actualBooksArray = importData;
+                }
+                // 3. 如果两种格式都不是，则认为文件无效
+                else {
+                    throw new Error("JSON文件内容不是有效的世界书备份格式。");
+                }
+                // ▲▲▲ 修复结束 ▲▲▲
+
+                if (actualBooksArray.length > 0) {
                     await db.transaction('rw', db.worldBooks, async () => {
-                        for (const book of booksToImport) {
-                            // 检查数据结构是否基本正确
+                        for (const book of actualBooksArray) { // 使用我们解包后的数组
                             if (book.name && book.content) {
-                                // 检查是否已存在同名书籍
                                 const existing = await db.worldBooks.where('name').equals(book.name).first();
                                 if (!existing) {
-                                    // 为导入的书籍生成一个新的唯一ID
                                     await db.worldBooks.add({
                                         id: 'wb_' + Date.now() + Math.random(),
                                         ...book,
@@ -39728,7 +39743,7 @@ async function handleWorldBookFileImport(event) {
                 }
             } catch (error) {
                 console.error(`导入文件 "${file.name}" 失败:`, error);
-                skippedCount += 1; // 视为跳过
+                skippedCount += 1;
             }
         }
     }
@@ -39743,6 +39758,7 @@ async function handleWorldBookFileImport(event) {
 
     event.target.value = null; // 清空输入框以便下次选择
 }
+
 
 /**
  * 【总入口】当用户点击“导出世界书”按钮时触发
