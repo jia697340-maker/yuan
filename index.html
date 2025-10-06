@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>EPhone</title>
+    <!-- ▼▼▼ 【全新】PWA 动态主题颜色控制标签 ▼▼▼ -->
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
     <!-- ▼▼▼ 【桌面图标】纯HTML单文件方案，请粘贴到 <title> 之后 ▼▼▼ -->
     <!-- 1. (核心) 为苹果设备设置主屏幕图标 -->
     <!-- 浏览器会自动选择最合适的尺寸 -->
@@ -26850,6 +26854,20 @@ function renderIconSettings() {
             }
             
             localStorage.setItem('ephone-theme', theme);
+          // --- 【【【核心新增逻辑】】】 ---
+            // 1. 找到我们新添加的 theme-color meta 标签
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+            
+            // 2. 如果找到了这个标签
+            if (themeColorMeta) {
+                // 3. 根据当前是日间还是夜间模式，更新它的 content 属性
+                if (isDark) {
+                    themeColorMeta.setAttribute('content', '#000000'); // 夜间模式用纯黑
+                } else {
+                    themeColorMeta.setAttribute('content', '#ffffff'); // 日间模式用纯白
+                }
+            }
+            // --- 【【【新增逻辑结束】】】 ---
         }
         
         /**
