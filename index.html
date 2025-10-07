@@ -3928,12 +3928,13 @@
         }
         
         /* --- 通话详情弹窗样式 --- */
-        #transcript-modal-body {
+        #call-transcript-modal-body {
             display: flex;
             flex-direction: column;
             gap: 12px;
             padding: 15px;
         }
+
         .transcript-entry {
             padding: 8px 12px;
             border-radius: 10px;
@@ -6073,38 +6074,66 @@
 
 /* --- 2. 【最终修复】重新定义主屏幕布局 --- */
 
+/* === 【主屏幕布局终极修复】 === */
+
+/* 1. 调整主屏幕的整体布局，让所有元素自然排列 */
 #home-screen {
     background: linear-gradient(135deg, #6DD5FA, #2980B9);
-    /* ▼▼▼ 核心修复：添加下面这两行 ▼▼▼ */
     background-size: cover;
     background-position: center;
-    /* ▲▲▲ 修复结束 ▲▲▲ */
-    padding: 20px;
-    padding-top: calc(20px + env(safe-area-inset-top));
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    padding-top: calc(10px + env(safe-area-inset-top));
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; 
+    justify-content: center; /* 核心修复1：让所有内容垂直居中，自然收缩 */
     align-items: center;
     height: 100%;
 }
 
-/* --- 替换这一整块代码 --- */
-/* ▼▼▼ 请用这整块新代码替换旧的 #main-content-area 样式 ▼▼▼ */
-
+/* 2. 调整内容区的间距，使其更紧凑以适应屏幕，并禁止其自身滚动或拉伸 */
 #main-content-area {
     width: 100%;
     display: flex;
     flex-direction: column;
-    /* 核心修改1：将卡片和下方图标的间距从60px缩小到30px */
-    gap: 30px; 
     align-items: center;
-    /* 核心修改2：将顶部的外边距从40px缩小到20px，给屏幕顶部留出一点呼吸空间即可 */
-    margin-top: 20px; 
-}
+    box-sizing: border-box;
+    padding: 0 20px; /* 只保留左右内边距 */
+    flex-shrink: 0; /* 防止内容区被压缩 */
 
-/* ▲▲▲ 替换结束 ▲▲▲ */
+    /* 核心修复2：大幅减少垂直间距，让布局更紧凑 */
+    margin-top: 15px; /* 减小顶部留白 */
+    gap: 20px; /* 减小个人资料卡和App图标之间的距离 */
+}
+/* ▼▼▼ 【PC端可滚动+隐藏滚动条 终极修复 V6】 ▼▼▼ */
+
+/* 仅在屏幕宽度大于600px时（通常是平板或桌面浏览器）应用这些样式 */
+@media (min-width: 600px) {
+
+    /* 1. 【核心】让页面容器自己可以滚动 */
+    .home-screen-page {
+        overflow-y: auto !important; /* 允许这个页面本身在内容溢出时滚动 */
+        justify-content: flex-start;  /* 内容从顶部开始排列，而不是居中 */
+    }
+
+    /* 2. 【核心】强制隐藏这个页面容器的滚动条 */
+    .home-screen-page::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Edge */
+    }
+    .home-screen-page {
+        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none; /* IE/旧版 Edge */
+    }
+    
+    /* 3. 恢复内容区的默认布局，它不再需要自己滚动了 */
+    #main-content-area {
+        overflow-y: visible; /* 移除内部滚动，让父容器负责 */
+        flex-grow: 0;      /* 不再拉伸 */
+    }
+}
+/* ▲▲▲ 修复结束 ▲▲▲ */
+
+
 
 /* ▼▼▼ 【最终解决方案】请用这一整块代码，替换所有旧的个人资料卡片相关CSS ▼▼▼ */
 
@@ -8338,17 +8367,16 @@
 
 /* 3. 单个页面的样式 */
 .home-screen-page {
-    flex: 1; /* 每个页面平分父容器宽度 */
-    width: 33.3333%; /* 确保每个页面宽度为1/3 */
+    flex: 1;
+    width: 33.3333%;
     height: 100%;
     display: flex;
-    flex-direction: column; /* 【核心修复】改为垂直flex布局 */
-    align-items: center;    /* 【核心修复】水平居中对齐内部元素 */
-    overflow-y: auto; /* 内容过多时可滚动 */
-    padding: 0 20px; /* 恢复您原来的左右内边距 */
+    flex-direction: column;
+    align-items: center;
+    overflow-y: hidden; /* 核心修复：禁止垂直滚动 */
+    /* padding: 0 20px;  <-- 移除这里的内边距 */
     box-sizing: border-box;
 }
-
 /* 隐藏滚动条 */
 .home-screen-page::-webkit-scrollbar { display: none; }
 .home-screen-page { -ms-overflow-style: none; scrollbar-width: none; }
@@ -8593,7 +8621,11 @@
     font-weight: 500;
     color: #555;
     font-size: 14px;
+    /* --- 【核心修复】新增下面这两行 --- */
+    background-size: cover;       /* 图片将被缩放以完全覆盖容器，可能会被裁剪 */
+    background-position: center;  /* 确保图片居中显示 */
 }
+
 #phone-screen.dark-mode .book-cover {
     background-color: #2c2c2e;
     color: #ccc;
@@ -12747,6 +12779,22 @@ input[type=number]::-webkit-outer-spin-button {
     </label>
 </div>
 <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】主屏幕UI样式预设管理 ▼▼▼ -->
+<hr style="width: 80%; opacity: 0.3; margin: 30px 0;">
+<h3 style="margin-top:0; border-bottom: 1px solid #eee; padding-bottom: 10px; width:100%; text-align: left;">主屏幕UI样式预设</h3>
+<div class="form-group" style="width:100%;">
+    <label for="home-ui-preset-select">切换UI样式</label>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <select id="home-ui-preset-select" style="flex-grow: 1;">
+            <option value="default">默认</option>
+            <!-- 新的UI样式将动态添加到这里 -->
+        </select>
+        <button id="save-home-ui-preset-btn" class="form-button-secondary" style="margin-top: 0; padding: 12px;">保存</button>
+        <button id="delete-home-ui-preset-btn" class="form-button-secondary" style="margin-top: 0; padding: 12px; background-color: #ffebee; color: #d32f2f; border-color: #ffcdd2;">删除</button>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
 <!-- ▼▼▼ 请将这整块【全新代码】，粘贴到“App 图标设置”模块的前面 (那条 <hr> 标签之前) ▼▼▼ -->
 <hr style="width: 80%; opacity: 0.3; margin: 30px 0;">
 <div style="width:100%; text-align: left; margin-bottom: 15px;">
@@ -14374,7 +14422,7 @@ input[type=number]::-webkit-outer-spin-button {
             <div class="modal-header">
                 <span id="transcript-modal-title">通话详情</span>
             </div>
-            <div class="modal-body" id="transcript-modal-body" style="background-color: #f0f2f5;">
+            <div class="modal-body" id="call-transcript-modal-body" style="background-color: #f0f2f5;">
                 <!-- 通话文字记录将由JS动态生成在这里 -->
             </div>
             <div class="modal-footer">
@@ -14386,6 +14434,7 @@ input[type=number]::-webkit-outer-spin-button {
         </div>
     </div>
     <!-- ▲▲▲ 新HTML粘贴结束 ▲▲▲ -->
+
     <!-- ▼▼▼ 【全新】分享目标选择器模态框 ▼▼▼ -->
     <div id="share-target-modal" class="modal">
         <div class="modal-content" style="height: 70%;">
@@ -18046,6 +18095,7 @@ applyCustomBubbleColors(chat); // 应用自定义颜色
         // ▼▼▼ 用这个【新版本】替换旧的 renderWallpaperScreen 函数 ▼▼▼
         function renderWallpaperScreen() { 
             loadCssPresetsDropdown(); // <-- 新增这一行
+            loadHomeUiPresetsDropdown(); // <-- 在这里添加新代码
             const preview = document.getElementById('wallpaper-preview'); 
             const bg = newWallpaperBase64 || state.globalSettings.wallpaper; 
             if (bg && bg.startsWith('data:image')) { 
@@ -27682,17 +27732,18 @@ ${transcriptText}
         }
         // ▲▲▲ 替换结束 ▲▲▲
         
-/**
- * 【V2.0 | 支持手动总结 & 错误处理】显示指定通话记录的完整文字稿
- * @param {number} recordId - 通话记录的ID
- */
-async function showCallTranscript(recordId) {
-    const record = await db.callRecords.get(recordId);
-    if (!record) return;
 
-    const modal = document.getElementById('call-transcript-modal');
-    const titleEl = document.getElementById('transcript-modal-title');
-    const bodyEl = document.getElementById('transcript-modal-body');
+        /**
+         * 【V2.0 | 支持手动总结 & 错误处理】显示指定通话记录的完整文字稿
+         * @param {number} recordId - 通话记录的ID
+         */
+        async function showCallTranscript(recordId) {
+            const record = await db.callRecords.get(recordId);
+            if (!record) return;
+
+            const modal = document.getElementById('call-transcript-modal');
+            const titleEl = document.getElementById('transcript-modal-title');
+            const bodyEl = document.getElementById('call-transcript-modal-body');
     // ▼▼▼ 在这里粘贴新代码 ▼▼▼
     modal.dataset.currentRecordId = recordId; // 将当前记录ID暂存到模态框上
     // ▲▲▲ 新增代码结束 ▲▲▲
@@ -31854,6 +31905,102 @@ document.getElementById('thoughts-history-list').addEventListener('click', (e) =
             await loadCssPresetsDropdown(); // 刷新下拉列表
             alert('CSS 预设已保存！');
         }
+// ▼▼▼ 【全新】主屏幕UI样式预设功能核心函数 ▼▼▼
+
+/**
+ * 从数据库加载主屏幕UI预设，并填充到下拉选择框中
+ */
+async function loadHomeUiPresetsDropdown() {
+    const selectEl = document.getElementById('home-ui-preset-select');
+    // 保留“默认”选项，然后清空其他
+    selectEl.innerHTML = '<option value="default">默认</option>'; 
+    
+    const presets = await db.appearancePresets.where('type').equals('home_ui_style').toArray();
+    presets.forEach(preset => {
+        const option = document.createElement('option');
+        option.value = preset.id;
+        option.textContent = preset.name;
+        selectEl.appendChild(option);
+    });
+
+    // 根据当前应用的样式，设置下拉框的选中项
+    const currentStyle = state.globalSettings.homeUiStyle || 'default';
+    selectEl.value = currentStyle;
+}
+
+/**
+ * 当用户从下拉框选择一个UI预设时，加载该预设
+ */
+async function handleHomeUiPresetSelectionChange() {
+    const selectEl = document.getElementById('home-ui-preset-select');
+    const selectedValue = selectEl.value;
+
+    // 更新内存中的设置
+    state.globalSettings.homeUiStyle = selectedValue;
+    
+    // (未来的功能扩展：在这里调用应用样式的函数)
+    // applyHomeUiStyle(selectedValue); 
+
+    alert(`UI样式已切换为: ${selectEl.options[selectEl.selectedIndex].text}。请点击“保存所有外观设置”来保存此更改。`);
+}
+
+/**
+ * 将当前的主屏幕UI配置（目前只有'default'）保存为一个新的预设
+ */
+async function saveHomeUiPreset() {
+    const name = await showCustomPrompt('保存UI样式预设', '请输入新样式的名称');
+    if (!name || !name.trim()) return;
+
+    // 目前我们只保存一个标识符，将来可以扩展为保存更复杂的配置对象
+    const presetValue = { styleId: 'default' }; 
+
+    const existingPreset = await db.appearancePresets.where({ name: name.trim(), type: 'home_ui_style' }).first();
+    if (existingPreset) {
+        const confirmed = await showCustomConfirm('覆盖预设', `名为 “${name.trim()}” 的预设已存在。要覆盖它吗？`, { confirmButtonClass: 'btn-danger' });
+        if (!confirmed) return;
+        
+        await db.appearancePresets.update(existingPreset.id, { value: presetValue });
+    } else {
+        await db.appearancePresets.add({
+            name: name.trim(),
+            type: 'home_ui_style',
+            value: presetValue
+        });
+    }
+
+    await loadHomeUiPresetsDropdown(); // 刷新下拉列表
+    alert('UI样式预设已保存！');
+}
+
+/**
+ * 删除当前选中的UI预设
+ */
+async function deleteHomeUiPreset() {
+    const selectEl = document.getElementById('home-ui-preset-select');
+    const selectedId = parseInt(selectEl.value);
+
+    if (isNaN(selectedId)) {
+        alert('不能删除“默认”样式或当前未保存的配置。');
+        return;
+    }
+
+    const preset = await db.appearancePresets.get(selectedId);
+    if (!preset) return;
+
+    const confirmed = await showCustomConfirm('删除预设', `确定要删除预设 “${preset.name}” 吗？`, { confirmButtonClass: 'btn-danger' });
+    if (confirmed) {
+        await db.appearancePresets.delete(selectedId);
+        
+        // 如果删除的是当前正在应用的样式，则自动切换回默认
+        if (state.globalSettings.homeUiStyle == selectedId) {
+            state.globalSettings.homeUiStyle = 'default';
+        }
+
+        await loadHomeUiPresetsDropdown(); // 刷新下拉列表
+        alert('预设已删除。');
+    }
+}
+// ▲▲▲ 新增函数结束 ▲▲▲
         
         /**
          * 删除当前选中的CSS预设
@@ -36356,16 +36503,17 @@ async function renderBookshelf() {
             item.classList.add('pinned');
         }
 
-        // ▼▼▼ 【核心修改】：在这里判断并应用封面图片 ▼▼▼
+        // ▼▼▼ 【封面拉伸终极修复】 ▼▼▼
         let coverHtml;
         if (book.coverUrl) {
-            // 如果有自定义封面，就用 <img> 标签来显示，并设置 object-fit: cover 保证比例
-            coverHtml = `<img src="${book.coverUrl}" class="book-cover" style="object-fit: cover; width: 100%; height: 100%;">`;
+            // 如果有封面图，生成一个div，并将图片作为其背景
+            coverHtml = `<div class="book-cover" style="background-image: url('${book.coverUrl}'); padding: 0;"></div>`;
         } else {
-            // 如果没有，就保持原来的文字封面样式
+            // 如果没有封面图，保持原样，显示文字
             coverHtml = `<div class="book-cover"><span>${book.title}</span></div>`;
         }
-        // ▲▲▲ 修改结束 ▲▲▲
+        // ▲▲▲ 修复结束 ▲▲▲
+
 
         item.innerHTML = `
             <span class="book-pin-icon">📌</span>
@@ -36560,88 +36708,81 @@ function exportBooks(booksToExport, filename) {
             }
         }
 
-/**
- * 【V7.0 | 支持自定义正则】处理文件导入
- * @param {FileList} files 
- */
-async function handleBookImport(files) {
-    if (!files.length) return;
-    await showCustomAlert("请稍候...", `正在处理 ${files.length} 个文件...`);
+        async function handleBookImport(files) {
+            if (!files.length) return;
+            await showCustomAlert("请稍候...", `正在处理 ${files.length} 个文件...`);
 
-    const CHUNK_SIZE = 10;
-    const allNewBooks = [];
-    let errorCount = 0;
+            const CHUNK_SIZE = 10;
+            const allNewBooks = [];
+            let errorCount = 0;
 
-    for (const file of files) {
-        try {
-            const processFile = async (fileObject, defaultTitle) => {
-                const arrayBuffer = await fileObject.arrayBuffer();
-                const content = new TextDecoder('utf-8', { fatal: false }).decode(arrayBuffer);
-                const title = defaultTitle.replace(/\.(txt|json|zip)$/i, '').trim();
+            for (const file of files) {
+                try {
+                    const processFile = async (fileObject, defaultTitle) => {
+                        const arrayBuffer = await fileObject.arrayBuffer();
+                        const content = new TextDecoder('utf-8', { fatal: false }).decode(arrayBuffer);
+                        const title = defaultTitle.replace(/\.(txt|json|zip)$/i, '').trim();
+                        const tableOfContents = parseTableOfContents(content);
+                        allNewBooks.push({ title, content, rawContent: arrayBuffer, toc: tableOfContents, tocRegex: null });
+                    };
 
-                // 解析目录时，因为是新书，所以不传入自定义正则
-                const tableOfContents = parseTableOfContents(content);
-                
-                allNewBooks.push({ 
-                    title, 
-                    content, 
-                    rawContent: arrayBuffer, 
-                    toc: tableOfContents,
-                    tocRegex: null // <-- 【核心新增】为新书添加一个空的自定义正则字段
-                });
-            };
-
-            if (file.name.endsWith('.zip')) {
-                const jszip = new JSZip();
-                const zip = await jszip.loadAsync(file);
-                const txtFiles = Object.values(zip.files).filter(f => !f.dir && f.name.endsWith('.txt') && !f.name.startsWith('__MACOSX/'));
-                
-                for (const zipEntry of txtFiles) {
-                    const fileBlob = await zipEntry.async("blob");
-                    await processFile({ arrayBuffer: () => fileBlob.arrayBuffer() }, zipEntry.name.split('/').pop());
-                }
-            } else if (file.name.endsWith('.json')) {
-                const content = await file.text();
-                const booksFromJson = JSON.parse(content);
-                if (Array.isArray(booksFromJson)) {
-                    for(const book of booksFromJson) {
-                        if (book.title && book.content) {
-                            const tableOfContents = parseTableOfContents(book.content);
-                            allNewBooks.push({ title: book.title, content: book.content, rawContent: null, toc: tableOfContents, tocRegex: null });
+                    if (file.name.endsWith('.zip')) {
+                        const jszip = new JSZip();
+                        const zip = await jszip.loadAsync(file);
+                        const txtFiles = Object.values(zip.files).filter(f => !f.dir && f.name.endsWith('.txt') && !f.name.startsWith('__MACOSX/'));
+                        for (const zipEntry of txtFiles) {
+                            const fileBlob = await zipEntry.async("blob");
+                            await processFile({ arrayBuffer: () => fileBlob.arrayBuffer() }, zipEntry.name.split('/').pop());
                         }
+                    } else if (file.name.endsWith('.json')) {
+                        const content = await file.text();
+                        const booksFromJson = JSON.parse(content);
+                        if (Array.isArray(booksFromJson)) {
+                            for(const book of booksFromJson) {
+                                if (book.title && book.content) {
+                                    // ▼▼▼ 【核心修复】在这里为JSON导入也生成目录 ▼▼▼
+                                    const tableOfContents = parseTableOfContents(book.content, book.tocRegex || null);
+                                    allNewBooks.push({ 
+                                        title: book.title, 
+                                        content: book.content, 
+                                        rawContent: null, // JSON文件没有原始二进制数据
+                                        toc: tableOfContents,
+                                        tocRegex: book.tocRegex || null 
+                                    });
+                                    // ▲▲▲ 修复结束 ▲▲▲
+                                }
+                            }
+                        }
+                    } else if (file.name.endsWith('.txt')) {
+                        await processFile(file, file.name);
                     }
+                } catch (error) {
+                    errorCount++;
+                    console.error(`导入文件 "${file.name}" 失败:`, error);
                 }
-            } else if (file.name.endsWith('.txt')) {
-                await processFile(file, file.name);
             }
-        } catch (error) {
-            errorCount++;
-            console.error(`导入文件 "${file.name}" 失败:`, error);
+
+            if (allNewBooks.length > 0) {
+                // (后续逻辑不变)
+                allNewBooks.forEach(book => {
+                    if (!book.toc) book.toc = [];
+                    if (typeof book.tocRegex === 'undefined') book.tocRegex = null;
+                });
+                for (let i = 0; i < allNewBooks.length; i += CHUNK_SIZE) {
+                    const chunk = allNewBooks.slice(i, i + CHUNK_SIZE);
+                    await db.readerBooks.bulkAdd(chunk);
+                    await new Promise(resolve => setTimeout(resolve, 50)); 
+                }
+                await renderBookshelf();
+            }
+
+            let resultMessage = `导入完成！\n\n成功处理 ${allNewBooks.length} 本书。`;
+            if (errorCount > 0) {
+                resultMessage += `\n有 ${errorCount} 个文件因格式错误或无法解析而导入失败。`;
+            }
+            await showCustomAlert("导入结果", resultMessage);
+            event.target.value = null;
         }
-    }
-
-    if (allNewBooks.length > 0) {
-        allNewBooks.forEach(book => {
-            if (!book.toc) book.toc = [];
-            if (typeof book.tocRegex === 'undefined') book.tocRegex = null; // 确保字段存在
-        });
-
-        for (let i = 0; i < allNewBooks.length; i += CHUNK_SIZE) {
-            const chunk = allNewBooks.slice(i, i + CHUNK_SIZE);
-            await db.readerBooks.bulkAdd(chunk);
-            await new Promise(resolve => setTimeout(resolve, 50)); 
-        }
-        await renderBookshelf();
-    }
-
-    let resultMessage = `导入完成！\n\n成功处理 ${allNewBooks.length} 本书。`;
-    if (errorCount > 0) {
-        resultMessage += `\n有 ${errorCount} 个文件因格式错误或无法解析而导入失败。`;
-    }
-    await showCustomAlert("导入结果", resultMessage);
-}
-
-
 
         // === 【全新 | V2.0】阅读器编辑功能核心函数 ===
 
@@ -36948,7 +37089,10 @@ function parseTableOfContents(content, customRegex = null) {
     let charIndexCounter = 0;
 
     // ▼▼▼ 【核心优化】：定义一个更强大、更宽容的默认正则表达式 ▼▼▼
-    const defaultChapterRegex = /^\s*(第[一二三四五六七八九十百千万\d\s]+[章卷回节部]|Chapter\s*\d+|[楔序外番][子言章篇]|[^\n]{1,30}引子|第\s*\d+\s*章|\d{1,4}[.\s、章]?\s+[^\n]{1,30})\s*$/;
+            // ▼▼▼ 【章节识别终极修复 V3.0】▼▼▼
+            // 这个全新的正则表达式现在可以完美匹配 “第X章 标题” 和 “第X章” 两种格式
+            const defaultChapterRegex = /^\s*(第\s*[一二三四五六七八九十百千万\d]+\s*[章卷回节部]\s*.*|Chapter\s*\d+.*|[楔序外番][子言章篇].*|[^\n]{1,30}引子|\d{1,4}[.\s、章]?\s+[^\n]{1,30})\s*$/;
+            // ▲▲▲ 修复结束 ▲▲▲
     // 新增部分解释:
     // 1. `第\s*\d+\s*章`: 匹配 "第 1 章" 这种带空格的格式。
     // 2. `\d{1,4}[.\s、章]?\s+`: 匹配 "1. 标题"、"1 标题"、"1、标题"、"1章 标题" 这种以数字开头的格式，最多4位数字。
@@ -37153,17 +37297,23 @@ async function handleDecodeBook() {
             const decoder = new TextDecoder(selectedEncoding, { fatal: true });
             const newContent = decoder.decode(book.rawContent);
             
-            // 5. 更新数据库和UI
-            await db.readerBooks.update(currentEditingBookId, { content: newContent });
-            await openBookForReading(currentEditingBookId); // 重新打开书籍以刷新内容
-            await showCustomAlert("成功", "书籍已使用新编码重新加载！");
+                   // ▼▼▼ 【核心修复】在这里重新生成目录 ▼▼▼
+                    console.log("解码成功，正在重新生成目录...");
+                    const newToc = parseTableOfContents(newContent, book.tocRegex);
+                    
+                    // 5. 更新数据库时，同时保存新的内容和新的目录
+                    await db.readerBooks.update(currentEditingBookId, { content: newContent, toc: newToc });
+                    // ▲▲▲ 修复结束 ▲▲▲
 
-        } catch (error) {
-            console.error("解码失败:", error);
-            await showCustomAlert("解码失败", `无法使用所选编码解码文件，内容可能已损坏或编码选择不正确。\n\n错误: ${error.message}`);
+                    await openBookForReading(currentEditingBookId);
+                    await showCustomAlert("成功", `书籍已使用新编码重新加载！\n找到了 ${newToc.length} 个章节。`);
+
+                } catch (error) {
+                    console.error("解码失败:", error);
+                    await showCustomAlert("解码失败", `无法使用所选编码解码文件，内容可能已损坏或编码选择不正确。\n\n错误: ${error.message}`);
+                }
+            }
         }
-    }
-}
 // ▲▲▲ 新增JS代码结束 ▲▲▲
 // ▼▼▼ 【全新】阅读器共读功能的核心代码 ▼▼▼
 
@@ -42568,6 +42718,11 @@ window.switchToCharHomeScreen = switchToCharHomeScreen;
                     // ==========================================================
                     // --- 各种事件监听器 ---
                     // ==========================================================
+                    // ▼▼▼ 【全新】主屏幕UI样式预设功能事件监听器 ▼▼▼
+                    document.getElementById('home-ui-preset-select').addEventListener('change', handleHomeUiPresetSelectionChange);
+                    document.getElementById('save-home-ui-preset-btn').addEventListener('click', saveHomeUiPreset);
+                    document.getElementById('delete-home-ui-preset-btn').addEventListener('click', deleteHomeUiPreset);
+                    // ▲▲▲ 新增事件监听器结束 ▲▲▲
         // ▼▼▼ 【全新】主屏幕卡片自定义功能事件绑定 ▼▼▼
 
         // 页面加载时，应用已保存的卡片样式
@@ -46678,93 +46833,122 @@ document.getElementById('chat-settings-screen').addEventListener('click', (e) =>
                     document.getElementById('delete-api-preset-btn').addEventListener('click', deleteApiPreset);
                     // ▲▲▲ 新增结束 ▲▲▲
 
-        // === 【最终修复版 V3.0】主屏幕分页滑动逻辑 ===
+        // === 【滑动体验终极优化 V6.0 | 速度感应】主屏幕分页滑动逻辑 ===
         const homePager = document.getElementById('home-screen-pager');
         const homePagesContainer = document.getElementById('home-screen-pages');
         const paginationDots = document.querySelectorAll('#home-screen-pagination .dot');
         const totalPages = paginationDots.length;
 
         let currentPageIndex = 0;
-        let isInteracting = false; // 是否正在交互（拖动/触摸）
+        let isInteracting = false;
         let startX = 0;
         let currentX = 0;
         let startTranslateX = 0;
+        let isClick = true;
         let animationFrameId = null;
+        
+        let smoothedTranslateX = 0;
+        const SMOOTHING_FACTOR = 0.2;
+        
+        // 【核心新增】用于速度感应的变量
+        let startTime = 0;
 
-        // --- 1. 统一的页面跳转函数 ---
         function goToPage(pageIndex) {
             currentPageIndex = Math.max(0, Math.min(pageIndex, totalPages - 1));
-            
+            const targetTranslateX = -(currentPageIndex * homePager.offsetWidth);
             homePagesContainer.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-            homePagesContainer.style.transform = `translateX(-${currentPageIndex * 100 / totalPages}%)`;
-
+            homePagesContainer.style.transform = `translateX(${targetTranslateX}px)`;
             paginationDots.forEach((dot, index) => {
                 dot.classList.toggle('active', index === currentPageIndex);
             });
         }
 
-        // --- 2. 交互开始时的通用处理函数 ---
-        function onInteractionStart(clientX) {
-            cancelAnimationFrame(animationFrameId); // 停止任何正在进行的动画
+        function onInteractionStart(e) {
+            if (e.target.closest('[draggable="true"], .desktop-app-icon, .dot, a, button')) return;
+            
+            cancelAnimationFrame(animationFrameId);
             isInteracting = true;
-            startX = clientX;
-            homePagesContainer.style.transition = 'none'; // 拖动时移除平滑过渡
+            isClick = true;
+            startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+            currentX = startX;
+            startTime = performance.now(); // 【核心新增】记录滑动开始时间
+            homePagesContainer.style.transition = 'none';
             const transformMatrix = new WebKitCSSMatrix(window.getComputedStyle(homePagesContainer).transform);
-            startTranslateX = transformMatrix.m41; // 获取当前的精确transform值
+            startTranslateX = transformMatrix.m41;
+            smoothedTranslateX = startTranslateX;
+
+            animationFrameId = requestAnimationFrame(updatePosition);
         }
 
-        // --- 3. 交互过程中的通用处理函数 ---
-        function onInteractionMove(clientX) {
-            if (!isInteracting) return;
-            currentX = clientX;
+        function updatePosition() {
+            if (!isInteracting) {
+                cancelAnimationFrame(animationFrameId);
+                return;
+            }
             const diffX = currentX - startX;
-            const newTranslateX = startTranslateX + diffX;
-            homePagesContainer.style.transform = `translateX(${newTranslateX}px)`;
+            const targetTranslateX = startTranslateX + diffX;
+            smoothedTranslateX += (targetTranslateX - smoothedTranslateX) * SMOOTHING_FACTOR;
+            homePagesContainer.style.transform = `translateX(${smoothedTranslateX}px)`;
+            animationFrameId = requestAnimationFrame(updatePosition);
         }
 
-        // --- 4. 交互结束时的通用处理函数 ---
+        function onInteractionMove(e) {
+            if (!isInteracting) return;
+            const newX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+            if (isClick && Math.abs(newX - startX) > 5) {
+                isClick = false;
+            }
+            if (!isClick) {
+                e.preventDefault();
+            }
+            currentX = newX;
+        }
+
         function onInteractionEnd() {
             if (!isInteracting) return;
             isInteracting = false;
             cancelAnimationFrame(animationFrameId);
+            
+            if (isClick) {
+                goToPage(currentPageIndex);
+                return;
+            }
 
             const movedBy = currentX - startX;
-            const threshold = homePager.offsetWidth / 5; // 滑动超过1/5宽度就翻页
+            const endTime = performance.now();
+            const timeElapsed = endTime - startTime;
+            
+            // --- 【【【核心修复：全新的翻页阈值逻辑】】】 ---
+            const velocity = Math.abs(movedBy) / timeElapsed; // 计算滑动速度 (像素/毫秒)
+            const pixelThreshold = 75; // 一个合理的、不费力的像素阈值
 
-            if (movedBy < -threshold) {
-                goToPage(currentPageIndex + 1);
-            } else if (movedBy > threshold) {
-                goToPage(currentPageIndex - 1);
+            // 条件1: 滑动距离超过 75 像素
+            // 或
+            // 条件2: 滑动速度超过 0.5 像素/毫秒 (一个典型的“轻扫”速度)
+            const shouldFlip = Math.abs(movedBy) > pixelThreshold || velocity > 0.5;
+
+            if (shouldFlip) {
+                if (movedBy < 0) { // 向左滑动
+                    goToPage(currentPageIndex + 1);
+                } else { // 向右滑动
+                    goToPage(currentPageIndex - 1);
+                }
             } else {
-                goToPage(currentPageIndex); // 滑动距离不够，弹回原页
+                // 如果两个条件都不满足，弹回原页
+                goToPage(currentPageIndex);
             }
         }
         
-        // --- 5. 绑定所有事件 ---
-
-        // 绑定小圆点点击事件
         paginationDots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                goToPage(index);
-            });
+            dot.addEventListener('click', () => goToPage(index));
         });
-
-        // 桌面端鼠标事件
-        homePager.addEventListener('mousedown', (e) => {
-             // 只有当点击目标不是可拖拽的元素时才启动翻页
-            if (e.target.draggable) return;
-            e.preventDefault(); // 防止意外的文本选中等
-            onInteractionStart(e.pageX);
-        });
-        homePager.addEventListener('mousemove', (e) => onInteractionMove(e.pageX));
-        homePager.addEventListener('mouseup', onInteractionEnd);
-        homePager.addEventListener('mouseleave', onInteractionEnd); // 鼠标移出区域也算结束
-
-        // 移动端触摸事件
-        homePager.addEventListener('touchstart', (e) => onInteractionStart(e.touches[0].pageX), { passive: true });
-        homePager.addEventListener('touchmove', (e) => onInteractionMove(e.touches[0].pageX), { passive: true });
-        homePager.addEventListener('touchend', onInteractionEnd);
-
+        homePager.addEventListener('mousedown', onInteractionStart);
+        document.addEventListener('mousemove', onInteractionMove, { passive: false });
+        document.addEventListener('mouseup', onInteractionEnd);
+        document.addEventListener('mouseleave', onInteractionEnd);
+        homePager.addEventListener('touchstart', onInteractionStart, { passive: false });
+        document.addEventListener('touchmove', onInteractionMove, { passive: false });
+        document.addEventListener('touchend', onInteractionEnd);
 
 
 
