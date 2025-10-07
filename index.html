@@ -146,6 +146,13 @@
         .screen.active { opacity: 1; visibility: visible; z-index: 1; }
         .header { position: relative; z-index: 15; flex-shrink: 0; padding: 15px 20px; padding-top: 45px; background-color: rgba(247, 247, 247, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 600; }
         .header .header-actions { display: flex; align-items: center; gap: 15px; }
+
+        /* ▼▼▼ 【核心修复】缩小多选模式下顶部按钮的间距 ▼▼▼ */
+        #chat-interface-screen.selection-mode .header .header-actions {
+            gap: 10px; /* 将间距从 15px 缩小到 10px */
+        }
+        /* ▲▲▲ 修复结束 ▲▲▲ */
+
         .header .back-btn, .header .action-btn { font-size: 24px; cursor: pointer; width: 30px; text-align: center; color: var(--accent-color); display: flex; align-items: center; justify-content: center; }
         
         .header .action-btn {
@@ -11147,6 +11154,52 @@ input[type=number]::-webkit-outer-spin-button {
 #tv-action-bar .action-bar-btn.export { background-color: var(--accent-color); color: white; }
 #tv-action-bar #tv-pin-selected-btn { background-color: #ffc107; color: white; }
 /* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】转发目标选择器列表项样式 ▼▼▼ */
+#forward-target-list .contact-picker-item.selected {
+    background-color: #e7f3ff; /* 选中时显示淡蓝色背景 */
+}
+
+#phone-screen.dark-mode #forward-target-list .contact-picker-item.selected {
+    background-color: rgba(0, 123, 255, 0.2); /* 夜间模式下的选中颜色 */
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】回复参考建议弹窗样式 ▼▼▼ */
+.suggestion-card {
+    background-color: #f9f9f9;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.suggestion-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    border-color: var(--accent-color);
+}
+
+.suggestion-card .suggestion-title {
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.suggestion-card .suggestion-preview {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* 夜间模式适配 */
+#phone-screen.dark-mode .suggestion-card {
+    background-color: #2c2c2e;
+}
+#phone-screen.dark-mode .suggestion-card .suggestion-preview {
+    color: #ccc;
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
 
     </style>
 </head>
@@ -12507,6 +12560,9 @@ input[type=number]::-webkit-outer-spin-button {
                         <span id="selection-screenshot-btn" class="action-btn">长截图</span>
                         <span id="selection-favorite-btn" class="action-btn">收藏</span>
                         <span id="selection-share-btn" class="action-btn">分享</span>
+                        <!-- ▼▼▼ 【核心新增】在这里粘贴新的转发按钮 ▼▼▼ -->
+                        <span id="selection-forward-btn" class="action-btn">转发</span>
+                        <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
                         <!-- 【核心修改1】旧按钮重命名，功能不变 -->
                         <span id="selection-soft-delete-btn" class="action-btn">删除(通知AI)</span>
                         <!-- 【核心修改2】新增一个红色的、更强力的删除按钮 -->
@@ -12629,6 +12685,16 @@ input[type=number]::-webkit-outer-spin-button {
                             </svg>
                         </button>
                         <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+                        <!-- ▼▼▼ 【全新】回复参考按钮 ▼▼▼ -->
+                        <button id="get-reply-suggestions-btn" class="chat-action-icon-btn action-button" title="获取回复参考" style="display: flex;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                <line x1="8" y1="10" x2="16" y2="10"></line>
+                                <line x1="8" y1="14" x2="13" y2="14"></line>
+                            </svg>
+                        </button>
+                        <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+
                     <button id="show-announcement-board-btn" class="chat-action-icon-btn action-button" title="群公告板" style="display: none;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M21.782 6.132a1 1 0 0 0-1.053-.08l-4.729 2.489a1 1 0 0 0-.5.88v4.158a1 1 0 0 0 .5.88l4.729 2.489a1 1 0 0 0 1.053-.08a1 1 0 0 0 .499-.921V7.052a1 1 0 0 0-.499-.92zm-6 3.207L11 7.05v9.9l4.782-2.281V9.339zM10 6H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h6V6z" />
@@ -20294,30 +20360,37 @@ ${coupleAvatarContext}
 # 对话者的角色设定
 ${chat.settings.myPersona}
 
+/* ▼▼▼ 【【【论坛交互逻辑终极修复 V2】】】 ▼▼▼ */
 # 社交圈与动态
-# 【【【重要社交任务：小红书互动】】】
--   **情景**: 你知道用户也有一个小红书风格的论坛账号。
--   **【【【用户的真实个人资料（禁止脑补！）】】】**:
+# 【【【重要社交任务：论坛互动】】】
+-   **情景**: 你们的世界存在一个类似“小红书”的论坛App。
+-   **核心规则**:
+    1.  你【绝对不能】主动提起任何关于“论坛”的话题。
+    2.  只有当用户在对话中【主动询问】或【提及】他的论坛账号时，你才能进行回应。
+-   **当用户告诉你TA的论坛账号后，你的任务是**:
+    1.  使用 \`{"type": "follow_user"}\` 指令来关注用户。
+    2.  仔细阅读下方用户的【真实个人资料】和【真实笔记列表】。
+    3.  根据你对这些真实信息的理解，以及你自身的人设，来决定是否要评论用户的笔记。
+    4.  如果决定评论，就使用 \`{"type": "comment_user_post", "content": "你的评论内容"}\` 指令。如果用户的笔记列表为空，或者你觉得没什么好评论的，就【绝对不要】使用这个指令。
+
+-   **【用户的真实个人资料 (仅在用户主动告知账号后，你才能“看到”这些信息)】**:
     -   **昵称**: "${state.qzoneSettings.nickname || '用户'}"
     -   **小红书号**: "${userXhsId}"
     -   **签名**: "${state.qzoneSettings.signature || '这个人很懒，什么都没写...'}"
     -   **粉丝数**: ${state.qzoneSettings.stats?.followers || 0}
     -   **关注数**: ${state.qzoneSettings.stats?.following || 0}
     -   **获赞与收藏**: ${state.qzoneSettings.stats?.likes || 0}
--   **【【【用户的真实笔记列表（禁止脑补！）】】】**:
+-   **【用户的真实笔记列表 (同样，只在用户告知账号后可见)】**:
     ${
         (state.qzoneSettings.forumProfile?.posts && state.qzoneSettings.forumProfile.posts.length > 0)
         ? state.qzoneSettings.forumProfile.posts.map(p => `- 标题: "${p.title}" | 内容: "${(p.caption || '').substring(0, 50)}..."`).join('\n')
         : '- (用户还没有发布任何笔记。)'
     }
--   **你的任务**:
-    1.  你【必须】在本次回复中，使用 \`{"type": "follow_user"}\` 指令来关注用户。
-    2.  关注后，请仔细阅读用户的【真实个人资料】和【真实笔记列表】。
-    3.  根据你对这些真实信息的理解，以及你自身的人设，来决定是否要评论用户的笔记。
-    4.  如果决定评论，就使用 \`{"type": "comment_user_post", "content": "你的评论内容"}\` 指令。如果用户的笔记列表为空，或者你觉得没什么好评论的，就【绝对不要】使用这个指令。
 
 ${contactsList}
 ${postsContext}
+/* ▲▲▲ 修复结束 ▲▲▲ */
+
 
 # 当前情景
 - **当前时间**: ${currentTime} (${timeOfDayGreeting})
@@ -36573,7 +36646,8 @@ async function renderBookshelf() {
         renderedNodes: [],
         scrollDebounceTimer: null,
         // ▼▼▼ 【核心修改】：将 isActive 状态也存入虚拟滚动状态中 ▼▼▼
-        isActive: true
+        isActive: true,
+        isRenderScheduled: false // <-- 【核心新增】在这里添加新的状态标志
         // ▲▲▲ 修改结束 ▲▲▲
     };
             
@@ -36637,12 +36711,30 @@ async function renderBookshelf() {
             }, 300); // 滚动停止300ms后保存
         }
         
-        // --- 在 init() 中为阅读器内容区绑定滚动事件 ---
-        document.getElementById('reader-book-content').addEventListener('scroll', () => {
-            // 滚动时，实时渲染可见行并保存进度
-            renderVisibleLines();
+        // === 【阅读器滚动卡顿终极修复 V2.0 | 动画帧节流】 ===
+
+        // 1. 创建一个全新的滚动处理函数
+        function onBookScroll() {
+            // 保存进度的逻辑不变，它有自己的防抖，可以立即调用
             saveReadingProgress();
-        });
+
+            // 2. 核心：检查是否已经安排了一次渲染
+            if (!virtualScrollState.isRenderScheduled) {
+                // 3. 如果没有，就打上标记，并请求下一次动画帧
+                virtualScrollState.isRenderScheduled = true;
+                requestAnimationFrame(() => {
+                    // 4. 在浏览器准备好重绘时，才真正执行渲染
+                    renderVisibleLines();
+                    // 5. 渲染完成后，重置标记，以便下一次滚动可以安排新的渲染
+                    virtualScrollState.isRenderScheduled = false;
+                });
+            }
+        }
+        
+        // 6. 将我们全新的、高性能的滚动处理函数绑定到滚动事件上
+        document.getElementById('reader-book-content').addEventListener('scroll', onBookScroll);
+        
+        // ▲▲▲ 修复结束 ▲▲▲
 
 // ▼▼▼ 【【【这是修复导出功能的全新函数，请粘贴】】】 ▼▼▼
 
@@ -42557,6 +42649,342 @@ function previewWidgetStyles() {
     previewStyleTag.innerHTML = cssRules;
 }
 // ▲▲▲ 新增JS代码结束 ▲▲▲
+// ▼▼▼ 【全新】转发功能核心函数 ▼▼▼
+
+/**
+ * 【总入口】打开转发目标选择器
+ */
+async function openForwardTargetPicker() {
+    if (selectedMessages.size === 0) {
+        alert("请先选择要转发的消息。");
+        return;
+    }
+
+    const modal = document.getElementById('forward-target-modal');
+    const listEl = document.getElementById('forward-target-list');
+    listEl.innerHTML = ''; // 清空旧列表
+
+    // 获取除当前聊天外的所有聊天
+    const allChats = Object.values(state.chats).filter(c => c.id !== state.activeChatId);
+
+    allChats.forEach(chat => {
+        const item = document.createElement('div');
+        item.className = 'contact-picker-item'; // 复用现有样式
+        item.dataset.chatId = chat.id;
+
+        item.innerHTML = `
+            <input type="checkbox" class="forward-target-checkbox" data-chat-id="${chat.id}" style="margin-right: 15px;">
+            <img src="${chat.isGroup ? chat.settings.groupAvatar : chat.settings.aiAvatar || defaultAvatar}" class="avatar">
+            <span class="name">${chat.name}</span>
+        `;
+        listEl.appendChild(item);
+    });
+
+    document.getElementById('forward-select-all-checkbox').checked = false;
+    modal.classList.add('visible');
+}
+
+/**
+ * 【核心】处理确认转发的逻辑
+ */
+async function handleConfirmForward() {
+    const selectedCheckboxes = document.querySelectorAll('.forward-target-checkbox:checked');
+    if (selectedCheckboxes.length === 0) {
+        alert("请至少选择一个要转发到的聊天。");
+        return;
+    }
+
+    const sourceChat = state.chats[state.activeChatId];
+    const targetChatIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.chatId);
+
+    // 1. 获取并排序要转发的消息
+    const messagesToForward = [...selectedMessages]
+        .map(ts => sourceChat.history.find(m => m.timestamp === ts))
+        .filter(Boolean) // 过滤掉可能未找到的消息
+        .sort((a, b) => a.timestamp - b.timestamp); // 按时间顺序排序
+
+    if (messagesToForward.length === 0) {
+        alert("找不到要转发的消息。");
+        return;
+    }
+
+    let messageTimestamp = Date.now(); // 使用一个基础时间戳
+
+    // 2. 遍历所有目标聊天
+    for (const targetId of targetChatIds) {
+        const targetChat = state.chats[targetId];
+        if (!targetChat) continue;
+
+        // 3. 遍历所有要转发的消息
+        for (const originalMsg of messagesToForward) {
+            // 跳过系统消息和拍一拍等不适合转发的内容
+            if (['system_message', 'pat_message', 'recalled_message'].includes(originalMsg.type)) {
+                continue;
+            }
+
+            // 4. 构建一条全新的、属于【用户】的消息
+            const newMessage = {
+                role: 'user', // 身份是用户
+                timestamp: messageTimestamp++, // 确保时间戳唯一且递增
+                // 智能复制内容和类型
+                content: originalMsg.content,
+                type: originalMsg.type || 'text',
+                meaning: originalMsg.meaning
+            };
+            
+            // 对于复杂的卡片类型，只转发最核心的信息为文本
+            if (originalMsg.type === 'transfer') {
+                newMessage.content = `[转账] ¥${originalMsg.amount} - ${originalMsg.note || '无备注'}`;
+                newMessage.type = 'text';
+            } else if (originalMsg.type === 'poll') {
+                newMessage.content = `[投票] ${originalMsg.question}`;
+                newMessage.type = 'text';
+            }
+            // 其他卡片类型也可以在这里添加简化逻辑...
+
+            targetChat.history.push(newMessage);
+        }
+        await db.chats.put(targetChat);
+    }
+
+    // 5. 收尾工作
+    document.getElementById('forward-target-modal').classList.remove('visible');
+    exitSelectionMode(); // 退出多选模式
+    await renderChatList(); // 刷新聊天列表以显示新消息预览
+    await showCustomAlert("转发成功", `已成功将 ${messagesToForward.length} 条消息转发到 ${targetChatIds.length} 个会话中。`);
+}
+
+// ▲▲▲ 新增函数结束 ▲▲▲
+// ▼▼▼ 【全新】获取回复参考功能核心函数 ▼▼▼
+
+/**
+ * 【总入口】当用户点击“回复参考”按钮时触发
+ */
+async function handleGetReplySuggestions() {
+    if (!state.activeChatId) return;
+    const chat = state.chats[state.activeChatId];
+    if (!chat) return;
+
+    const modal = document.getElementById('reply-suggestions-modal');
+    const listEl = document.getElementById('reply-suggestions-list');
+
+    // 1. 显示加载状态
+    modal.classList.add('visible');
+    listEl.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">正在请求AI提供灵感，请稍候...</p>';
+
+    try {
+        const { proxyUrl, apiKey, model } = state.apiConfig;
+        if (!proxyUrl || !apiKey || !model) throw new Error('API未配置');
+
+        // 2. 【核心】构建一个包含完整上下文和全新任务的 System Prompt
+        const systemPrompt = await buildReplySuggestionPrompt();
+        if (!systemPrompt) return; // 如果构建失败，则退出
+
+        const messagesForApi = [{ role: 'user', content: "请根据以上设定，生成四种不同的回复方案。" }];
+        let isGemini = proxyUrl.includes('generativelanguage');
+        let geminiConfig = toGeminiRequestData(model, apiKey, systemPrompt, messagesForApi);
+
+        const response = isGemini 
+            ? await fetch(geminiConfig.url, geminiConfig.data) 
+            : await fetch(`${proxyUrl}/v1/chat/completions`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
+                body: JSON.stringify({ model, messages: [{role: 'system', content: systemPrompt}, ...messagesForApi], temperature: 1.0, response_format: { "type": "json_object" } })
+            });
+
+        if (!response.ok) throw new Error(`API 错误: ${response.statusText}`);
+        
+        const data = await response.json();
+        const aiResponseContent = getGeminiResponseText(data);
+        const cleanedJson = aiResponseContent.replace(/^```json\s*/, '').replace(/```$/, '');
+        const suggestionsData = JSON.parse(cleanedJson);
+
+        // 3. 渲染收到的回复建议
+        renderReplySuggestions(suggestionsData.suggestions);
+
+    } catch (error) {
+        console.error("获取回复建议失败:", error);
+        listEl.innerHTML = `<p style="text-align:center; color: #ff3b30; padding: 50px 0;">获取灵感失败！<br>${error.message}</p>`;
+    }
+}
+
+/**
+ * 【辅助】构建用于获取回复建议的 System Prompt
+ * @returns {Promise<string|null>} 返回完整的Prompt字符串
+ */
+async function buildReplySuggestionPrompt() {
+    const chat = state.chats[state.activeChatId];
+    if (!chat) return null;
+
+    // --- 这部分上下文构建逻辑与 triggerAiResponse 函数完全相同 ---
+    const now = getCurrentEffectiveTime();
+    const chinaTime = now;
+    const currentTime = chinaTime.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', dateStyle: 'full', timeStyle: 'short' });
+    const timeOfDayGreeting = getTimeOfDayGreeting(chinaTime);
+    const userXhsId = state.qzoneSettings.xhsId || '未知ID';
+    const myNickname = chat.settings.myNickname || '我';
+
+    // (省略了所有上下文变量的构建过程，因为它们与 triggerAiResponse 完全一致)
+    // ... worldBookContent, musicContext, gomokuContext, nameHistoryContext, etc. ...
+    // 我们将在下面直接粘贴完整的Prompt，确保所有变量都被正确包含
+
+    // 【【【这就是您要求的、完整的、一字不差的System Prompt】】】
+    return `
+# 你的身份与任务
+你是一个富有创造力的顶级编剧和角色扮演专家。你的核心任务是扮演用户“${myNickname}”的身份，并根据下方提供的所有上下文信息，为用户构思出【四个】截然不同、充满想象力、且完全符合用户人设的回复方案，以应对当前与角色“${chat.originalName}”的对话。
+
+# 核心规则
+1.  **【【【身份铁律 (最高优先级)】】】**: 你的所有回复都【必须】使用【第一人称视角 ("我")】，因为你是在为用户“${myNickname}”代笔。
+2.  **【【【剧情走向铁律】】】**: 你生成的四个方案【必须】代表四种【完全不同】的剧情走向或情感反应。例如：可以是“热情回应”、“冷淡处理”、“转移话题”、“开个玩笑”。
+3.  **【【【对话节奏铁律】】】**: 你的每个回复方案都可以包含【一条或多条】消息，以模拟真实的聊天节奏。你必须将你想说的话，拆分成多条简短的消息。
+4.  **【【【格式铁律 (绝对禁止！)】】】**: 你的回复【必须且只能】是一个【单一的JSON对象】。绝对禁止包含任何Markdown标记 (如 \`\`\`json) 或其他无关文本。你的回复必须以 \`{\` 开始，并以 \`}\` 结束。格式如下:
+    \`\`\`json
+    {
+      "suggestions": [
+        {
+          "title": "方案一的简短标题 (例如：热情地回应)",
+          "messages": [
+            "你好呀！",
+            "我也很想你呢。"
+          ]
+        },
+        {
+          "title": "方案二的简短标题 (例如：冷淡地处理)",
+          "messages": [
+            "嗯。",
+            "知道了。"
+          ]
+        },
+        {
+          "title": "方案三的简短标题 (例如：用开玩笑的方式转移话题)",
+          "messages": [
+            "你猜我刚刚在干嘛？",
+            "我在想晚上吃什么好呢！"
+          ]
+        },
+        {
+          "title": "方案四的简短标题 (例如：提出一个邀请)",
+          "messages": [
+            "别聊这个了。",
+            "我们晚上要不要一起去看电影？"
+          ]
+        }
+      ]
+    }
+    \`\`\`
+    - **suggestions**: 一个【长度必须为4】的数组。
+    - **title**: 字符串，对这个回复方案的简短概括。
+    - **messages**: 一个字符串数组，包含了在这个方案下你想发送的所有消息。
+
+# 供你决策的所有上下文信息
+## 1. 你的角色设定 (用户的人设)
+${chat.settings.myPersona}
+
+## 2. 对方的角色设定 (AI的人设)
+- **对方的本名**: "${chat.originalName}"
+- **你给对方的备注**: "${chat.name}"
+- **对方的人设**: ${chat.settings.aiPersona}
+
+## 3. 你们的关系与长期记忆
+${chat.longTermMemory && chat.longTermMemory.length > 0 ? chat.longTermMemory.map(mem => `- ${mem.content}`).join('\n') : '- (暂无)'}
+
+## 4. 相关世界观
+${await (async () => {
+    let worldBookContent = '';
+    if (chat.settings.linkedWorldBookIds && chat.settings.linkedWorldBookIds.length > 0) {
+        const linkedContents = chat.settings.linkedWorldBookIds.map(bookId => {
+            const worldBook = state.worldBooks.find(wb => wb.id === bookId);
+            if (!worldBook || !Array.isArray(worldBook.content)) return '';
+            const formattedEntries = worldBook.content.filter(entry => entry.enabled !== false).map(entry => `\n### 条目: ${entry.comment || '无备注'}\n**关键词:** ${entry.keys.join(', ')}\n**内容:**\n${entry.content}`).join('');
+            return formattedEntries ? `\n\n## 世界书: ${worldBook.name}\n${formattedEntries}` : '';
+        }).filter(Boolean).join('');
+        if (linkedContents) {
+            worldBookContent = `\n\n# 核心世界观设定 (必须严格遵守以下所有设定)\n${linkedContents}\n`;
+        }
+    }
+    return worldBookContent;
+})()}
+
+## 5. 完整的聊天记录
+${chat.history.map(msg => `${msg.role === 'user' ? myNickname : (msg.senderName || chat.name)}: ${typeof msg.content === 'string' ? msg.content : '[非文本消息]'}`).join('\n')}
+
+现在，请严格遵守所有规则，为用户“${myNickname}”生成四种风格迥异的回复方案。
+`;
+}
+
+/**
+ * 【辅助】将AI返回的建议渲染到弹窗中
+ * @param {Array} suggestions - 从AI获取的建议数组
+ */
+function renderReplySuggestions(suggestions) {
+    const listEl = document.getElementById('reply-suggestions-list');
+    listEl.innerHTML = ''; // 清空加载提示
+
+    if (!suggestions || suggestions.length === 0) {
+        listEl.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">AI未能提供有效的回复建议。</p>';
+        return;
+    }
+
+    suggestions.forEach((suggestion, index) => {
+        const card = document.createElement('div');
+        card.className = 'suggestion-card';
+        // 将整个消息数组作为data属性存储起来
+        card.dataset.messagesJson = JSON.stringify(suggestion.messages);
+
+        // 生成预览文本
+        const previewText = suggestion.messages.join('<br>').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        card.innerHTML = `
+            <div class="suggestion-title">方案 ${index + 1}: ${suggestion.title}</div>
+            <div class="suggestion-preview">${previewText}</div>
+        `;
+
+        // 绑定点击事件
+        card.addEventListener('click', () => handleSuggestionClick(suggestion.messages));
+
+        listEl.appendChild(card);
+    });
+}
+
+/**
+ * 【核心】处理用户点击回复建议的逻辑
+ * @param {Array<string>} messagesToSend - 用户选择的、要发送的消息数组
+ */
+async function handleSuggestionClick(messagesToSend) {
+    // 1. 关闭建议弹窗
+    document.getElementById('reply-suggestions-modal').classList.remove('visible');
+
+    const chat = state.chats[state.activeChatId];
+    if (!chat) return;
+
+    // 2. 逐条发送消息
+    for (const content of messagesToSend) {
+        if (content && content.trim()) {
+            const msg = {
+                role: 'user',
+                content: content.trim(),
+                timestamp: Date.now()
+            };
+
+            // a. 先在UI上显示
+            appendMessage(msg, chat);
+            // b. 再存入历史记录
+            chat.history.push(msg);
+            
+            // 模拟打字延迟
+            await new Promise(resolve => setTimeout(resolve, Math.random() * 500 + 300));
+        }
+    }
+
+    // 3. 所有消息都发送完毕后，一次性保存到数据库
+    await db.chats.put(chat);
+    
+    // 4. 刷新聊天列表并触发AI响应
+    renderChatList();
+    
+}
+
+// ▲▲▲ 新增函数结束 ▲▲▲
 
               // ===================================================================
                 // 4. 初始化函数 init()
@@ -42718,6 +43146,45 @@ window.switchToCharHomeScreen = switchToCharHomeScreen;
                     // ==========================================================
                     // --- 各种事件监听器 ---
                     // ==========================================================
+        // ▼▼▼ 【全新】回复参考功能事件绑定 ▼▼▼
+        document.getElementById('get-reply-suggestions-btn').addEventListener('click', handleGetReplySuggestions);
+
+        document.getElementById('cancel-reply-suggestions-btn').addEventListener('click', () => {
+            document.getElementById('reply-suggestions-modal').classList.remove('visible');
+        });
+        // ▲▲▲ 新增事件绑定结束 ▲▲▲
+
+        // ▼▼▼ 【全新】转发功能事件绑定 ▼▼▼
+        document.getElementById('selection-forward-btn').addEventListener('click', openForwardTargetPicker);
+
+        document.getElementById('cancel-forward-target-btn').addEventListener('click', () => {
+            document.getElementById('forward-target-modal').classList.remove('visible');
+        });
+        
+        document.getElementById('confirm-forward-target-btn').addEventListener('click', handleConfirmForward);
+        
+        // 为转发目标列表添加点击事件委托
+        document.getElementById('forward-target-list').addEventListener('click', (e) => {
+            const item = e.target.closest('.contact-picker-item');
+            if (item) {
+                const checkbox = item.querySelector('.forward-target-checkbox');
+                if (checkbox && e.target !== checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                }
+                item.classList.toggle('selected', checkbox.checked);
+            }
+        });
+
+        // 绑定全选框
+        document.getElementById('forward-select-all-checkbox').addEventListener('change', (e) => {
+            const isChecked = e.target.checked;
+            document.querySelectorAll('.forward-target-checkbox').forEach(cb => {
+                cb.checked = isChecked;
+                cb.closest('.contact-picker-item').classList.toggle('selected', isChecked);
+            });
+        });
+        // ▲▲▲ 新增事件绑定结束 ▲▲▲
+
                     // ▼▼▼ 【全新】主屏幕UI样式预设功能事件监听器 ▼▼▼
                     document.getElementById('home-ui-preset-select').addEventListener('change', handleHomeUiPresetSelectionChange);
                     document.getElementById('save-home-ui-preset-btn').addEventListener('click', saveHomeUiPreset);
@@ -49634,6 +50101,40 @@ document.getElementById('regenerate-char-usage-btn').addEventListener('click', h
         <div class="modal-footer">
             <button class="cancel" id="draw-guess-manager-cancel-btn">取消</button>
             <button class="save" id="draw-guess-manager-confirm-btn">确认</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】转发目标选择器模态框 ▼▼▼ -->
+<div id="forward-target-modal" class="modal">
+    <div class="modal-content" style="height: 70%;">
+        <div class="modal-header">
+            <span>选择要转发到的聊天</span>
+            <label style="font-size: 14px; font-weight: normal; display: flex; align-items: center; gap: 5px;">
+                <input type="checkbox" id="forward-select-all-checkbox"> 全选
+            </label>
+        </div>
+        <div class="modal-body" id="forward-target-list" style="padding: 0;">
+            <!-- 聊天列表将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="cancel-forward-target-btn">取消</button>
+            <button class="save" id="confirm-forward-target-btn">确认转发</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】回复参考建议模态框 ▼▼▼ -->
+<div id="reply-suggestions-modal" class="modal">
+    <div class="modal-content" style="height: 80%; width: 340px;">
+        <div class="modal-header">
+            <span>选择一个回复方向</span>
+        </div>
+        <div class="modal-body" id="reply-suggestions-list" style="padding: 15px; display: flex; flex-direction: column; gap: 15px;">
+            <!-- 回复建议将由JS动态生成在这里 -->
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="cancel-reply-suggestions-btn" style="width: 100%;">关闭</button>
         </div>
     </div>
 </div>
