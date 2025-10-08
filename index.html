@@ -18940,7 +18940,17 @@ applyCustomBubbleColors(chat); // 应用自定义颜色
                         
                         // 无论使用哪个图片，都将图片的描述信息保存在 data-description 中，以便点击查看
                         contentHtml = `<img src="${imageUrl}" class="ai-generated-image" alt="${altText}" data-description="${msg.content}">`;
-                    } else if (msg.type === 'voice_message') {
+                    }
+                    /* ▼▼▼ 【用户文字图片BUG终极修复】 ▼▼▼ */
+                    else if (msg.type === 'user_photo') {
+                        bubble.classList.add('is-ai-image', 'is-card-like'); // 复用ai_image的样式
+                        const altText = "用户发送的图片描述";
+                        // 【核心修复】强制使用固定的占位图URL
+                        const placeholderImageUrl = 'https://i.postimg.cc/KYr2qRCK/1.jpg'; 
+                        // 将真正的文字描述 (msg.content) 存入 data-description 供点击时读取
+                        contentHtml = `<img src="${placeholderImageUrl}" class="ai-generated-image" alt="${altText}" data-description="${msg.content}">`;
+                    }
+                    /* ▲▲▲ 修复结束 ▲▲▲ */ else if (msg.type === 'voice_message') {
 
                     bubble.classList.add('is-voice-message', 'is-card-like');
                     bubble.dataset.voiceText = msg.content;
